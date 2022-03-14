@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'ABCFavoritMono';
+  font-style: normal;
+  font-weight: 400;
+  src: url(ABCFavoritMono-Light.woff) format('truetype');
+}
+.program {
+  position: absolute;
+  left: 0;
+	width:50%;
+  height: 100%;
+  top: 0;
+}
+.output {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 50%;
+  height: 50%;
+}
+.input {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+}
+.CodeMirror {
+  border: 1px solid #222;
+  height: 100%;
+}
+body{
+	padding: 10px 20px;
+  height: 100%;
+}
+
