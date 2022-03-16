@@ -1,4 +1,7 @@
 import { getPipeline } from "./pipeline.js";
+import {setUpEditor} from "./program.js";
+import {setUpOutput} from "./output.js";
+import { asyncRun } from "./pyodide-py-worker.js";
 
 let savedPipelines = localStorage.getItem("pipelines");
 if (!savedPipelines) {
@@ -6,46 +9,44 @@ if (!savedPipelines) {
 }
 let pipelines = JSON.parse(localStorage.pipelines);
 let pipeline = await getPipeline(pipelines[pipelines.length - 1]);
-console.log(pipeline);
 
-function setUpEditor() {
-  // Add the command pane
-  var commandsElm = document.createElement('textarea');
-  commandsElm.textContent = pipeline.currentPipe().program;
-  program.appendChild(commandsElm);
-  const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
-  // let selectedTheme = "default";
-  // Use dark theme by default
-  let selectedTheme = "3024-night";
-  if (prefersDarkScheme.matches) {
-    selectedTheme = "3024-night";
-  }
-  // Add syntax highlihjting to the textarea
-  var editor = CodeMirror.fromTextArea(commandsElm, {
-    mode: 'text/x-mysql',
-    viewportMargin: Infinity,
-    indentWithTabs: true,
-    smartIndent: true,
-    lineNumbers: true,
-    matchBrackets: true,
-    autofocus: true,
-    theme: selectedTheme,
-    extraKeys: {
+function updateDisplayedPipe(pipe) {
+  if (!pipe) { return; }
+  editor.getDoc().setValue(pipe.program());
+  inputWrapper.getDoc().setValue(pipe.input());
+  outputWrapper.getDoc().setValue(pipe.output());
+}
+async function insertBefore() {
+  let pipe = await pipeline.insertBefore();
+  updateDisplayedPipe(pipe);
+}
+async function insertAfter() {
+  let pipe = await pipeline.insertAfter();
+  updateDisplayedPipe(pipe);
+}
+async function previousPipe() {
+  let pipe = await pipeline.moveToPreviousPipe();
+  updateDisplayedPipe(pipe);
+}
+async function nextPipe() {
+  let pipe = await pipeline.moveToNextPipe();
+  updateDisplayedPipe(pipe);
+}
+// Set up the editor.
+const editor = setUpEditor(pipeline.currentPipe().program());
+editor.setOption("extraKeys", {
       "Ctrl-Enter": determineLanguageAndRun,
+      "Alt-Right": nextPipe,
+      "Alt-Left": previousPipe,
+      "Alt-A": insertAfter,
+      "Alt-B": insertBefore,
       "Shift-Tab": false,
       "Ctrl-Space": "autocomplete",
-    }
-  });
-  return editor;
-}
+    });
 
-import {setUpOutput} from "./output.js";
-let editor = setUpEditor();
-let outputWrapper = setUpOutput(output);
-let inputWrapper = setUpOutput(input, "input from stdin");
-
-import { asyncRun } from "./pyodide-py-worker.js";
+// Set up the input and output panes.
+const outputWrapper = setUpOutput(output, pipeline.currentPipe().output());
+const inputWrapper = setUpOutput(input, pipeline.currentPipe().input());
 
 const context = {
   A_rank: [0.8, 0.4, 1.2, 3.7, 2.6, 5.8],
@@ -81,10 +82,19 @@ async function evaluateSQL() {
 async function evaluatePython() {
   try {
     console.log("input", inputWrapper.getValue());
-    const { results, error, output } = await asyncRun(editor.getValue(), inputWrapper.getValue(), context);
+    let input = inputWrapper.getValue();
+    let cp = pipeline.currentPipe().data();
+    let program = editor.getValue();
+    const { results, error, output } = await asyncRun(program, input, context);
     if (output) {
       console.log("pyodideWorker return output: ", output);
       outputWrapper.getDoc().setValue(output);
+      let updatedData = {
+        program: program,
+        input: input,
+        output: output,
+      }; 
+      pipeline.updatePipeData(updatedData);
     } else if (error) {
       console.log("pyodideWorker error: ", error);
       outputWrapper.getDoc().setValue(error);
