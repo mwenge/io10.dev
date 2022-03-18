@@ -1,9 +1,15 @@
 // A pipe is a program/script with its input and output. A sequence of pipes
 // make up a pipeline.
-let defaultProgram = 'import sys\nl = [1,2,3]\ndef f():\n\tprint(sys.stdin.readline())\nf()';
+let defaultProgram = `
+import sys
+w = sys.stdin.readline();
+for i in range(0,300):
+  print(w)
+`;
 async function getPipe(id, input="", program = defaultProgram, output = "") {
   let data = await localforage.getItem(id);
   if (!data) {
+    program = '# ' + id + '\n' + program;
     data = {program:program, input: input, output: output};
     await localforage.setItem(id, data);
   }

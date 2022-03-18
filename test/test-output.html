@@ -1,0 +1,86 @@
+<script type="module">
+import {contentChunker} from "../output.js";
+let sa = [`jdksladjlkas
+dsjkldsjakl
+dsajklda1
+`,`jkldsajdklsajkdlsa
+jdkslajdkjklsda
+jdksladjlkas2
+`,`jdksladjlkas
+dsjkldsjakl
+dsajkld3
+`,`jkldsajdklsajkdlsa
+jdkslajdkjklsda
+dsjkldsjaklpenulm
+`,`dsajkld
+jkldsajdklsajkdlsa
+jdkslajdkjklsdaend
+`];
+let sb = [`jdksladjl43789
+dsjklds43789
+dsajkld43789
+`,`jkldsajdklsaj43789
+jdkslajdkjkl43789
+jdksladjlkas2
+`,`jdksladj43789
+dsjkldsj43789
+dsajkld3
+`,`jkldsajdklsa43789a
+jdkslajdkjklsd43789
+dsjk43789klpenulm
+`,`dsajkld
+43789ajdklsajkdls43789
+jdkslajdkjklsdaend
+`];
+let s = sa.join('');
+let b = sb.join('');
+function testChunker() {
+  let chunker = contentChunker(s, 3);
+  console.log(chunker.currentChunk() == sa[0] ? '.' : 'FAIL : (chunker.currentChunk() == sa[0]');
+  console.log(chunker.next() == sa[1] ? '.' : 'FAIL : (chunker.next() == sa[1]');
+  console.log(chunker.previous() == sa[0] ? '.' : 'FAIL : (chunker.previous() == sa[0]');
+  console.log(chunker.previous() == sa[0] ? '.' : 'FAIL : (chunker.previous() == sa[0]');
+  console.log(chunker.next() == sa[1] ? '.' : 'FAIL : (chunker.next() == sa[1]');
+
+  chunker = contentChunker(b, 3);
+  console.log(chunker.currentChunk() == sb[0] ? '.' : 'FAIL : (chunker.currentChunk() == sb[0]');
+  console.log(chunker.next() == sb[1] ? '.' : 'FAIL : (chunker.next() == sb[1]');
+  console.log(chunker.previous() == sb[0] ? '.' : 'FAIL : (chunker.previous() == sb[0]');
+  console.log(chunker.previous() == sb[0] ? '.' : 'FAIL : (chunker.previous() == sb[0]');
+  console.log(chunker.next() == sb[1] ? '.' : 'FAIL : (chunker.next() == sb[1]');
+
+  chunker = contentChunker(s, 3);
+  console.log(chunker.currentChunk() == sa[0] ? '.' : 'FAIL : (chunker.currentChunk() == sa[0]');
+  console.log(chunker.next() == sa[1] ? '.' : 'FAIL : (chunker.next() == sa[1]');
+  console.log(chunker.previous() == sa[0] ? '.' : 'FAIL : (chunker.previous() == sa[0]');
+  console.log(chunker.previous() == sa[0] ? '.' : 'FAIL : (chunker.previous() == sa[0]');
+  console.log(chunker.next() == sa[1] ? '.' : 'FAIL : (chunker.next() == sa[1]');
+  console.log(chunker.next() == sa[2] ? '.' : 'FAIL : (chunker.next() == sa[2]');
+  console.log(chunker.next() == sa[3] ? '.' : 'FAIL : (chunker.next() == sa[3]');
+  console.log(chunker.next() == sa[4] ? '.' : 'FAIL : (chunker.next() == sa[4]');
+  console.log(chunker.next() == sa[4] ? '.' : 'FAIL : (chunker.next() == sa[4]');
+  console.log(chunker.previous() == sa[3] ? '.' : 'FAIL : (chunker.previous() == sa[3]');
+  console.log(chunker.previous() == sa[2] ? '.' : 'FAIL : (chunker.previous() == sa[2]');
+  console.log(chunker.previous() == sa[1] ? '.' : 'FAIL : (chunker.previous() == sa[1]');
+  console.log(chunker.previous() == sa[0] ? '.' : 'FAIL : (chunker.previous() == sa[0]');
+  console.log(chunker.previous() == sa[0] ? '.' : 'FAIL : (chunker.previous() == sa[0]');
+
+  chunker = contentChunker(b, 3);
+  console.log(chunker.currentChunk() == sb[0] ? '.' : 'FAIL : (chunker.currentChunk() == sb[0]');
+  console.log(chunker.next() == sb[1] ? '.' : 'FAIL : (chunker.next() == sb[1]');
+  console.log(chunker.previous() == sb[0] ? '.' : 'FAIL : (chunker.previous() == sb[0]');
+  console.log(chunker.previous() == sb[0] ? '.' : 'FAIL : (chunker.previous() == sb[0]');
+  console.log(chunker.next() == sb[1] ? '.' : 'FAIL : (chunker.next() == sb[1]');
+  console.log(chunker.next() == sb[2] ? '.' : 'FAIL : (chunker.next() == sb[2]');
+  console.log(chunker.next() == sb[3] ? '.' : 'FAIL : (chunker.next() == sb[3]');
+  console.log(chunker.next() == sb[4] ? '.' : 'FAIL : (chunker.next() == sb[4]');
+  console.log(chunker.next() == sb[4] ? '.' : 'FAIL : (chunker.next() == sb[4]');
+  console.log(chunker.previous() == sb[3] ? '.' : 'FAIL : (chunker.previous() == sb[3]');
+  console.log(chunker.previous() == sb[2] ? '.' : 'FAIL : (chunker.previous() == sb[2]');
+  console.log(chunker.previous() == sb[1] ? '.' : 'FAIL : (chunker.previous() == sb[1]');
+  console.log(chunker.previous() == sb[0] ? '.' : 'FAIL : (chunker.previous() == sb[0]');
+  console.log(chunker.previous() == sb[0] ? '.' : 'FAIL : (chunker.previous() == sb[0]');
+}
+
+testChunker();
+</script>

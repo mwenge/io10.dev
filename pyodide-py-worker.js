@@ -4,7 +4,6 @@ const callbacks = {};
 let textOutput = "";
 
 pyodideWorker.onmessage = (event) => {
-	console.log(event.data);
   if (event.data.text) {
       textOutput += event.data.text + '\n';
     return;

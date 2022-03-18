@@ -10,11 +10,12 @@ if (!savedPipelines) {
 let pipelines = JSON.parse(localStorage.pipelines);
 let pipeline = await getPipeline(pipelines[pipelines.length - 1]);
 
+// Helper functions to navigate pipes
 function updateDisplayedPipe(pipe) {
   if (!pipe) { return; }
   editor.getDoc().setValue(pipe.program());
-  inputWrapper.getDoc().setValue(pipe.input());
-  outputWrapper.getDoc().setValue(pipe.output());
+  inputWrapper.updateContent(pipe.input(), pipeline.currentPipeIndex() == 0);
+  outputWrapper.updateContent(pipe.output());
 }
 async function insertBefore() {
   let pipe = await pipeline.insertBefore();
@@ -46,7 +47,7 @@ editor.setOption("extraKeys", {
 
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, pipeline.currentPipe().output());
-const inputWrapper = setUpOutput(input, pipeline.currentPipe().input());
+const inputWrapper = setUpOutput(input, pipeline.currentPipe().input(), true);
 
 const context = {
   A_rank: [0.8, 0.4, 1.2, 3.7, 2.6, 5.8],
@@ -81,23 +82,21 @@ async function evaluateSQL() {
 
 async function evaluatePython() {
   try {
-    console.log("input", inputWrapper.getValue());
     let input = inputWrapper.getValue();
-    let cp = pipeline.currentPipe().data();
+    console.log("input", input);
     let program = editor.getValue();
     const { results, error, output } = await asyncRun(program, input, context);
     if (output) {
-      console.log("pyodideWorker return output: ", output);
-      outputWrapper.getDoc().setValue(output);
+      outputWrapper.updateContent(output);
       let updatedData = {
         program: program,
         input: input,
         output: output,
       }; 
-      pipeline.updatePipeData(updatedData);
+      await pipeline.updatePipeData(updatedData);
     } else if (error) {
       console.log("pyodideWorker error: ", error);
-      outputWrapper.getDoc().setValue(error);
+      outputWrapper.updateContent(error);
     }
   } catch (e) {
     console.log(

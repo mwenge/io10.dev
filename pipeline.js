@@ -18,8 +18,9 @@ async function getPipeline(id) {
       nextPipe = await this.getNextPipe(cur);
     },
     updateCurrentPipeInfo: async function(cur) {
-      let pid = id + "-" + cur.toString();
+      let pid = pipeline[cur];
       pipe = await getPipe(pid);
+      return pipe
     },
     insertAfter: async function() {
       let pid = id + "-" + (pipeline.length).toString();
@@ -49,7 +50,7 @@ async function getPipeline(id) {
       }
       current--;
       nextPipe = pipe;
-      await this.updateCurrentPipeInfo(current);
+      pipe = await this.updateCurrentPipeInfo(current);
       return pipe;
     },
     moveToNextPipe: async function() {
@@ -57,7 +58,7 @@ async function getPipeline(id) {
         return null;
       }
       current++;
-      await this.updateCurrentPipeInfo(current);
+      pipe = await this.updateCurrentPipeInfo(current);
       nextPipe = await this.getNextPipe(current);
       return pipe;
     },
@@ -66,7 +67,7 @@ async function getPipeline(id) {
         return null;
       }
       cur++;
-      let pid = id + "-" + (cur).toString();
+      let pid = pipeline[cur];
       let np = await getPipe(pid);
       return np;
     },
@@ -80,6 +81,9 @@ async function getPipeline(id) {
     },
     currentPipe: function() {
       return pipe;
+    },
+    currentPipeIndex: function() {
+      return current;
     },
   };
   await rangeIterator.initializePipeInfo(current);
