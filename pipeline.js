@@ -5,7 +5,7 @@ async function getPipeline(id) {
 
   if (!pipeline.length) {
     let pid = id + "-" + pipeline.length.toString();
-    pipeline.push(pid);
+    pipeline.push({pid: pid, lang: "*.py"});
     localStorage.setItem(id, JSON.stringify(pipeline));
   }
 
@@ -13,19 +13,24 @@ async function getPipeline(id) {
   let pipe = null;
   let nextPipe = null;
   const rangeIterator = {
+    updateLanguage: function(lang) {
+      if (pipeline[current].lang == lang) return;
+      pipeline[current].lang = lang;
+      localStorage.setItem(id, JSON.stringify(pipeline));
+    },
     initializePipeInfo: async function(cur) {
       await this.updateCurrentPipeInfo(cur);
       nextPipe = await this.getNextPipe(cur);
     },
     updateCurrentPipeInfo: async function(cur) {
-      let pid = pipeline[cur];
+      let pid = pipeline[cur].pid;
       pipe = await getPipe(pid);
       return pipe
     },
     insertAfter: async function() {
       let pid = id + "-" + (pipeline.length).toString();
       current++;
-      pipeline.splice(current, 0, pid);
+      pipeline.splice(current, 0, {pid:pid, lang:"*.py"});
       localStorage.setItem(id, JSON.stringify(pipeline));
       pipe = await getPipe(pid, pipe.output());
       nextPipe = await this.getNextPipe(current);
@@ -38,7 +43,7 @@ async function getPipeline(id) {
       }
       current--;
       let pid = id + "-" + (pipeline.length).toString();
-      pipeline.splice(current, 0, pid);
+      pipeline.splice(current, 0, {pid:pid, lang:"*.py"});
       localStorage.setItem(id, JSON.stringify(pipeline));
       nextPipe = pipe;
       pipe = await getPipe(pid, prev.output());
@@ -67,7 +72,7 @@ async function getPipeline(id) {
         return null;
       }
       cur++;
-      let pid = pipeline[cur];
+      let pid = pipeline[cur].pid;
       let np = await getPipe(pid);
       return np;
     },
@@ -84,6 +89,9 @@ async function getPipeline(id) {
     },
     currentPipeIndex: function() {
       return current;
+    },
+    currentPipeline: function() {
+      return pipeline;
     },
   };
   await rangeIterator.initializePipeInfo(current);

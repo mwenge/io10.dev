@@ -1,14 +1,38 @@
 import { getPipeline } from "./pipeline.js";
+import { updatePipelineOnAwesomeBar } from "./awesomebar-pipeline.js";
 import {setUpEditor} from "./program.js";
 import {setUpOutput} from "./output.js";
 import { asyncRun } from "./pyodide-py-worker.js";
 
 let savedPipelines = localStorage.getItem("pipelines");
 if (!savedPipelines) {
-  localStorage.setItem("pipelines", JSON.stringify(["Example Pipeline"]));
+  localStorage.setItem("pipelines", JSON.stringify(["New Pipeline 1"]));
+  localStorage.setItem("pipelinePrettyNames", JSON.stringify(["New Pipeline 1"]));
 }
 let pipelines = JSON.parse(localStorage.pipelines);
-let pipeline = await getPipeline(pipelines[pipelines.length - 1]);
+let pipelinePrettyNames = JSON.parse(localStorage.pipelinePrettyNames);
+let currentPipelineIndex = pipelines.length - 1;
+let pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
+  pipeline.currentPipeIndex(),
+  pipelinePrettyNames[currentPipelineIndex]); 
+
+function updatePipelinePrettyName(name) {
+  pipelinePrettyNames[currentPipelineIndex] = name;
+  localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
+  updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
+    pipeline.currentPipeIndex(),
+    pipelinePrettyNames[currentPipelineIndex]); 
+};
+document.getElementById("pipeline-name").addEventListener('keydown', (event) => {
+  const keyName = event.key;
+  if (keyName == 'Enter') {
+    event.preventDefault();
+    event.stopPropagation();
+    updatePipelinePrettyName(event.target.textContent);
+    event.target.blur();
+  }
+});
 
 // Helper functions to navigate pipes
 function updateDisplayedPipe(pipe) {
@@ -16,6 +40,9 @@ function updateDisplayedPipe(pipe) {
   editor.getDoc().setValue(pipe.program());
   inputWrapper.updateContent(pipe.input(), pipeline.currentPipeIndex() == 0);
   outputWrapper.updateContent(pipe.output());
+  updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
+    pipeline.currentPipeIndex(),
+    pipelinePrettyNames[currentPipelineIndex]); 
 }
 async function insertBefore() {
   let pipe = await pipeline.insertBefore();
@@ -67,6 +94,7 @@ async function determineLanguage() {
 
   const lang = cmLangs[fileType];
   editor.setOption("mode", lang.syntax);
+  pipeline.updateLanguage(fileType);
   return lang;
 }
 
