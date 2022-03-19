@@ -4,6 +4,12 @@
   font-weight: 400;
   src: url(ABCFavoritMono-Light.woff) format('truetype');
 }
+@font-face {
+  font-family: 'osd';
+  src: url('VCR_OSD_MONO_1.001.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 .program {
   position: absolute;
   left: 0;
@@ -24,6 +30,80 @@
   top: 0;
   width: 50%;
   height: 50%;
+}
+.awesomebar {
+  position: absolute;
+  text-transform: uppercase;
+  z-index: 9998;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 14px;
+  font-size: 13px;
+  font-family: 'osd';
+  background: lightblue;
+}
+/* Copied from http://aleclownes.com/2017/02/01/crt-display.html */
+.title::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+.title {
+  display: inline-block;
+  background: lightblue;
+}
+.arrow-right {
+  display: inline-block;
+  width: 0; 
+  height: 0; 
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+.first-arrow {
+  border-left: 7px solid lightblue;
+  background: darkblue;
+}
+.second-arrow {
+  border-left: 7px solid darkblue;
+  background: lightblue;
+}
+.separator {
+  display: inline-block;
+  background: black;
+  color: lightblue;
+}
+.pipelinename {
+  display: inline-block;
+  background: darkblue;
+  color: white;
+}
+.pipeline-container {
+  display: inline-block;
+  background: lightblue;
+}
+.tip-container {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 14px;
+  font-size: 13px;
+  font-family: 'osd';
+  background: lightblue;
+}
+.shortcut-tip {
+  display: inline-block;
+  font-size: 13px;
+  color: black;
 }
 .CodeMirror {
   border: 1px solid #222;

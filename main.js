@@ -33,6 +33,7 @@ async function nextPipe() {
   let pipe = await pipeline.moveToNextPipe();
   updateDisplayedPipe(pipe);
 }
+
 // Set up the editor.
 const editor = setUpEditor(pipeline.currentPipe().program());
 editor.setOption("extraKeys", {
