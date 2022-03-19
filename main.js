@@ -1,81 +1,14 @@
-import { getPipeline } from "./pipeline.js";
-import { updatePipelineOnAwesomeBar } from "./awesomebar-pipeline.js";
-import {setUpEditor} from "./program.js";
-import {setUpOutput} from "./output.js";
-import { asyncRun } from "./pyodide-py-worker.js";
-
-let savedPipelines = localStorage.getItem("pipelines");
-if (!savedPipelines) {
-  localStorage.setItem("pipelines", JSON.stringify(["New Pipeline 1"]));
-  localStorage.setItem("pipelinePrettyNames", JSON.stringify(["New Pipeline 1"]));
-}
-let pipelines = JSON.parse(localStorage.pipelines);
-let pipelinePrettyNames = JSON.parse(localStorage.pipelinePrettyNames);
-let currentPipelineIndex = pipelines.length - 1;
-let pipeline = await getPipeline(pipelines[currentPipelineIndex]);
-updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
-  pipeline.currentPipeIndex(),
-  pipelinePrettyNames[currentPipelineIndex]); 
-
-function updatePipelinePrettyName(name) {
-  pipelinePrettyNames[currentPipelineIndex] = name;
-  localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
-  updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
-    pipeline.currentPipeIndex(),
-    pipelinePrettyNames[currentPipelineIndex]); 
-};
-document.getElementById("pipeline-name").addEventListener('keydown', (event) => {
-  const keyName = event.key;
-  if (keyName == 'Enter') {
-    event.preventDefault();
-    event.stopPropagation();
-    updatePipelinePrettyName(event.target.textContent);
-    event.target.blur();
-  }
-});
-
-// Helper functions to navigate pipes
-function updateDisplayedPipe(pipe) {
-  if (!pipe) { return; }
-  editor.getDoc().setValue(pipe.program());
-  inputWrapper.updateContent(pipe.input(), pipeline.currentPipeIndex() == 0);
-  outputWrapper.updateContent(pipe.output());
-  updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
-    pipeline.currentPipeIndex(),
-    pipelinePrettyNames[currentPipelineIndex]); 
-}
-async function insertBefore() {
-  let pipe = await pipeline.insertBefore();
-  updateDisplayedPipe(pipe);
-}
-async function insertAfter() {
-  let pipe = await pipeline.insertAfter();
-  updateDisplayedPipe(pipe);
-}
-async function previousPipe() {
-  let pipe = await pipeline.moveToPreviousPipe();
-  updateDisplayedPipe(pipe);
-}
-async function nextPipe() {
-  let pipe = await pipeline.moveToNextPipe();
-  updateDisplayedPipe(pipe);
-}
+import {setUpEditor} from "./app/program.js";
+import {setUpOutput} from "./app/output.js";
+import * as ps from "./app/pipelines.js";
+import { asyncRun } from "./app/pyodide-py-worker.js";
 
 // Set up the editor.
-const editor = setUpEditor(pipeline.currentPipe().program());
-editor.setOption("extraKeys", {
-      "Ctrl-Enter": determineLanguageAndRun,
-      "Alt-Right": nextPipe,
-      "Alt-Left": previousPipe,
-      "Alt-A": insertAfter,
-      "Alt-B": insertBefore,
-      "Shift-Tab": false,
-      "Ctrl-Space": "autocomplete",
-    });
-
+const editor = setUpEditor(ps.pipeline.currentPipe().program());
 // Set up the input and output panes.
-const outputWrapper = setUpOutput(output, pipeline.currentPipe().output());
-const inputWrapper = setUpOutput(input, pipeline.currentPipe().input(), true);
+const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
+const inputWrapper = setUpOutput(input, ps.pipeline.currentPipe().input(), true);
+ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun);
 
 const context = {
   A_rank: [0.8, 0.4, 1.2, 3.7, 2.6, 5.8],
@@ -94,7 +27,7 @@ async function determineLanguage() {
 
   const lang = cmLangs[fileType];
   editor.setOption("mode", lang.syntax);
-  pipeline.updateLanguage(fileType);
+  ps.pipeline.updateLanguage(fileType);
   return lang;
 }
 
@@ -122,7 +55,7 @@ async function evaluatePython() {
         input: input,
         output: output,
       }; 
-      await pipeline.updatePipeData(updatedData);
+      await ps.pipeline.updatePipeData(updatedData);
     } else if (error) {
       console.log("pyodideWorker error: ", error);
       outputWrapper.updateContent(error);

@@ -3,7 +3,7 @@
 // Setup your project to serve `py-worker.js`. You should also serve
 // `pyodide.js`, and all its associated `.asm.js`, `.data`, `.json`,
 // and `.wasm` files as well:
-importScripts("3rdparty/pyodide/pyodide.js");
+importScripts("../3rdparty/pyodide/pyodide.js");
 
 let stdinIterator = null;
 function* getStdinLine(stdin) {
@@ -15,7 +15,7 @@ function* getStdinLine(stdin) {
 
 async function loadPyodideAndPackages() {
   self.pyodide = await loadPyodide({
-    indexURL: "3rdparty/pyodide",
+    indexURL: "../3rdparty/pyodide",
     stdout: (text) => {self.postMessage({text:text});},
     stdin: () => { return stdinIterator.next().value; },
   });

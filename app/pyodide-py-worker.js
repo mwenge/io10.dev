@@ -1,4 +1,4 @@
-const pyodideWorker = new Worker("./pyodide-worker.js");
+const pyodideWorker = new Worker("./app/pyodide-worker.js");
 
 const callbacks = {};
 let textOutput = "";
