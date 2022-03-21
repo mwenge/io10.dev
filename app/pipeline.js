@@ -22,6 +22,18 @@ async function getPipeline(id) {
       await this.updateCurrentPipeInfo(cur);
       nextPipe = await this.getNextPipe(cur);
     },
+    deleteCurrent: async function() {
+      let pid = pipeline[current].pid;
+      localforage.removeItem(pid);
+      pipeline.splice(current,1);
+      if (current) current--;
+      pid = pipeline[current].pid;
+      pipe = await getPipe(pid);
+      nextPipe = await this.getNextPipe(current);
+      if (!nextPipe) return pipe;
+      await nextPipe.updateInput(pipe.output());
+      return pipe
+    },
     updateCurrentPipeInfo: async function(cur) {
       let pid = pipeline[cur].pid;
       pipe = await getPipe(pid);

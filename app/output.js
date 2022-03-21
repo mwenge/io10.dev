@@ -49,6 +49,7 @@ function contentChunker(content, chunkLength) {
   return chunkIterator;
 }
 
+// Set up the input/output pane.
 function setUpOutput(div, c = "Output appears here", editable) {
   let content = c;
   let isEditable = editable;
@@ -121,7 +122,7 @@ function setUpOutput(div, c = "Output appears here", editable) {
       }
       chunker = contentChunker(c, chunkLength);
       let currentChunk = chunker.currentChunk();
-      if (!currentChunk) return;
+      if (!currentChunk) currentChunk = "";
       editor.setValue(currentChunk);
     },
   }

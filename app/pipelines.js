@@ -30,6 +30,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun) {
         "Alt-Left": previousPipe,
         "Alt-A": insertAfter,
         "Alt-B": insertBefore,
+        "Alt-D": deleteCurrent,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });
@@ -65,6 +66,10 @@ function updateDisplayedPipe(pipe) {
 }
 async function insertBefore() {
   let pipe = await pipeline.insertBefore();
+  updateDisplayedPipe(pipe);
+}
+async function deleteCurrent() {
+  let pipe = await pipeline.deleteCurrent();
   updateDisplayedPipe(pipe);
 }
 async function insertAfter() {
