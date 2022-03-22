@@ -1,16 +1,28 @@
 // A pipe is a program/script with its input and output. A sequence of pipes
 // make up a pipeline.
-let defaultProgram = `
+const defaultData = 
+  {
+    key: "Example Pipeline-0",
+    program: `
+#Example Pipeline-0
 import sys
 w = sys.stdin.readline();
-for i in range(0,300):
-  print(w)
-`;
-async function getPipe(id, input="", program = defaultProgram, output = "") {
+print("colid" + '\t' + "colval")
+for i in range(0,20):
+  print(str(1) + '\t' + w.strip() +str(i))
+    `,
+    input: `jdkljdskaldsajkl
+dsajkldsjakl
+dsajkldsjakldsa
+`,
+    output: '',
+    lang: "*.py",
+  };
+
+async function getPipe(id, input="", program = defaultData.program, output = "") {
   let data = await localforage.getItem(id);
   if (!data) {
-    program = '# ' + id + '\n' + program;
-    data = {program:program, input: input, output: output};
+    data = {...defaultData};
     await localforage.setItem(id, data);
   }
   const rangeIterator = {
