@@ -12,9 +12,12 @@ let pipelinePrettyNames = JSON.parse(localStorage.pipelinePrettyNames);
 let currentPipelineIndex = pipelines.length - 1;
 export let pipeline = await getPipeline(pipelines[currentPipelineIndex]);
 
-updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
-  pipeline.currentPipeIndex(),
-  pipelinePrettyNames[currentPipelineIndex]); 
+export function updateAwesomeBar() {
+  updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
+    pipeline.currentPipeIndex(),
+    pipelinePrettyNames[currentPipelineIndex]); 
+}
+updateAwesomeBar();
 
 // Set up the editor and input and output panes.
 let editor = null;
@@ -40,9 +43,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun) {
 function updatePipelinePrettyName(name) {
   pipelinePrettyNames[currentPipelineIndex] = name;
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
-  updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
-    pipeline.currentPipeIndex(),
-    pipelinePrettyNames[currentPipelineIndex]); 
+  updateAwesomeBar();
 };
 document.getElementById("pipeline-name").addEventListener('keydown', (event) => {
   const keyName = event.key;
@@ -60,9 +61,7 @@ function updateDisplayedPipe(pipe) {
   editor.getDoc().setValue(pipe.program());
   inputWrapper.updateContent(pipe.input(), pipeline.currentPipeIndex() == 0);
   outputWrapper.updateContent(pipe.output());
-  updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
-    pipeline.currentPipeIndex(),
-    pipelinePrettyNames[currentPipelineIndex]); 
+  updateAwesomeBar();
 }
 async function insertBefore() {
   let pipe = await pipeline.insertBefore();

@@ -13,6 +13,9 @@ async function getPipeline(id) {
   let pipe = null;
   let nextPipe = null;
   const rangeIterator = {
+    lang: function() {
+      return pipeline[current].lang;
+    },
     updateLanguage: function(lang) {
       if (pipeline[current].lang == lang) return;
       pipeline[current].lang = lang;
