@@ -7,7 +7,7 @@ export function updateAwesomeBar() {
     pipeline.currentPipeIndex(),
     pipelinePrettyNames[currentPipelineIndex]); 
 }
-// Helper functions to navigate pipes
+// Helper functions to navigate pipes and pipelines.
 function updateDisplayedPipe(pipe) {
   if (!pipe) { return; }
   editor.getDoc().setValue(pipe.program());
@@ -34,6 +34,30 @@ async function previousPipe() {
 async function nextPipe() {
   let pipe = await pipeline.moveToNextPipe();
   updateDisplayedPipe(pipe);
+}
+async function nextPipeline() {
+  if (currentPipelineIndex < pipelines.length - 1) {
+    currentPipelineIndex++;
+    pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+    updateAwesomeBar();
+    return;
+  }
+  let cur = pipelines.length;
+  pipelines.push("New Pipeline " + cur);
+  pipelinePrettyNames.push("New Pipeline " + cur);
+  currentPipelineIndex = pipelines.length - 1;
+  localStorage.setItem("pipelines", JSON.stringify(pipelines));
+  localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
+  pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+  updateAwesomeBar();
+}
+async function prevPipeline() {
+  if (!currentPipelineIndex) {
+    return;
+  }
+  currentPipelineIndex--;
+  pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+  updateAwesomeBar();
 }
 
 // Initialize the example pipeline if necessary.
@@ -77,6 +101,8 @@ export function setUpPanes(e, i, o, determineLanguageAndRun) {
         "Alt-A": insertAfter,
         "Alt-B": insertBefore,
         "Alt-D": deleteCurrent,
+        "Alt-Up": nextPipeline,
+        "Alt-Down": prevPipeline,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });
