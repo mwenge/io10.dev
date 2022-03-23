@@ -59,6 +59,16 @@ async function prevPipeline() {
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateAwesomeBar();
 }
+async function deletePipeline() {
+  console.log("deleting");
+  pipelines.splice(currentPipelineIndex, 1);
+  pipelinePrettyNames.splice(currentPipelineIndex, 1);
+  localStorage.setItem("pipelines", JSON.stringify(pipelines));
+  localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
+  if (currentPipelineIndex) currentPipelineIndex--;
+  pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+  updateAwesomeBar();
+}
 
 // Initialize the example pipeline if necessary.
 let savedPipelines = localStorage.getItem("pipelines");
@@ -103,6 +113,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun) {
         "Alt-D": deleteCurrent,
         "Alt-Up": nextPipeline,
         "Alt-Down": prevPipeline,
+        "Alt-Q": deletePipeline,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });
