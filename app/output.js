@@ -11,6 +11,7 @@ function contentChunker(content, chunkLength) {
         let p = i;
         i = c.indexOf('\n', p);
         if (i < 0) {
+          chunk += c.slice(p);
           i = c.length;
           break;
         }

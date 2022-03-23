@@ -75,7 +75,8 @@ async function evaluateSQL() {
         output: output,
       }; 
       await ps.pipeline.updatePipeData(updatedData);
-    } else if (error) {
+    }
+    if (error) {
       console.log("sqlworker error: ", error);
       outputWrapper.updateContent(error);
     }
