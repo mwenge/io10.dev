@@ -20,14 +20,14 @@ pyodideWorker.onmessage = (event) => {
 
 const asyncRun = (() => {
   let id = 0; // identify a Promise
-  return (script, stdin, context) => {
+  return (script, stdin, files) => {
     // the id could be generated more carefully
     id = (id + 1) % Number.MAX_SAFE_INTEGER;
     return new Promise((onSuccess) => {
       textOutput = "";
       callbacks[id] = onSuccess;
       pyodideWorker.postMessage({
-        ...context,
+        files: files,
         python: script,
         stdin: stdin,
         id,

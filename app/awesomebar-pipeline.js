@@ -22,7 +22,7 @@ function updateTips() {
 }
 
 let cv = createColorValueArray();
-function updatePipelineOnAwesomeBar(pl, cur, name) {
+function updatePipelineOnAwesomeBar(pl, cur, name, files) {
   document.getElementById("pipeline-name").innerHTML = name;
   const c = document.getElementById("pipeline-container");
   c.innerHTML = "";
@@ -40,6 +40,13 @@ function updatePipelineOnAwesomeBar(pl, cur, name) {
     if (i == cur) {
       d.className += " currentpipe";
       d.style.color = "white";
+      if (files.length) {
+        // Add the file tip.
+        let f = document.createElement("div"); 
+        f.className = "file-tip";
+        f.textContent = "FILES AVAILABLE: '" + files.join('\', \'') + "'";
+        c.appendChild(f);
+      }
     }
     c.appendChild(d);
     d = document.createElement("div"); 

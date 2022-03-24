@@ -4,6 +4,7 @@
 // `pyodide.js`, and all its associated `.asm.js`, `.data`, `.json`,
 // and `.wasm` files as well:
 importScripts("../3rdparty/pyodide/pyodide.js");
+importScripts("../3rdparty/localforage.min.js");
 
 let stdinIterator = null;
 function* getStdinLine(stdin) {
@@ -11,6 +12,11 @@ function* getStdinLine(stdin) {
   while (stdin.length > 0) {
     yield stdin.shift();
   }
+}
+
+async function loadFile(f) {
+  let data = await localforage.getItem(f);
+  await self.pyodide.FS.writeFile(f, new Uint8Array(data));
 }
 
 async function loadPyodideAndPackages() {
@@ -27,16 +33,15 @@ self.onmessage = async (event) => {
   // make sure loading is done
   await pyodideReadyPromise;
   // Don't bother yet with this line, suppose our API is built in such a way:
-  const { id, python, stdin, ...context } = event.data;
+  const { id, python, stdin, files } = event.data;
+  // Load all the files, and wait until they're all loaded.
+  await Promise.all(files.map(async (f) => {
+    await loadFile(f);
+  }));
   stdinIterator = getStdinLine(stdin);
-  // The worker copies the context in its own "memory" (an object mapping name to values)
-  for (const key of Object.keys(context)) {
-    self[key] = context[key];
-  }
   // Now is the easy part, the one that is similar to working in the main thread:
   try {
     await self.pyodide.loadPackagesFromImports(python);
-    console.log("running", python);
     let results = await self.pyodide.runPythonAsync(python);
     self.postMessage({ results, id });
   } catch (error) {

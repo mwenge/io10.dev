@@ -94,6 +94,7 @@ function setUpOutput(div, c = "Output appears here", editable) {
     indentWithTabs: true,
     smartIndent: true,
     lineNumbers: true,
+    lineWrapping: true,
     matchBrackets: true,
     theme: selectedTheme,
     extraKeys: {

@@ -5,7 +5,8 @@ import { updatePipelineOnAwesomeBar } from "./awesomebar-pipeline.js";
 export function updateAwesomeBar() {
   updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
     pipeline.currentPipeIndex(),
-    pipelinePrettyNames[currentPipelineIndex]); 
+    pipelinePrettyNames[currentPipelineIndex],
+    pipeline.currentPipe().files()); 
 }
 // Helper functions to navigate pipes and pipelines.
 function updateDisplayedPipe(pipe) {
@@ -39,7 +40,7 @@ async function nextPipeline() {
   if (currentPipelineIndex < pipelines.length - 1) {
     currentPipelineIndex++;
     pipeline = await getPipeline(pipelines[currentPipelineIndex]);
-    updateAwesomeBar();
+    updateDisplayedPipe(pipeline.currentPipe());
     return;
   }
   let cur = pipelines.length;
@@ -49,7 +50,7 @@ async function nextPipeline() {
   localStorage.setItem("pipelines", JSON.stringify(pipelines));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
-  updateAwesomeBar();
+  updateDisplayedPipe(pipeline.currentPipe());
 }
 async function prevPipeline() {
   if (!currentPipelineIndex) {
@@ -57,7 +58,7 @@ async function prevPipeline() {
   }
   currentPipelineIndex--;
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
-  updateAwesomeBar();
+  updateDisplayedPipe(pipeline.currentPipe());
 }
 async function deletePipeline() {
   console.log("deleting");
@@ -68,6 +69,10 @@ async function deletePipeline() {
   if (currentPipelineIndex) currentPipelineIndex--;
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateAwesomeBar();
+}
+function openFile() {
+  const fileUpload = document.getElementById('file-upload');
+  fileUpload.click();
 }
 
 // Initialize the example pipeline if necessary.
@@ -114,6 +119,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun) {
         "Alt-Up": nextPipeline,
         "Alt-Down": prevPipeline,
         "Alt-Q": deletePipeline,
+        "Ctrl-O": openFile,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });

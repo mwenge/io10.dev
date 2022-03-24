@@ -107,6 +107,16 @@
   font-family: 'osd';
   background: lightblue;
 }
+.file-tip {
+  position: absolute;
+  left: 0;
+  bottom: 15px;
+  padding: 0 5px 0 5px;
+  display: inline-block;
+  color: white;
+  height: 100%;
+  text-transform: none;
+}
 .shortcut-tip {
   padding: 0 5px 0 5px;
   display: inline-block;

@@ -11,10 +11,7 @@ const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, ps.pipeline.currentPipe().input(), true);
 ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun);
 
-const context = {
-  A_rank: [0.8, 0.4, 1.2, 3.7, 2.6, 5.8],
-};
-
+// Update the syntax highlighting to suit the language being used.
 setInterval(determineLanguage, 10000);
 const guessLang = new GuessLang();
 const cmLangs = {
@@ -34,6 +31,7 @@ async function determineLanguage() {
   return lang;
 }
 
+// Determine what the language is and the run the script.
 async function determineLanguageAndRun() {
   let lang = await determineLanguage();
   // Python is our default
@@ -42,6 +40,7 @@ async function determineLanguageAndRun() {
   const result = await lang.run();
 }
 
+// Helper for running SQL
 var enc = new TextEncoder(); // always utf-8
 async function evaluateSQL() {
   try {
@@ -52,8 +51,18 @@ async function evaluateSQL() {
     let tableName = ps.pipeline.currentPipe().id() + ".tsv";
     await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
-    // Write the input to a TSV table first.
+    // Write the standard input to a TSV table first.
     const { vsvtable } = await asyncCreateTable(buffInput, tableName);
+
+    // Load the files associated with the pipe to tables.
+    let files = ps.pipeline.currentPipe().files();
+    await Promise.all(files.map(async (f) => {
+      await asyncRunSQL("DROP TABLE \"" + f + "\";");
+    }));
+    await Promise.all(files.map(async (f) => {
+      let data = await localforage.getItem(f);
+      await asyncCreateTable(new Uint8Array(data), f);
+    }));
 
     // Now run the query against it.
     let program = editor.getValue();
@@ -87,18 +96,20 @@ async function evaluateSQL() {
   }
 }
 
+// Helper for running Python
 async function evaluatePython() {
   try {
     let input = inputWrapper.getValue();
     let program = editor.getValue();
-    const { results, error, output } = await asyncRun(program, input, context);
-    console.log(error);
+    let files = ps.pipeline.currentPipe().files();
+    const { results, error, output } = await asyncRun(program, input, files);
     if (output) {
       outputWrapper.updateContent(output);
       let updatedData = {
         program: program,
         input: input,
         output: output,
+        files: files,
       }; 
       await ps.pipeline.updatePipeData(updatedData);
     }
@@ -113,3 +124,16 @@ async function evaluatePython() {
   }
 }
 
+// Allow the user to add a file. Doing so associates the file with the current
+// pipe only. 
+var fileUpload = document.getElementById('file-upload');
+fileUpload.onchange = function () {
+	var f = fileUpload.files[0];
+  if (!f) { return; }
+	var r = new FileReader();
+	r.onload = async function () {
+    await localforage.setItem(f.name, r.result);
+    ps.pipeline.currentPipe().addFile(f.name);
+	}
+	r.readAsArrayBuffer(f);
+}

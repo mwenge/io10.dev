@@ -35,11 +35,22 @@ async function getPipe(id, input="", program = defaultData.program, output = "")
     output: function() {
       return data.output;
     },
+    files: function() {
+      return data.files ? data.files : [];
+    },
     data: function() {
       return data;
     },
     id: function() {
       return id;
+    },
+    addFile: async function(f) {
+      if (!data.files) {
+        data.files = [f];
+      } else {
+        data.files.push(f);
+      }
+      await localforage.setItem(id, data);
     },
     updateInput: async function(p) {
       data.input = p;
