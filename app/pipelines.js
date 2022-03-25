@@ -68,7 +68,7 @@ async function deletePipeline() {
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
   if (currentPipelineIndex) currentPipelineIndex--;
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
-  updateAwesomeBar();
+  updateDisplayedPipe(pipeline.currentPipe());
 }
 function openFile() {
   const fileUpload = document.getElementById('file-upload');
