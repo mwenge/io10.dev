@@ -81,10 +81,9 @@ let savedPipelines = localStorage.getItem("pipelines");
 if (!savedPipelines) {
   localStorage.setItem("pipelines", JSON.stringify(["Example Pipeline"]));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(["Example Pipeline"]));
-  examplePipeline.forEach(async function(p) {
-    let res = await localforage.setItem(p.key, p);
-    console.log("set", res);
-  });
+  await Promise.all(examplePipeline.map(async (p) => {
+    await localforage.setItem(p.key, p);
+  }));
   // Add the example file.
   await localforage.setItem('file.tsv', enc.encode(`fjkdlsjfdkl\tfjkdslfdslk
   fdsjklfdjfkls\tfjdsklfjkdslfd
@@ -94,7 +93,6 @@ if (!savedPipelines) {
   dsjkldsjak\tdjskaldsjakl`).buffer);
 
   let newPipeline = [];
-  newPipeline.push({pid: "Example Pipeline 0", lang: "*.py"});
   examplePipeline.forEach(p => {
     newPipeline.push({pid: p.key, lang: p.lang});
   });

@@ -1,5 +1,46 @@
 export const examplePipeline = [
   {
+    key: "Example Pipeline-0",
+    program: `# Welcome to ioio.xyz.
+#   This is a data pipeline utility. It allows you to create a series of steps in Python and SQL that
+#   transforms one or more inputs into a final output.
+#   
+#   The first two steps in this example pipeline look like this:
+#   
+#       +-------+     +-------+    +-------+    +-------+    +-------+
+#       |       |     |       |    |       |    |       |    |       |
+#       | Input |-----| *.py  |----| Output|----- *.sql |----|Output |
+#       |       |     |       |    |       |    |       |    |       |
+#       +-------+     +-------+    +-------+    +-------+    +-------+
+#  
+#   On this screen we are at the first step of the pipeline. The input is at the top right. As we
+#   navigate the output of the previous step becomes our input. 
+#  
+#       +-----------+-------+
+#       |           |       |
+#       |           | Input |
+#       |           |       |
+#       +  *.py     +-------+
+#       |           |       |
+#       |           | Output|
+#       |           |       |
+#       +-----------+-------+
+#  
+#   Let's start by running the Python program below to generate its output. 
+#    - Press Ctrl-Enter to run the program. 
+#    - Then press Alt-Right to navigate to the next step in the pipeline.
+#  
+import sys
+w = sys.stdin.readline();
+print("colid" + '\t' + "colval")
+for i in range(0,20):
+  print(str(1) + '\t' + w.strip() +str(i))
+    `,
+    input: ``,
+    output: '',
+    lang: "*.py",
+  },
+  {
     key: "Example Pipeline-1",
     program: `--  Now we're at the second step of our pipeline:
 -- 
@@ -84,6 +125,14 @@ print(l.readline())
 -- 
 --  As in the previous step, the file, 'table.csv', has already been loaded for this example.
 -- 
+-- Now that you've seen the basics, you can start creating pipelines of your own.
+--   - Press Alt-Up to create a new pipeline.
+--   - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
+--   - Use Alt-Up and Alt-Down to navigate between your pipelines.
+--   - Use Alt-A to add a new step to a pipeline.
+--   - Use Alt-D to delete the current step from a pipeline.
+--   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.
+--
 SELECT *
 FROM "table.csv" A 
     `,

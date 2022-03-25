@@ -2,46 +2,25 @@
 // make up a pipeline.
 const defaultData = 
   {
-    key: "Example Pipeline-0",
     program: `# Welcome to ioio.xyz.
-#   This is a data pipeline utility. It allows you to create a series of steps in Python and SQL that
-#   transforms one or more inputs into a final output.
-#   
-#   The first two steps in this example pipeline look like this:
-#   
-#       +-------+     +-------+    +-------+    +-------+    +-------+
-#       |       |     |       |    |       |    |       |    |       |
-#       | Input |-----| *.py  |----| Output|----- *.sql |----|Output |
-#       |       |     |       |    |       |    |       |    |       |
-#       +-------+     +-------+    +-------+    +-------+    +-------+
-#  
-#   On this screen we are at the first step of the pipeline. The input is at the top right. As we
-#   navigate the output of the previous step becomes our input. 
-#  
-#       +-----------+-------+
-#       |           |       |
-#       |           | Input |
-#       |           |       |
-#       +  *.py     +-------+
-#       |           |       |
-#       |           | Output|
-#       |           |       |
-#       +-----------+-------+
-#  
-#   Let's start by running the Python program below to generate its output. 
-#    - Press Ctrl-Enter to run the program. 
-#    - Then press Alt-Right to navigate to the next step in the pipeline.
-#  
+#  Current Pipeline
+#    - Alt-A: add a new step to a pipeline.
+#    - Alt-D: delete the current step from a pipeline.
+#    - Alt-Left: navigate to the previous step in the pipeline.
+#    - Alt-Right: navigate to the next step in the pipeline.
+#    - Ctrl-O: add a file to the current step in the pipeline.
+#  Other Pipelines
+#    - Press Alt-Up to create a new pipeline or navigate to the next pipeline.
+#    - Press Alt-Down to navigate to the previous pipeline.
+#    - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
+
 import sys
 w = sys.stdin.readline();
 print("colid" + '\t' + "colval")
 for i in range(0,20):
   print(str(1) + '\t' + w.strip() +str(i))
     `,
-    input: `jdkljdskaldsajkl
-dsajkldsjakl
-dsajkldsjakldsa
-`,
+    input: ``,
     output: '',
     lang: "*.py",
   };
