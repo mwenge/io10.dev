@@ -35,7 +35,7 @@ async function determineLanguage() {
 async function determineLanguageAndRun() {
   let lang = await determineLanguage();
   // Python is our default
-  if (!lang) lang = cmLangs["*.py"];
+  if (!lang) lang = cmLangs[ps.pipeline.lang()];
   console.log("Running as", lang);
   const result = await lang.run();
 }
@@ -48,7 +48,7 @@ async function evaluateSQL() {
     let buffInput = enc.encode(input);
 
     // Drop the table if it already exists.
-    let tableName = ps.pipeline.currentPipe().id() + ".tsv";
+    let tableName = "input.tsv";
     await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
     // Write the standard input to a TSV table first.
@@ -133,7 +133,8 @@ fileUpload.onchange = function () {
 	var r = new FileReader();
 	r.onload = async function () {
     await localforage.setItem(f.name, r.result);
-    ps.pipeline.currentPipe().addFile(f.name);
+    await ps.pipeline.currentPipe().addFile(f.name);
+    ps.updateAwesomeBar();
 	}
 	r.readAsArrayBuffer(f);
 }

@@ -3,8 +3,35 @@
 const defaultData = 
   {
     key: "Example Pipeline-0",
-    program: `
-#Example Pipeline-0
+    program: `# Welcome to ioio.xyz.
+#   This is a data pipeline utility. It allows you to create a series of steps in Python and SQL that
+#   transforms one or more inputs into a final output.
+#   
+#   The first two steps in this example pipeline look like this:
+#   
+#       +-------+     +-------+    +-------+    +-------+    +-------+
+#       |       |     |       |    |       |    |       |    |       |
+#       | Input |-----| *.py  |----| Output|----- *.sql |----|Output |
+#       |       |     |       |    |       |    |       |    |       |
+#       +-------+     +-------+    +-------+    +-------+    +-------+
+#  
+#   On this screen we are at the first step of the pipeline. The input is at the top right. As we
+#   navigate the output of the previous step becomes our input. 
+#  
+#       +-----------+-------+
+#       |           |       |
+#       |           | Input |
+#       |           |       |
+#       +  *.py     +-------+
+#       |           |       |
+#       |           | Output|
+#       |           |       |
+#       +-----------+-------+
+#  
+#   Let's start by running the Python program below to generate its output. 
+#    - Press Ctrl-Enter to run the program. 
+#    - Then press Alt-Right to navigate to the next step in the pipeline.
+#  
 import sys
 w = sys.stdin.readline();
 print("colid" + '\t' + "colval")

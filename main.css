@@ -133,3 +133,8 @@ body{
   overflow: hidden;
 }
 
+.CodeMirror-cursor {
+  background-color: yellow !important;
+  opacity: 80% !important;
+  width: 2px;
+}

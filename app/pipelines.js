@@ -75,6 +75,7 @@ function openFile() {
   fileUpload.click();
 }
 
+var enc = new TextEncoder(); // always utf-8
 // Initialize the example pipeline if necessary.
 let savedPipelines = localStorage.getItem("pipelines");
 if (!savedPipelines) {
@@ -84,6 +85,14 @@ if (!savedPipelines) {
     let res = await localforage.setItem(p.key, p);
     console.log("set", res);
   });
+  // Add the example file.
+  await localforage.setItem('file.tsv', enc.encode(`fjkdlsjfdkl\tfjkdslfdslk
+  fdsjklfdjfkls\tfjdsklfjkdslfd
+  dsjkldsjak\tdjskaldsjakl`).buffer);
+  await localforage.setItem('table.csv', enc.encode(`id\tvalue
+  fdsjklfdjfkls\tfjdsklfjkdslfd
+  dsjkldsjak\tdjskaldsjakl`).buffer);
+
   let newPipeline = [];
   newPipeline.push({pid: "Example Pipeline 0", lang: "*.py"});
   examplePipeline.forEach(p => {
