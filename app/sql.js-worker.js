@@ -1,4 +1,4 @@
-const worker = new Worker("../3rdparty/sql.js/worker.sql-wasm.js");
+const worker = new Worker("3rdparty/sql.js/worker.sql-wasm.js");
 
 // Open a database
 worker.postMessage({ action: 'open' });
