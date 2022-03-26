@@ -1,5 +1,5 @@
 const worker = new Worker("3rdparty/sql.js/worker.sql-wasm.js");
-
+import { getDataAndSeparator } from "./delimiters.js";
 // Open a database
 worker.postMessage({ action: 'open' });
 
@@ -39,16 +39,18 @@ const asyncCreateTable = (() => {
   return (data, fileName) => {
     // the id could be generated more carefully
     id = (id + 1) % Number.MAX_SAFE_INTEGER;
+    // FIXME: this interface is awful.
+    let [[[d,f]], sep, header] = getDataAndSeparator(data, fileName);
     return new Promise((onSuccess) => {
       callbacks[id] = onSuccess;
       worker.postMessage({
         action: 'createVSVTable',
-        buffer: data,
+        buffer: d,
         fileName: fileName,
-        separator: '09',
+        separator: sep,
         quick: true,
         id: id,
-        header: true,
+        header: header,
       });
     });
   };

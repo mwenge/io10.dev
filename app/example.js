@@ -2,8 +2,9 @@ export const examplePipeline = [
   {
     key: "Example Pipeline-0",
     program: `# Welcome to ioio.xyz.
-#   This is a data pipeline utility. It allows you to create a series of steps in Python and SQL that
-#   transforms one or more inputs into a final output.
+#   This is a data analysis notebook that allows you to mix Python and SQL and structures your work as
+#   a pipeline of inputs and outputs.
+#   
 #   
 #   The first two steps in this example pipeline look like this:
 #   
