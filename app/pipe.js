@@ -2,7 +2,7 @@
 // make up a pipeline.
 const defaultData = 
   {
-    program: `# Welcome to ioio.xyz.
+    program: `# Shortcuts and Tips.
 #  Current Pipeline
 #    - Alt-A: add a new step to a pipeline.
 #    - Alt-D: delete the current step from a pipeline.
