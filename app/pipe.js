@@ -8,6 +8,7 @@ const defaultData =
 #    - Alt-D: delete the current step from a pipeline.
 #    - Alt-Left: navigate to the previous step in the pipeline.
 #    - Alt-Right: navigate to the next step in the pipeline.
+#    - Alt-R: run the entire pipeline from the start.
 #    - Ctrl-O: add a file to the current step in the pipeline.
 #  Other Pipelines
 #    - Press Alt-Up to create a new pipeline or navigate to the next pipeline.

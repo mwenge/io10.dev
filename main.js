@@ -9,7 +9,7 @@ const editor = setUpEditor(ps.pipeline.currentPipe().program());
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, ps.pipeline.currentPipe().input(), true);
-ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun);
+ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun, runPipeline);
 
 // Update the syntax highlighting to suit the language being used.
 setInterval(determineLanguage, 10000);
@@ -21,6 +21,7 @@ const cmLangs = {
 async function determineLanguage() {
   const result = await guessLang.runModel(editor.getValue());
   const fileType = (result.length) ? "*." + result[0].languageId : "";
+  console.log(fileType);
   if (!(fileType in cmLangs)) { return null; }
 
   const lang = cmLangs[fileType];
@@ -31,96 +32,111 @@ async function determineLanguage() {
   return lang;
 }
 
+async function runPipeline() {
+  // Determine what the language is and the run the script.
+  async function run() {
+    let lang = await determineLanguage();
+    // Python is our default
+    if (!lang) lang = cmLangs[ps.pipeline.lang()];
+    console.log("Running as", lang);
+    await lang.run();
+  }
+  let pipe = await ps.moveToFirstPipe();
+  while (pipe) {
+    try {
+      await run();
+    } catch(error) {
+      console.error(`Failed to fetch: ${error}`);
+      break;
+    }
+    pipe = await ps.nextPipe();
+  }
+}
+
 // Determine what the language is and the run the script.
 async function determineLanguageAndRun() {
   let lang = await determineLanguage();
   // Python is our default
   if (!lang) lang = cmLangs[ps.pipeline.lang()];
   console.log("Running as", lang);
-  const result = await lang.run();
+  try {
+    await lang.run();
+  } catch(e) {
+    console.error(`Failed to fetch 1: ${e}`);
+  }
 }
 
 // Helper for running SQL
 var enc = new TextEncoder(); // always utf-8
 async function evaluateSQL() {
-  try {
-    let input = inputWrapper.getValue();
-    let buffInput = enc.encode(input);
+  let input = inputWrapper.getValue();
+  let buffInput = enc.encode(input);
 
-    // Drop the table if it already exists.
-    let tableName = "input.tsv";
-    await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
+  // Drop the table if it already exists.
+  let tableName = "input.tsv";
+  await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
-    // Write the standard input to a TSV table first.
-    const { vsvtable } = await asyncCreateTable(buffInput, tableName);
+  // Write the standard input to a TSV table first.
+  const { vsvtable } = await asyncCreateTable(buffInput, tableName);
 
-    // Load the files associated with the pipe to tables.
-    let files = ps.pipeline.currentPipe().files();
-    await Promise.all(files.map(async (f) => {
-      await asyncRunSQL("DROP TABLE \"" + f + "\";");
+  // Load the files associated with the pipe to tables.
+  let files = ps.pipeline.currentPipe().files();
+  await Promise.all(files.map(async (f) => {
+    await asyncRunSQL("DROP TABLE \"" + f + "\";");
+  }));
+  await Promise.all(files.map(async (f) => {
+    let data = await localforage.getItem(f);
+    await asyncCreateTable(new Uint8Array(data), f);
+  }));
+
+  // Now run the query against it.
+  let program = editor.getValue();
+  const { results, error } = await asyncRunSQL(program);
+
+  // Convert the output into tab-separated rows.
+  if (results) {
+    // First the header row.
+    let output = results[0].columns.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
+    // Then the results row.
+    output = output.concat(results[0].values.flatMap((e) => {
+      return e.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
     }));
-    await Promise.all(files.map(async (f) => {
-      let data = await localforage.getItem(f);
-      await asyncCreateTable(new Uint8Array(data), f);
-    }));
-
-    // Now run the query against it.
-    let program = editor.getValue();
-    const { results, error } = await asyncRunSQL(program);
-
-    // Convert the output into tab-separated rows.
-    if (results) {
-      // First the header row.
-      let output = results[0].columns.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
-      // Then the results row.
-      output = output.concat(results[0].values.flatMap((e) => {
-        return e.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
-      }));
-      output = output.join('');
-      outputWrapper.updateContent(output);
-      let updatedData = {
-        program: program,
-        input: input,
-        output: output,
-      }; 
-      await ps.pipeline.updatePipeData(updatedData);
-    }
-    if (error) {
-      console.log("sqlworker error: ", error);
-      outputWrapper.updateContent(error);
-    }
-  } catch (e) {
-    console.log(
-      `Error in sqlworker at ${e.filename}, Line: ${e.lineno}, ${e.message}`
-    );
+    output = output.join('');
+    outputWrapper.updateContent(output);
+    let updatedData = {
+      program: program,
+      input: input,
+      output: output,
+    }; 
+    await ps.pipeline.updatePipeData(updatedData);
+  }
+  if (error) {
+    console.log("sqlworker error: ", error);
+    outputWrapper.updateContent(error);
+    throw new Error("test error inside sql");
   }
 }
 
 // Helper for running Python
 async function evaluatePython() {
-  try {
-    let input = inputWrapper.getValue();
-    let program = editor.getValue();
-    let files = ps.pipeline.currentPipe().files();
-    const { results, error, output } = await asyncRun(program, input, files);
-    if (output) {
-      outputWrapper.updateContent(output);
-      let updatedData = {
-        program: program,
-        input: input,
-        output: output,
-        files: files,
-      }; 
-      await ps.pipeline.updatePipeData(updatedData);
-    }
-    if (error) {
-      console.log("pyodideWorker error: ", error);
-      outputWrapper.updateContent(error);
-    }
-  } catch (e) {
-    console.log(
-      `Error in pyodideWorker at ${e.filename}, Line: ${e.lineno}, ${e.message}`
-    );
+  let input = inputWrapper.getValue();
+  let program = editor.getValue();
+  let files = ps.pipeline.currentPipe().files();
+  const { results, error, output } = await asyncRun(program, input, files);
+  if (output) {
+    outputWrapper.updateContent(output);
+    let updatedData = {
+      program: program,
+      input: input,
+      output: output,
+      files: files,
+    }; 
+    await ps.pipeline.updatePipeData(updatedData);
+  }
+  if (error) {
+    console.log("pyodideWorker error: ", error);
+    outputWrapper.updateContent(error);
+    throw new Error("test error inside python");
   }
 }
 

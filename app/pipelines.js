@@ -32,9 +32,15 @@ async function previousPipe() {
   let pipe = await pipeline.moveToPreviousPipe();
   updateDisplayedPipe(pipe);
 }
-async function nextPipe() {
+export async function moveToFirstPipe() {
+  let pipe = await pipeline.moveToFirstPipe();
+  updateDisplayedPipe(pipe);
+  return pipe;
+}
+export async function nextPipe() {
   let pipe = await pipeline.moveToNextPipe();
   updateDisplayedPipe(pipe);
+  return pipe;
 }
 async function nextPipeline() {
   if (currentPipelineIndex < pipelines.length - 1) {
@@ -112,7 +118,7 @@ updateAwesomeBar();
 let editor = null;
 let inputWrapper = null;
 let outputWrapper = null;
-export function setUpPanes(e, i, o, determineLanguageAndRun) {
+export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline) {
   editor = e;
   inputWrapper = i;
   outputWrapper = o;
@@ -126,6 +132,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun) {
         "Alt-Up": nextPipeline,
         "Alt-Down": prevPipeline,
         "Alt-Q": deletePipeline,
+        "Alt-R": runPipeline,
         "Ctrl-O": openFile,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",

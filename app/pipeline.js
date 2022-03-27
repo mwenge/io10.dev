@@ -73,6 +73,12 @@ async function getPipeline(id) {
       pipe = await this.updateCurrentPipeInfo(current);
       return pipe;
     },
+    moveToFirstPipe: async function() {
+      current = 0;
+      pipe = await this.updateCurrentPipeInfo(current);
+      nextPipe = await this.getNextPipe(current);
+      return pipe;
+    },
     moveToNextPipe: async function() {
       if (current == pipeline.length - 1) {
         return null;
