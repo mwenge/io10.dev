@@ -2,6 +2,7 @@ import {setUpEditor} from "./app/program.js";
 import {setUpOutput} from "./app/output.js";
 import * as ps from "./app/pipelines.js";
 import { asyncRun } from "./app/pyodide-py-worker.js";
+import { asyncRunJS } from "./app/duktape.js";
 import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
 
 // Set up the editor.
@@ -17,6 +18,8 @@ const guessLang = new GuessLang();
 const cmLangs = {
   "*.py" : { syntax: "text/x-python", run: evaluatePython },
   "*.sql" : { syntax: "text/x-mysql", run: evaluateSQL },
+  "*.js" : { syntax: "text/x-javascript", run: evaluateJS },
+  "*.ts" : { syntax: "text/x-javascript", run: evaluateJS },
 };
 async function determineLanguage() {
   const result = await guessLang.runModel(editor.getValue());
@@ -138,6 +141,29 @@ async function evaluatePython() {
     console.log("pyodideWorker error: ", error);
     outputWrapper.updateContent(error);
     throw new Error("test error inside python");
+  }
+}
+
+// Helper for running Javascript
+async function evaluateJS() {
+  let input = inputWrapper.getValue();
+  let program = editor.getValue();
+  let files = ps.pipeline.currentPipe().files();
+  const { results, error, output } = await asyncRunJS(program);
+  if (output) {
+    outputWrapper.updateContent(output);
+    let updatedData = {
+      program: program,
+      input: input,
+      output: output,
+      files: files,
+    }; 
+    await ps.pipeline.updatePipeData(updatedData);
+  }
+  if (error) {
+    console.log("jsWorker error: ", error);
+    outputWrapper.updateContent(error +'\n');
+    throw new Error("test error inside js");
   }
 }
 
