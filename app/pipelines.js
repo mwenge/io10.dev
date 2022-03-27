@@ -67,6 +67,7 @@ async function prevPipeline() {
   updateDisplayedPipe(pipeline.currentPipe());
 }
 async function deletePipeline() {
+  if (!currentPipelineIndex) return;
   console.log("deleting");
   pipelines.splice(currentPipelineIndex, 1);
   pipelinePrettyNames.splice(currentPipelineIndex, 1);

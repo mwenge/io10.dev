@@ -107,6 +107,7 @@ async function evaluateSQL() {
       program: program,
       input: input,
       output: output,
+      files: files,
     }; 
     await ps.pipeline.updatePipeData(updatedData);
   }
