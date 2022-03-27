@@ -13,24 +13,25 @@ const inputWrapper = setUpOutput(input, ps.pipeline.currentPipe().input(), true)
 ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun, runPipeline);
 
 // Update the syntax highlighting to suit the language being used.
-setInterval(determineLanguage, 10000);
+// Detection is a bit off sometimes so we use workarounds.
+setInterval(determineLanguage, 2000);
 const guessLang = new GuessLang();
 const cmLangs = {
-  "*.py" : { syntax: "text/x-python", run: evaluatePython },
-  "*.sql" : { syntax: "text/x-mysql", run: evaluateSQL },
-  "*.js" : { syntax: "text/x-javascript", run: evaluateJS },
-  "*.ts" : { syntax: "text/x-javascript", run: evaluateJS },
+  "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython },
+  "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
+  "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
+  "*.cs" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
+  "*.ts" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
 };
 async function determineLanguage() {
   const result = await guessLang.runModel(editor.getValue());
   const fileType = (result.length) ? "*." + result[0].languageId : "";
-  console.log(fileType);
   if (!(fileType in cmLangs)) { return null; }
 
   const lang = cmLangs[fileType];
   editor.setOption("mode", lang.syntax);
-  if (ps.pipeline.lang() == lang) return;
-  ps.pipeline.updateLanguage(fileType);
+  if (ps.pipeline.lang() == lang.lang) return;
+  ps.pipeline.updateLanguage(lang.lang);
   ps.updateAwesomeBar();
   return lang;
 }

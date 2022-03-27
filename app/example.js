@@ -2,8 +2,8 @@ export const examplePipeline = [
   {
     key: "Example Pipeline-0",
     program: `# Welcome to ioio.xyz.
-#   This is a data analysis notebook that allows you to mix Python and SQL and structure your work as
-#   a pipeline of inputs and outputs.
+#   This is a data analysis notebook that allows you to mix Python, Javascript and SQL and structure
+#   your work as a pipeline of inputs and outputs.
 #   
 #   The first two steps in this example pipeline look like this:
 #   
@@ -135,11 +135,44 @@ print(l.readline())
 --
 SELECT *
 FROM "table.csv" A 
-    `,
+`,
     input: ``,
     output: '',
     files: ['table.csv'],
     lang: "*.sql",
+  },
+  {
+    key: "Example Pipeline-4",
+    program: `// Welcome to the fifth step in our pipeline.
+//  
+//  This time we're using Javascript.
+// 
+// 
+//                              +--------------------------------------+  
+//      +-------+     +-------+ |  +-------+    +-------+    +-------+ |
+//      |       |     |       | |  |       |    |       |    |       | |
+//      | Input |-----| *.sql |----| Output|----| *.js  |----|Output | |
+//      |       |     |       | |  |       |    |       |    |       | |
+//      +-------+     +-------+ |  +-------+    +-------+    +-------+ |
+//                              +--------------------------------------+
+// 
+// 
+// Now that you've seen the basics, you can start creating pipelines of your own.
+//   - Press Alt-Up to create a new pipeline.
+//   - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
+//   - Use Alt-Up and Alt-Down to navigate between your pipelines.
+//   - Use Alt-A to add a new step to a pipeline.
+//   - Use Alt-D to delete the current step from a pipeline.
+//   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.
+var l = [1,2,3,4,5,6];
+for (var k = 0; k < l.length; k++) {
+    print(2,'\t',l);
+}
+`,
+    input: ``,
+    output: '',
+    files: [],
+    lang: "*.js",
   },
 ];
 

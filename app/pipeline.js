@@ -29,6 +29,7 @@ async function getPipeline(id) {
       let pid = pipeline[current].pid;
       localforage.removeItem(pid);
       pipeline.splice(current,1);
+      localStorage.setItem(id, JSON.stringify(pipeline));
       if (current) current--;
       pid = pipeline[current].pid;
       pipe = await getPipe(pid);
