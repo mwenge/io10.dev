@@ -68,7 +68,6 @@ async function prevPipeline() {
 }
 async function deletePipeline() {
   if (!currentPipelineIndex) return;
-  console.log("deleting");
   pipelines.splice(currentPipelineIndex, 1);
   pipelinePrettyNames.splice(currentPipelineIndex, 1);
   localStorage.setItem("pipelines", JSON.stringify(pipelines));

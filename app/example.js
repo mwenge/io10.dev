@@ -156,17 +156,18 @@ FROM "table.csv" A
 //      +-------+     +-------+ |  +-------+    +-------+    +-------+ |
 //                              +--------------------------------------+
 // 
+// The output from the previous step is stored in an array of strings called 'input'.
+// We reference it below in the loop.
 // 
 // Now that you've seen the basics, you can start creating pipelines of your own.
+//   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.
 //   - Press Alt-Up to create a new pipeline.
-//   - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
 //   - Use Alt-Up and Alt-Down to navigate between your pipelines.
 //   - Use Alt-A to add a new step to a pipeline.
-//   - Use Alt-D to delete the current step from a pipeline.
-//   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.
 var l = [1,2,3,4,5,6];
 for (var k = 0; k < l.length; k++) {
     print(2,'\t',l);
+    print(input[k]);
 }
 `,
     input: ``,

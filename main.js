@@ -20,12 +20,16 @@ const cmLangs = {
   "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython },
   "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
   "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
-  "*.cs" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
-  "*.ts" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
 };
 async function determineLanguage() {
-  const result = await guessLang.runModel(editor.getValue());
+  // Strip comments, which confuse guesslang.
+  let program = editor.getValue()
+    .split('\n')
+    .filter(x => !x.startsWith('--') && !x.startsWith('#') && !x.startsWith('//'))
+    .join('\n');
+  const result = await guessLang.runModel(program);
   const fileType = (result.length) ? "*." + result[0].languageId : "";
+  console.log(fileType);
   if (!(fileType in cmLangs)) { return null; }
 
   const lang = cmLangs[fileType];
@@ -150,7 +154,7 @@ async function evaluateJS() {
   let input = inputWrapper.getValue();
   let program = editor.getValue();
   let files = ps.pipeline.currentPipe().files();
-  const { results, error, output } = await asyncRunJS(program);
+  const { results, error, output } = await asyncRunJS(input, program);
   if (output) {
     outputWrapper.updateContent(output);
     let updatedData = {

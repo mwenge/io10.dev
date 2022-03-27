@@ -1,5 +1,5 @@
 
-export function asyncRunJS(code) {
+export function asyncRunJS(input, code) {
 	let output = '';
 	if (typeof Duktape !== 'object') {
 		throw new Error('initialization failed (Duktape is undefined)');
@@ -10,9 +10,10 @@ export function asyncRunJS(code) {
 	Duktape.printHandler = function(msg) {
 		output += msg + '\n';
 	}
+  let input_array = 'var input = ' + JSON.stringify(input.split('\n')) + ';';
   let res = null;
   try {
-  	res = Duktape.dukweb_eval(code);
+  	res = Duktape.dukweb_eval(input_array + code);
   } catch(e) {
     output = e;
   }
