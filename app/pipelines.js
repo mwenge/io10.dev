@@ -137,6 +137,23 @@ export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline) {
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });
+  [inputWrapper, outputWrapper].forEach(x => {
+    let extraKeys = x.editor().getOption("extraKeys");
+    x.editor().setOption("extraKeys", {
+        ...extraKeys,
+        "Ctrl-Enter": determineLanguageAndRun,
+        "Alt-Right": nextPipe,
+        "Alt-Left": previousPipe,
+        "Alt-A": insertAfter,
+        "Alt-B": insertBefore,
+        "Alt-D": deleteCurrent,
+        "Alt-Up": nextPipeline,
+        "Alt-Down": prevPipeline,
+        "Alt-Q": deletePipeline,
+        "Alt-R": runPipeline,
+        "Ctrl-O": openFile,
+      });
+  });
 }
 
 // Handle changes to the current pipeline's pretty name.

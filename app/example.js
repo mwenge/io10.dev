@@ -166,8 +166,7 @@ FROM "table.csv" A
 //   - Use Alt-A to add a new step to a pipeline.
 var l = [1,2,3,4,5,6];
 for (var k = 0; k < l.length; k++) {
-    print(2,'\t',l);
-    print(input[k]);
+    print(3, input[k]);
 }
 `,
     input: ``,

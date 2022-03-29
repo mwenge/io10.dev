@@ -25,6 +25,10 @@ function contentChunker(content, chunkLength) {
   let chunkedContent = [chunkIt.next().value];
   let current = 0;
   const chunkIterator = {
+    first: function() {
+      current = [0];
+      return chunkedContent[current];
+    },
     next: function() {
       if (current < chunkedContent.length - 1) {
         return chunkedContent[++current];
@@ -73,6 +77,13 @@ function setUpOutput(div, c = "Output appears here", editable) {
     selectedTheme = "3024-night";
   }
 
+  function first() {
+    if (isEditable) return;
+    let currentChunk = chunker.first();
+    if (!currentChunk) return;
+    editor.setValue(currentChunk);
+    editor.setOption("firstLineNumber", chunker.currentFirstLine());
+  }
   function next() {
     if (isEditable) return;
     let currentChunk = chunker.next();
@@ -89,7 +100,6 @@ function setUpOutput(div, c = "Output appears here", editable) {
   }
   // Add syntax highlihjting to the textarea
   let editor = CodeMirror.fromTextArea(commandsElm, {
-    mode: 'text/x-mysql',
     viewportMargin: Infinity,
     indentWithTabs: true,
     smartIndent: true,
@@ -100,12 +110,16 @@ function setUpOutput(div, c = "Output appears here", editable) {
     extraKeys: {
       "Shift-Tab": false,
       "Ctrl-Space": "autocomplete",
+      "Ctrl-Home": first,
       "PageDown": next,
       "PageUp": previous,
     }
   });
 
   const output = {
+    editor: function() {
+      return editor;
+    },
     getDoc: function() {
       return editor.getDoc();
     },
@@ -126,6 +140,7 @@ function setUpOutput(div, c = "Output appears here", editable) {
       let currentChunk = chunker.currentChunk();
       if (!currentChunk) currentChunk = "";
       editor.setValue(currentChunk);
+      editor.setOption("firstLineNumber", chunker.currentFirstLine());
     },
   }
   return output;

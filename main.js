@@ -29,7 +29,6 @@ async function determineLanguage() {
     .join('\n');
   const result = await guessLang.runModel(program);
   const fileType = (result.length) ? "*." + result[0].languageId : "";
-  console.log(fileType);
   if (!(fileType in cmLangs)) { return null; }
 
   const lang = cmLangs[fileType];
@@ -46,7 +45,7 @@ async function runPipeline() {
     let lang = await determineLanguage();
     // Python is our default
     if (!lang) lang = cmLangs[ps.pipeline.lang()];
-    console.log("Running as", lang);
+    outputWrapper.editor().getDoc().setValue("Running..");
     await lang.run();
   }
   let pipe = await ps.moveToFirstPipe();
@@ -68,6 +67,7 @@ async function determineLanguageAndRun() {
   if (!lang) lang = cmLangs[ps.pipeline.lang()];
   console.log("Running as", lang);
   try {
+    outputWrapper.editor().getDoc().setValue("Running..");
     await lang.run();
   } catch(e) {
     console.error(`Failed to fetch 1: ${e}`);
