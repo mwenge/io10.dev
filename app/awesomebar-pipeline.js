@@ -32,6 +32,7 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files) {
   d.style.background = cv[0];
   c.appendChild(d);
 
+  let lastChild = null;
   pl.forEach((p,i) => {
     let d = document.createElement("div"); 
     d.className = "shortcut-tip";
@@ -54,8 +55,10 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files) {
     d.style.borderLeftColor = cv[i % colorWheelLength];
     d.style.background = cv[(i % colorWheelLength) + 1];
     c.appendChild(d);
+    lastChild = d;
   });
-  updateTips();
+  if (lastChild)
+    lastChild.style.background = 'black';
 }
 
 export {createColorValueArray, updatePipelineOnAwesomeBar};

@@ -39,7 +39,8 @@
   bottom: 0;
   width: 100%;
   font-family: 'osd';
-  font-size: 14px;
+  font-size: 13px;
+  max-height: 13px;
 }
 /* Copied from http://aleclownes.com/2017/02/01/crt-display.html */
 .title::before {
@@ -66,6 +67,7 @@
   height: 0; 
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
+  vertical-align: bottom;
 }
 .arrow-left {
   display: inline-block;
