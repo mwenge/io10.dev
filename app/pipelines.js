@@ -17,6 +17,7 @@ function updateDisplayedPipe(pipe) {
   updateAwesomeBar();
 }
 async function insertBefore() {
+  pipeline.currentPipe().updateProgram(editor.getValue());
   let pipe = await pipeline.insertBefore();
   updateDisplayedPipe(pipe);
 }
@@ -25,24 +26,33 @@ async function deleteCurrent() {
   updateDisplayedPipe(pipe);
 }
 async function insertAfter() {
+  pipeline.currentPipe().updateProgram(editor.getValue());
   let pipe = await pipeline.insertAfter();
   updateDisplayedPipe(pipe);
 }
 async function previousPipe() {
+  pipeline.currentPipe().updateProgram(editor.getValue());
   let pipe = await pipeline.moveToPreviousPipe();
   updateDisplayedPipe(pipe);
 }
 export async function moveToFirstPipe() {
+  pipeline.currentPipe().updateProgram(editor.getValue());
   let pipe = await pipeline.moveToFirstPipe();
   updateDisplayedPipe(pipe);
   return pipe;
 }
 export async function nextPipe() {
+  if (!pipeline.currentPipeIndex())
+    pipeline.currentPipe().updateInput(inputWrapper.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue());
   let pipe = await pipeline.moveToNextPipe();
   updateDisplayedPipe(pipe);
   return pipe;
 }
 async function nextPipeline() {
+  if (!pipeline.currentPipeIndex())
+    pipeline.currentPipe().updateInput(inputWrapper.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue());
   if (currentPipelineIndex < pipelines.length - 1) {
     currentPipelineIndex++;
     pipeline = await getPipeline(pipelines[currentPipelineIndex]);
@@ -59,6 +69,9 @@ async function nextPipeline() {
   updateDisplayedPipe(pipeline.currentPipe());
 }
 async function prevPipeline() {
+  if (!pipeline.currentPipeIndex())
+    pipeline.currentPipe().updateInput(inputWrapper.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue());
   if (!currentPipelineIndex) {
     return;
   }

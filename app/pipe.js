@@ -65,6 +65,10 @@ async function getPipe(id, input="", program = defaultData.program, output = "")
       }
       await localforage.setItem(id, data);
     },
+    updateProgram: async function(p) {
+      data.program = p;
+      await localforage.setItem(id, data);
+    },
     updateInput: async function(p) {
       data.input = p;
       await localforage.setItem(id, data);
