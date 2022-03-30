@@ -2,17 +2,23 @@
 // make up a pipeline.
 const defaultData = 
   {
-    program: `# Shortcuts and Tips.
+    program: `# Keyboard Commands.
 #  Current Pipeline
-#    - Alt-A: add a new step to a pipeline.
-#    - Alt-D: delete the current step from a pipeline.
-#    - Alt-Left: navigate to the previous step in the pipeline.
-#    - Alt-Right: navigate to the next step in the pipeline.
-#    - Alt-R: run the entire pipeline from the start.
-#    - Ctrl-O: add a file to the current step in the pipeline.
+#    - Ctrl-Enter: Run the current step.
+#    - Alt-R: Run the entire pipeline from the start.
+#    - Alt-Left: Navigate to the previous step in the pipeline.
+#    - Alt-Right: Navigate to the next step in the pipeline.
+#    - Alt-A: Add a new step to a pipeline.
+#    - Alt-D: Delete the current step from a pipeline.
+#    - Ctrl-O: Add a file to the current step in the pipeline.
+#
+#  Input/Output
+#    - PageUp/PageDown: Page up and down through input/output.
+#    - Ctrl-Home: Move back to start of input/output
+#
 #  Other Pipelines
-#    - Press Alt-Up to create a new pipeline or navigate to the next pipeline.
-#    - Press Alt-Down to navigate to the previous pipeline.
+#    - Alt-Up: Create a new pipeline or navigate to the next pipeline.
+#    - Alt-Down: Navigate to the previous pipeline.
 #    - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
 
 import sys
