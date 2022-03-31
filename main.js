@@ -1,7 +1,7 @@
 import {setUpEditor} from "./app/program.js";
 import {setUpOutput} from "./app/output.js";
 import * as ps from "./app/pipelines.js";
-import { asyncRun } from "./app/pyodide-py-worker.js";
+import { asyncRun, interruptPythonExecution } from "./app/pyodide-py-worker.js";
 import { asyncRunJS } from "./app/duktape.js";
 import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
 
@@ -10,14 +10,15 @@ const editor = setUpEditor(ps.pipeline.currentPipe().program());
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, ps.pipeline.currentPipe().input(), true);
-ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun, runPipeline);
+ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun,
+              runPipeline, interruptExecution);
 
 // Update the syntax highlighting to suit the language being used.
 // Detection is a bit off sometimes so we use workarounds.
 setInterval(determineLanguage, 2000);
 const guessLang = new GuessLang();
 const cmLangs = {
-  "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython },
+  "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
   "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
   "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
 };
@@ -58,6 +59,15 @@ async function runPipeline() {
     }
     pipe = await ps.nextPipe();
   }
+}
+
+// Determine what the language is and the run the script.
+async function interruptExecution() {
+  let lang = await determineLanguage();
+  // Python is our default
+  if (!lang) lang = cmLangs[ps.pipeline.lang()];
+  if (!lang.interrupt) return;
+  lang.interrupt();
 }
 
 // Determine what the language is and the run the script.

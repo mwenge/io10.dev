@@ -3,6 +3,17 @@ const pyodideWorker = new Worker("./app/pyodide-worker.js");
 const callbacks = {};
 let textOutput = "";
 
+let interruptBuffer = new Uint8Array(1);
+if (crossOriginIsolated) {
+ 	console.log("cross origin isolated");
+	interruptBuffer = new Uint8Array(new SharedArrayBuffer(1));
+	pyodideWorker.postMessage({ cmd: "setInterruptBuffer", interruptBuffer });
+}
+
+function interruptPythonExecution() {
+	interruptBuffer[0] = 2;
+}
+
 pyodideWorker.onmessage = (event) => {
   if (event.data.text) {
       textOutput += event.data.text + '\n';
@@ -36,4 +47,4 @@ const asyncRun = (() => {
   };
 })();
 
-export { asyncRun };
+export { asyncRun, interruptPythonExecution };

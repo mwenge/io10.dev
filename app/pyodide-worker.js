@@ -32,6 +32,13 @@ let pyodideReadyPromise = loadPyodideAndPackages();
 self.onmessage = async (event) => {
   // make sure loading is done
   await pyodideReadyPromise;
+
+	// Handle Ctrl-C
+	if (event.data.cmd === "setInterruptBuffer") {
+		self.pyodide.setInterruptBuffer(event.data.interruptBuffer);
+		return;
+	}
+
   // Don't bother yet with this line, suppose our API is built in such a way:
   const { id, python, stdin, files } = event.data;
   // Load all the files, and wait until they're all loaded.

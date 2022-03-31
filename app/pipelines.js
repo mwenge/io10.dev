@@ -131,7 +131,7 @@ updateAwesomeBar();
 let editor = null;
 let inputWrapper = null;
 let outputWrapper = null;
-export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline) {
+export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interruptExecution) {
   editor = e;
   inputWrapper = i;
   outputWrapper = o;
@@ -147,6 +147,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline) {
         "Alt-Q": deletePipeline,
         "Alt-R": runPipeline,
         "Ctrl-O": openFile,
+        "Ctrl-C": interruptExecution,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });
