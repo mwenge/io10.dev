@@ -71,6 +71,7 @@ async function determineLanguageAndRun() {
     await lang.run();
   } catch(e) {
     console.error(`Failed to fetch 1: ${e}`);
+    outputWrapper.editor().replaceRange('\n' + e, {line: Infinity});
   }
 }
 
@@ -85,6 +86,7 @@ async function evaluateSQL() {
   await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
   // Write the standard input to a TSV table first.
+  outputWrapper.editor().getDoc().setValue("Loading input as a table..");
   const { vsvtable } = await asyncCreateTable(buffInput, tableName);
 
   // Load the files associated with the pipe to tables.
@@ -93,12 +95,14 @@ async function evaluateSQL() {
     await asyncRunSQL("DROP TABLE \"" + f + "\";");
   }));
   await Promise.all(files.map(async (f) => {
+    outputWrapper.editor().getDoc().setValue("Loading " + f + " as a table..");
     let data = await localforage.getItem(f);
     await asyncCreateTable(new Uint8Array(data), f);
   }));
 
   // Now run the query against it.
   let program = editor.getValue();
+  outputWrapper.editor().getDoc().setValue("Running Query..");
   const { results, error } = await asyncRunSQL(program);
 
   // Convert the output into tab-separated rows.
@@ -122,7 +126,7 @@ async function evaluateSQL() {
   if (error) {
     console.log("sqlworker error: ", error);
     outputWrapper.updateContent(error);
-    throw new Error("test error inside sql");
+    throw new Error("=> Error occurred while running SQL.");
   }
 }
 
@@ -145,7 +149,7 @@ async function evaluatePython() {
   if (error) {
     console.log("pyodideWorker error: ", error);
     outputWrapper.updateContent(error);
-    throw new Error("test error inside python");
+    throw new Error("=> Error occured while running Python");
   }
 }
 
