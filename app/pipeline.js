@@ -17,7 +17,6 @@ async function getPipeline(id) {
 
   let current = 0;
   let pipe = null;
-  let nextPipe = null;
   const rangeIterator = {
     lang: function() {
       return pipeline[current].lang;
@@ -37,9 +36,6 @@ async function getPipeline(id) {
       if (current) current--;
       pid = pipeline[current].pid;
       pipe = await getPipe(previousPipeID(), pid);
-      nextPipe = await this.getNextPipe(current);
-      if (!nextPipe) return pipe;
-      await nextPipe.updateInput(pipe.output());
       return pipe
     },
     updateCurrentPipeInfo: async function(cur) {
@@ -97,13 +93,11 @@ async function getPipeline(id) {
       let np = await getPipe(previousPipeID(), pid);
       return np;
     },
+    updateInput: async function(data) {
+      await pipe.updateInput(data);
+    },
     updatePipeData: async function(data) {
       await pipe.updateData(data);
-      nextPipe = await this.getNextPipe(current);
-      if (!nextPipe) {
-        return;
-      }
-      await nextPipe.updateInput(data.output);
       return;
     },
     currentPipe: function() {

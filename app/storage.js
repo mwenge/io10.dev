@@ -3,7 +3,6 @@ let zip = (...rows) => [...rows[0]].map((_,c) => rows.map(row => row[c]));
 let cachedData = new Map();
 export async function getData(id) {
   if (cachedData.has(id+"-program")) {
-    console.log("getting cached data", id);
     let p = cachedData.get(id+"-program");
     let i = cachedData.get(id+"-input");
     let o = cachedData.get(id+"-output");
@@ -14,7 +13,6 @@ export async function getData(id) {
   if (!metadata) {
     return null;
   }
-  console.log("cache miss", id);
   cachedData.set(id+"-metadata", metadata);
   let program = await localforage.getItem(id+"-program");
   cachedData.set(id+"-program", program);
@@ -27,10 +25,8 @@ export async function getData(id) {
 
 // Intentionally fire and forget.
 export async function setData(id, data) {
-  console.trace();
   setMetadata(id, { files: data.files, lang: data.lang });
   setProgram(id, data.program);
-  setInput(id, data.input);
   setOutput(id, data.output);
 }
 export async function setMetadata(id, p) {
@@ -42,6 +38,7 @@ export async function setProgram(id, p) {
   localforage.setItem(id+"-program", p);
 }
 export async function setInput(id, p) {
+  console.trace(id);
   cachedData.set(id+"-input", p);
   localforage.setItem(id+"-input", p);
 }

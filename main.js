@@ -76,6 +76,12 @@ async function determineLanguageAndRun() {
   // Python is our default
   if (!lang) lang = cmLangs[ps.pipeline.lang()];
   console.log("Running as", lang);
+
+  // If this is the first pipe in the pipeline, make sure the
+  // input is up to date.
+  if (!ps.pipeline.currentPipeIndex()) {
+    ps.pipeline.updateInput(inputWrapper.getValue());
+  }
   try {
     outputWrapper.editor().getDoc().setValue("Running..");
     await lang.run();
@@ -88,7 +94,7 @@ async function determineLanguageAndRun() {
 // Helper for running SQL
 var enc = new TextEncoder(); // always utf-8
 async function evaluateSQL() {
-  let input = inputWrapper.getValue();
+  let input = await ps.pipeline.currentPipe().input();
   let buffInput = enc.encode(input);
 
   // Drop the table if it already exists.
@@ -127,7 +133,6 @@ async function evaluateSQL() {
     outputWrapper.updateContent(output);
     let updatedData = {
       program: program,
-      input: input,
       output: output,
       files: files,
     }; 
@@ -142,7 +147,7 @@ async function evaluateSQL() {
 
 // Helper for running Python
 async function evaluatePython() {
-  let input = inputWrapper.getValue();
+  let input = await ps.pipeline.currentPipe().input();
   let program = editor.getValue();
   let files = ps.pipeline.currentPipe().files();
   const { results, error, output } = await asyncRun(program, input, files);
@@ -150,7 +155,6 @@ async function evaluatePython() {
     outputWrapper.updateContent(output);
     let updatedData = {
       program: program,
-      input: input,
       output: output,
       files: files,
     }; 
@@ -165,7 +169,7 @@ async function evaluatePython() {
 
 // Helper for running Javascript
 async function evaluateJS() {
-  let input = inputWrapper.getValue();
+  let input = await ps.pipeline.currentPipe().input();
   let program = editor.getValue();
   let files = ps.pipeline.currentPipe().files();
   const { results, error, output } = await asyncRunJS(input, program);
@@ -173,7 +177,6 @@ async function evaluateJS() {
     outputWrapper.updateContent(output);
     let updatedData = {
       program: program,
-      input: input,
       output: output,
       files: files,
     }; 
