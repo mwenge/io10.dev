@@ -9,12 +9,12 @@ export function updateAwesomeBar() {
     pipeline.currentPipe().files()); 
 }
 // Helper functions to navigate pipes and pipelines.
-function updateDisplayedPipe(pipe) {
+async function updateDisplayedPipe(pipe) {
   if (!pipe) { return; }
   editor.getDoc().setValue(pipe.program());
-  inputWrapper.updateContent(pipe.input(), pipeline.currentPipeIndex() == 0);
   outputWrapper.updateContent(pipe.output());
   updateAwesomeBar();
+  inputWrapper.updateContent(await pipe.input(), pipeline.currentPipeIndex() == 0);
 }
 async function insertBefore() {
   pipeline.currentPipe().updateProgram(editor.getValue());
@@ -101,7 +101,10 @@ if (!savedPipelines) {
   localStorage.setItem("pipelines", JSON.stringify(["Example Pipeline"]));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(["Example Pipeline"]));
   await Promise.all(examplePipeline.map(async (p) => {
-    await localforage.setItem(p.key, p);
+    await localforage.setItem(p.key+"-input", p.input);
+    await localforage.setItem(p.key+"-program", p.program);
+    await localforage.setItem(p.key+"-output", p.output);
+    await localforage.setItem(p.key+"-metadata", { files: p.files, lang: p.lang });
   }));
   // Add the example file.
   await localforage.setItem('file.tsv', enc.encode(`fjkdlsjfdkl\tfjkdslfdslk

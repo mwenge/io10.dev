@@ -9,7 +9,7 @@ import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
-const inputWrapper = setUpOutput(input, ps.pipeline.currentPipe().input(), true);
+const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(), true);
 ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun,
               runPipeline, interruptExecution);
 

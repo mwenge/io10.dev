@@ -1,5 +1,6 @@
 // A pipe is a program/script with its input and output. A sequence of pipes
 // make up a pipeline.
+import * as storage from "./storage.js";
 const defaultData = 
   {
     program: `# Keyboard Commands.
@@ -30,20 +31,25 @@ for i in range(0,20):
     input: ``,
     output: '',
     lang: "*.py",
+    files: [],
   };
 
-async function getPipe(id, input="", program = defaultData.program, output = "") {
-  let data = await localforage.getItem(id);
+async function getPipe(prevID, id) {
+  let data = await storage.getData(id);
   if (!data) {
     data = {...defaultData};
-    await localforage.setItem(id, data);
+    storage.setData(id, data);
   }
   const rangeIterator = {
     program: function() {
       return data.program;
     },
-    input: function() {
-      return data.input;
+    input: async function() {
+      if (!prevID) {
+        return data.input;
+      }
+      let o = await storage.getData(prevID);
+      return o.output;
     },
     output: function() {
       return data.output;
@@ -63,19 +69,22 @@ async function getPipe(id, input="", program = defaultData.program, output = "")
       } else {
         data.files.push(f);
       }
-      await localforage.setItem(id, data);
+      storage.setMetadata(id, { files: data.files, lang: data.lang });
+    },
+    delete: async function(p) {
+      storage.deleteData(id);
     },
     updateProgram: async function(p) {
       data.program = p;
-      await localforage.setItem(id, data);
+      storage.setProgram(id, data.program);
     },
     updateInput: async function(p) {
       data.input = p;
-      await localforage.setItem(id, data);
+      storage.setInput(id, data.input);
     },
     updateData: async function(p) {
       data = {...p};
-      await localforage.setItem(id, data);
+      storage.setData(id, data);
     },
   };
   return rangeIterator;
