@@ -48,10 +48,11 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: black;
+  background-color: white;
+  padding: 5px;
   font-family: 'osd';
   font-size: 16px;
-  color: white;
+  color: black;
   z-index: 999999;
   text-transform: uppercase;
 }

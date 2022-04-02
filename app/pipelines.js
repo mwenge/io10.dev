@@ -31,17 +31,20 @@ async function insertAfter() {
   updateDisplayedPipe(pipe);
 }
 async function previousPipe() {
+  editor.getDoc().clearHistory();
   pipeline.currentPipe().updateProgram(editor.getValue());
   let pipe = await pipeline.moveToPreviousPipe();
   updateDisplayedPipe(pipe);
 }
 export async function moveToFirstPipe() {
+  editor.getDoc().clearHistory();
   pipeline.currentPipe().updateProgram(editor.getValue());
   let pipe = await pipeline.moveToFirstPipe();
   updateDisplayedPipe(pipe);
   return pipe;
 }
 export async function nextPipe() {
+  editor.getDoc().clearHistory();
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
   pipeline.currentPipe().updateProgram(editor.getValue());
@@ -50,6 +53,7 @@ export async function nextPipe() {
   return pipe;
 }
 async function nextPipeline() {
+  editor.getDoc().clearHistory();
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
   pipeline.currentPipe().updateProgram(editor.getValue());
