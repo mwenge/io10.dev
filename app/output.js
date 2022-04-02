@@ -104,8 +104,9 @@ function setUpOutput(div, c = "Output appears here", editable) {
     indentWithTabs: true,
     smartIndent: true,
     lineNumbers: true,
-    lineWrapping: true,
+    lineWrapping: false,
     matchBrackets: true,
+    scrollbarStyle: 'simple',
     theme: selectedTheme,
     extraKeys: {
       "Shift-Tab": false,

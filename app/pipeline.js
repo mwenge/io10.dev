@@ -30,11 +30,12 @@ async function getPipeline(id) {
       await this.updateCurrentPipeInfo(cur);
     },
     deleteCurrent: async function() {
+      if (pipeline.length == 1) return pipe;
       pipe.delete();
       pipeline.splice(current,1);
       localStorage.setItem(id, JSON.stringify(pipeline));
       if (current) current--;
-      pid = pipeline[current].pid;
+      let pid = pipeline[current].pid;
       pipe = await getPipe(previousPipeID(), pid);
       return pipe
     },

@@ -194,22 +194,24 @@ async function evaluatePython() {
   let program = runningPipe.program();
   let files = runningPipe.files();
   const { results, error, output } = await asyncRun(program, input, files);
-  if (output) {
-    let updatedData = {
-      program: program,
-      output: output,
-      files: files,
-    }; 
-    await runningPipe.updateData(updatedData);
+  let stdout = '';
+  if (error) {
+    stdout += error;
   }
+  if (results) {
+    stdout += results;
+  }
+  if (output) {
+    stdout += output;
+  }
+  let updatedData = {
+    program: program,
+    output: stdout,
+    files: files,
+  }; 
+  await runningPipe.updateData(updatedData);
   if (error) {
     console.log("pyodideWorker error: ", error);
-    let updatedData = {
-      program: program,
-      output: error,
-      files: files,
-    }; 
-    await runningPipe.updateData(updatedData);
     throw new Error("=> Error occured while running Python");
   }
 }

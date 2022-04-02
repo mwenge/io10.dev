@@ -154,3 +154,20 @@ body{
   opacity: 80% !important;
   width: 2px;
 }
+.CodeMirror-simplescroll-horizontal div, .CodeMirror-simplescroll-vertical div {
+  background: grey;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical {
+  background: black;
+}
+
+.CodeMirror-simplescroll-horizontal {
+  height: 10px;
+}
+.CodeMirror-simplescroll-horizontal div {
+  height: 100%;
+}
+
