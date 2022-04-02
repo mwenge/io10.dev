@@ -9,7 +9,7 @@ export function updateAwesomeBar() {
     pipeline.currentPipe().files()); 
 }
 // Helper functions to navigate pipes and pipelines.
-async function updateDisplayedPipe(pipe) {
+export async function updateDisplayedPipe(pipe) {
   if (!pipe) { return; }
   editor.getDoc().setValue(pipe.program());
   outputWrapper.updateContent(pipe.output());

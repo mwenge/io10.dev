@@ -82,6 +82,10 @@ async function getPipe(prevID, id) {
       data.input = p;
       storage.setInput(id, data.input);
     },
+    updateOutput: async function(p) {
+      data.output = p;
+      storage.setOutput(id, data.output);
+    },
     updateData: async function(p) {
       data = {...p};
       storage.setData(id, data);

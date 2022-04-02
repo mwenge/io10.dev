@@ -103,6 +103,10 @@ async function getPipeline(id) {
     currentPipe: function() {
       return pipe;
     },
+    refreshCurrentPipe: async function() {
+      pipe = await this.updateCurrentPipeInfo(current);
+      return pipe;
+    },
     currentPipeIndex: function() {
       return current;
     },

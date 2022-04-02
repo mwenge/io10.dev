@@ -38,7 +38,6 @@ export async function setProgram(id, p) {
   localforage.setItem(id+"-program", p);
 }
 export async function setInput(id, p) {
-  console.trace(id);
   cachedData.set(id+"-input", p);
   localforage.setItem(id+"-input", p);
 }

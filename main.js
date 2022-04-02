@@ -40,9 +40,13 @@ async function determineLanguage() {
   return lang;
 }
 
+let runningPipe = null;
 function runPipeline() {
+  if (runningPipe) {
+    return;
+  }
+  updateProgress("Running..");
   running.style.display = "block";
-  running.offsetTop;
   setTimeout(runPipelineImpl, 0);
 }
 async function runPipelineImpl() {
@@ -51,11 +55,12 @@ async function runPipelineImpl() {
     let lang = await determineLanguage();
     // Python is our default
     if (!lang) lang = cmLangs[ps.pipeline.lang()];
-    outputWrapper.editor().getDoc().setValue("Running..");
+    updateProgress("Running..");
     await lang.run();
   }
   let pipe = await ps.moveToFirstPipe();
   while (pipe) {
+    runningPipe = pipe;
     try {
       await run();
     } catch(error) {
@@ -64,6 +69,9 @@ async function runPipelineImpl() {
     }
     pipe = await ps.nextPipe();
   }
+  runningPipe = null;
+  running.style.display = "none";
+  await ps.updateDisplayedPipe(await ps.pipeline.refreshCurrentPipe());
 }
 
 // Determine what the language is and the run the script.
@@ -75,8 +83,21 @@ async function interruptExecution() {
   lang.interrupt();
 }
 
+async function updateProgress(progress) {
+  if (ps.pipeline.currentPipe().id() != runningPipe.id()) {
+    return;
+  }
+  outputWrapper.editor().getDoc().setValue(progress);
+  await runningPipe.updateOutput(progress);
+}
+
 function determineLanguageAndRun() {
-  outputWrapper.editor().getDoc().setValue("Running..");
+  if (runningPipe) {
+    return;
+  }
+  runningPipe = ps.pipeline.currentPipe();
+  updateProgress("Running..");
+  runningPipe.updateProgram(editor.getValue());
   running.style.display = "block";
   setTimeout(determineLanguageAndRunImpl, 0);
 }
@@ -85,7 +106,7 @@ async function determineLanguageAndRunImpl() {
   let lang = await determineLanguage();
   // Python is our default
   if (!lang) lang = cmLangs[ps.pipeline.lang()];
-  outputWrapper.editor().getDoc().setValue("Running as " + lang.lang + "..");
+  updateProgress("Running as " + lang.lang + "..");
   console.log("Running as", lang);
 
   // If this is the first pipe in the pipeline, make sure the
@@ -94,19 +115,24 @@ async function determineLanguageAndRunImpl() {
     ps.pipeline.updateInput(inputWrapper.getValue());
   }
   try {
-    outputWrapper.editor().getDoc().setValue("Running..");
+    updateProgress("Running ..");
     await lang.run();
   } catch(e) {
     console.error(`Failed to fetch 1: ${e}`);
     outputWrapper.editor().replaceRange('\n' + e, {line: Infinity});
   }
   running.style.display = "none";
+  runningPipe = null;
+  // Refresh the current pipe with the results (if necessary) and update
+  // the display.
+  await ps.updateDisplayedPipe(await ps.pipeline.refreshCurrentPipe());
 }
 
 // Helper for running SQL
 var enc = new TextEncoder(); // always utf-8
 async function evaluateSQL() {
-  let input = await ps.pipeline.currentPipe().input();
+  console.assert(runningPipe);
+  let input = await runningPipe.input();
   let buffInput = enc.encode(input);
 
   // Drop the table if it already exists.
@@ -114,23 +140,23 @@ async function evaluateSQL() {
   await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
   // Write the standard input to a TSV table first.
-  outputWrapper.editor().getDoc().setValue("Loading input as a table..");
+  updateProgress("Loading input as a table..");
   const { vsvtable } = await asyncCreateTable(buffInput, tableName);
 
   // Load the files associated with the pipe to tables.
-  let files = ps.pipeline.currentPipe().files();
+  let files = runningPipe.files();
   await Promise.all(files.map(async (f) => {
     await asyncRunSQL("DROP TABLE \"" + f + "\";");
   }));
   await Promise.all(files.map(async (f) => {
-    outputWrapper.editor().getDoc().setValue("Loading " + f + " as a table..");
+    updateProgress("Loading " + f + " as a table..");
     let data = await localforage.getItem(f);
     await asyncCreateTable(new Uint8Array(data), f);
   }));
 
   // Now run the query against it.
-  let program = editor.getValue();
-  outputWrapper.editor().getDoc().setValue("Running Query..");
+  let program = runningPipe.program();
+  updateProgress("Running Query..");
   const { results, error } = await asyncRunSQL(program);
 
   // Convert the output into tab-separated rows.
@@ -142,61 +168,75 @@ async function evaluateSQL() {
       return e.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
     }));
     output = output.join('');
-    outputWrapper.updateContent(output);
     let updatedData = {
       program: program,
       output: output,
       files: files,
     }; 
-    await ps.pipeline.updatePipeData(updatedData);
+    await runningPipe.updateData(updatedData);
   }
   if (error) {
     console.log("sqlworker error: ", error);
-    outputWrapper.updateContent(error);
+    let updatedData = {
+      program: program,
+      output: error,
+      files: files,
+    }; 
+    await runningPipe.updateData(updatedData);
     throw new Error("=> Error occurred while running SQL.");
   }
 }
 
 // Helper for running Python
 async function evaluatePython() {
-  let input = await ps.pipeline.currentPipe().input();
-  let program = editor.getValue();
-  let files = ps.pipeline.currentPipe().files();
+  console.assert(runningPipe);
+  let input = await runningPipe.input();
+  let program = runningPipe.program();
+  let files = runningPipe.files();
   const { results, error, output } = await asyncRun(program, input, files);
   if (output) {
-    outputWrapper.updateContent(output);
     let updatedData = {
       program: program,
       output: output,
       files: files,
     }; 
-    await ps.pipeline.updatePipeData(updatedData);
+    await runningPipe.updateData(updatedData);
   }
   if (error) {
     console.log("pyodideWorker error: ", error);
-    outputWrapper.updateContent(error);
+    let updatedData = {
+      program: program,
+      output: error,
+      files: files,
+    }; 
+    await runningPipe.updateData(updatedData);
     throw new Error("=> Error occured while running Python");
   }
 }
 
 // Helper for running Javascript
 async function evaluateJS() {
-  let input = await ps.pipeline.currentPipe().input();
-  let program = editor.getValue();
-  let files = ps.pipeline.currentPipe().files();
+  let input = await runningPipe.input();
+  let program = runningPipe.program();
+  let files = runningPipe.files();
   const { results, error, output } = await asyncRunJS(input, program);
   if (output) {
-    outputWrapper.updateContent(output);
     let updatedData = {
       program: program,
       output: output,
       files: files,
     }; 
-    await ps.pipeline.updatePipeData(updatedData);
+    await runningPipe.updateData(updatedData);
   }
   if (error) {
     console.log("jsWorker error: ", error);
-    outputWrapper.updateContent(error +'\n');
+    error += '\n';
+    let updatedData = {
+      program: program,
+      output: output,
+      files: files,
+    }; 
+    await runningPipe.updateData(updatedData);
     throw new Error("test error inside js");
   }
 }
