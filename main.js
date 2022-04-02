@@ -40,7 +40,12 @@ async function determineLanguage() {
   return lang;
 }
 
-async function runPipeline() {
+function runPipeline() {
+  running.style.display = "block";
+  running.offsetTop;
+  setTimeout(runPipelineImpl, 0);
+}
+async function runPipelineImpl() {
   // Determine what the language is and the run the script.
   async function run() {
     let lang = await determineLanguage();
@@ -70,11 +75,17 @@ async function interruptExecution() {
   lang.interrupt();
 }
 
+function determineLanguageAndRun() {
+  outputWrapper.editor().getDoc().setValue("Running..");
+  running.style.display = "block";
+  setTimeout(determineLanguageAndRunImpl, 0);
+}
 // Determine what the language is and the run the script.
-async function determineLanguageAndRun() {
+async function determineLanguageAndRunImpl() {
   let lang = await determineLanguage();
   // Python is our default
   if (!lang) lang = cmLangs[ps.pipeline.lang()];
+  outputWrapper.editor().getDoc().setValue("Running as " + lang.lang + "..");
   console.log("Running as", lang);
 
   // If this is the first pipe in the pipeline, make sure the
@@ -89,6 +100,7 @@ async function determineLanguageAndRun() {
     console.error(`Failed to fetch 1: ${e}`);
     outputWrapper.editor().replaceRange('\n' + e, {line: Infinity});
   }
+  running.style.display = "none";
 }
 
 // Helper for running SQL

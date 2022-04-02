@@ -43,7 +43,20 @@
   max-height: 13px;
 }
 /* Copied from http://aleclownes.com/2017/02/01/crt-display.html */
-.title::before {
+.running {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: black;
+  font-family: 'osd';
+  font-size: 16px;
+  color: white;
+  z-index: 999999;
+  text-transform: uppercase;
+}
+/* Copied from http://aleclownes.com/2017/02/01/crt-display.html */
+.running::before, .title::before {
   content: " ";
   display: block;
   position: absolute;
