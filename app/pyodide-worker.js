@@ -3,7 +3,7 @@
 // Setup your project to serve `py-worker.js`. You should also serve
 // `pyodide.js`, and all its associated `.asm.js`, `.data`, `.json`,
 // and `.wasm` files as well:
-importScripts("https://cdn.jsdelivr.net/pyodide/v0.19.1/full/pyodide.js");
+importScripts("../3rdparty/pyodide/pyodide.js");
 importScripts("../3rdparty/localforage.min.js");
 
 let stdinIterator = null;
@@ -21,10 +21,11 @@ async function loadFile(f) {
 
 async function loadPyodideAndPackages() {
   self.pyodide = await loadPyodide({
-    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.19.1/full/",
+    indexURL: "../3rdparty/pyodide",
     stdout: (text) => {self.postMessage({text:text});},
     stdin: () => { return stdinIterator.next().value; },
   });
+  await self.pyodide.loadPackage(["numpy", "pytz"]);
 }
 let pyodideReadyPromise = loadPyodideAndPackages();
 
