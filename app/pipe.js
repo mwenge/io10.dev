@@ -49,7 +49,6 @@ async function getPipe(prevID, id) {
         return data.input;
       }
       let o = await storage.getData(prevID);
-      console.assert(o);
       return o.output;
     },
     output: function() {

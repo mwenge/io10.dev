@@ -45,7 +45,6 @@ function runPipeline() {
   if (runningPipe) {
     return;
   }
-  updateProgress("Running..");
   running.style.display = "block";
   setTimeout(runPipelineImpl, 0);
 }

@@ -6,6 +6,15 @@ async function getPipeline(id) {
     let cur = current - 1;
     return pipeline[cur].pid;
   }
+  const simpleHash = str => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = (hash << 5) - hash + char;
+            hash &= hash; // Convert to 32bit integer
+          }
+      return new Uint32Array([hash])[0].toString(36);
+  };
   let pipelineItem = localStorage.getItem(id);
   let pipeline = pipelineItem ? JSON.parse(pipelineItem) : [];
 
@@ -37,6 +46,11 @@ async function getPipeline(id) {
       if (current) current--;
       let pid = pipeline[current].pid;
       pipe = await getPipe(previousPipeID(), pid);
+      // If the pipe is now at the start of the pipeline, make sure it
+      // has an input.
+      if (!current && await pipe.input() == undefined) {
+        pipe.updateInput('');
+      }
       return pipe
     },
     updateCurrentPipeInfo: async function(cur) {
@@ -45,7 +59,7 @@ async function getPipeline(id) {
       return pipe
     },
     insertAfter: async function() {
-      let pid = id + "-" + (pipeline.length).toString();
+      let pid = simpleHash(pipeline[current].pid + Math.floor(Math.random() * 1000).toString());
       current++;
       pipeline.splice(current, 0, {pid:pid, lang:"*.py"});
       localStorage.setItem(id, JSON.stringify(pipeline));
@@ -53,12 +67,11 @@ async function getPipeline(id) {
       return pipe;
     },
     insertBefore: async function() {
-      let prev = await this.previousPipe();
-      if (!prev) {
+      if (!current) {
         return pipe;
       }
       current--;
-      let pid = id + "-" + (pipeline.length).toString();
+      let pid = simpleHash(pipeline[current].pid + Math.floor(Math.random() * 1000).toString());
       pipeline.splice(current, 0, {pid:pid, lang:"*.py"});
       localStorage.setItem(id, JSON.stringify(pipeline));
       pipe = await getPipe(previousPipeID(), pid);
