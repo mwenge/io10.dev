@@ -1,7 +1,7 @@
 export const examplePipeline = [
   {
     key: "Example Pipeline-0",
-    program: `# Welcome to ioio.xyz.
+    program: `# Welcome to io10.dev.
 #   This is a data analysis notebook that allows you to mix Python, Javascript and SQL and structure
 #   your work as a pipeline of inputs and outputs.
 #   
