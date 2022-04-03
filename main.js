@@ -246,13 +246,23 @@ async function evaluateJS() {
 // pipe only. 
 var fileUpload = document.getElementById('file-upload');
 fileUpload.onchange = function () {
+  if (runningPipe) {
+    return;
+  }
+  runningPipe = ps.pipeline.currentPipe();
+  running.style.display = "block";
+
 	var f = fileUpload.files[0];
   if (!f) { return; }
+  running.textContent = "Loading " + f.name;
 	var r = new FileReader();
 	r.onload = async function () {
     await localforage.setItem(f.name, r.result);
-    await ps.pipeline.currentPipe().addFile(f.name);
+    await runningPipe.addFile(f.name);
     ps.updateAwesomeBar();
+    runningPipe = null;
+    running.style.display = "none";
+    running.textContent = "Busy";
 	}
 	r.readAsArrayBuffer(f);
 }

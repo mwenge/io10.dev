@@ -72,7 +72,7 @@ async function getPipe(prevID, id) {
       storage.setMetadata(id, { files: data.files, lang: data.lang });
     },
     delete: async function(p) {
-      storage.deleteData(id);
+      storage.deleteData(id, data.files);
     },
     updateProgram: async function(p) {
       data.program = p;
