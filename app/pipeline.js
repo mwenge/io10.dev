@@ -34,6 +34,7 @@ async function getPipeline(id) {
       if (pipeline[current].lang == lang) return;
       pipeline[current].lang = lang;
       localStorage.setItem(id, JSON.stringify(pipeline));
+      pipe.updateLang(lang);
     },
     initializePipeInfo: async function(cur) {
       await this.updateCurrentPipeInfo(cur);

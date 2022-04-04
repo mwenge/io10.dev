@@ -44,6 +44,9 @@ async function getPipe(prevID, id) {
     program: function() {
       return data.program;
     },
+    doc: function() {
+      return storage.getDoc(id);
+    },
     input: async function() {
       if (!prevID) {
         return data.input;
@@ -53,6 +56,9 @@ async function getPipe(prevID, id) {
     },
     output: function() {
       return data.output;
+    },
+    lang: function() {
+      return data.lang;
     },
     files: function() {
       return data.files ? data.files : [];
@@ -74,9 +80,13 @@ async function getPipe(prevID, id) {
     delete: async function(p) {
       storage.deleteData(id, data.files);
     },
-    updateProgram: async function(p) {
+    updateLang: async function(p) {
+      data.lang = p;
+      storage.setMetadata(id, { files: data.files, lang: data.lang });
+    },
+    updateProgram: async function(p, doc) {
       data.program = p;
-      storage.setProgram(id, data.program);
+      storage.setProgram(id, data.program, doc);
     },
     updateInput: async function(p) {
       data.input = p;

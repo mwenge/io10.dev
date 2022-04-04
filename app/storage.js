@@ -22,6 +22,12 @@ export async function getData(id) {
   cachedData.set(id+"-output", output);
   return {...metadata, program: program, input: input, output: output};
 }
+export function getDoc(id) {
+  if (cachedData.has(id+"-doc")) {
+    return cachedData.get(id+"-doc");
+  }
+  return null;
+}
 
 // Intentionally fire and forget.
 export async function setData(id, data) {
@@ -33,8 +39,9 @@ export async function setMetadata(id, p) {
   cachedData.set(id+"-metadata", p);
   localforage.setItem(id+"-metadata", p);
 }
-export async function setProgram(id, p) {
+export async function setProgram(id, p, doc) {
   cachedData.set(id+"-program", p);
+  cachedData.set(id+"-doc", doc);
   localforage.setItem(id+"-program", p);
 }
 export async function setInput(id, p) {

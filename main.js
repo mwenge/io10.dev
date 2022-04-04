@@ -5,24 +5,28 @@ import { asyncRun, interruptPythonExecution } from "./app/pyodide-py-worker.js";
 import { asyncRunJS } from "./app/duktape.js";
 import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
 
+const cmLangs = {
+  "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
+  "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
+  "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
+};
 // Set up the editor.
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(), true);
 ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun,
-              runPipeline, interruptExecution);
+              runPipeline, interruptExecution, cmLangs);
 
 // Update the syntax highlighting to suit the language being used.
 // Detection is a bit off sometimes so we use workarounds.
 setInterval(determineLanguage, 2000);
 const guessLang = new GuessLang();
-const cmLangs = {
-  "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
-  "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
-  "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
-};
 async function determineLanguage() {
+  if (runningPipe) {
+    return;
+  }
+  let pipe = ps.pipeline.currentPipe();
   // Strip comments, which confuse guesslang.
   let program = editor.getValue()
     .split('\n')
@@ -171,6 +175,7 @@ async function evaluateSQL() {
       program: program,
       output: output,
       files: files,
+      lang: "*.sql",
     }; 
     await runningPipe.updateData(updatedData);
   }
@@ -180,6 +185,7 @@ async function evaluateSQL() {
       program: program,
       output: error,
       files: files,
+      lang: "*.sql",
     }; 
     await runningPipe.updateData(updatedData);
     throw new Error("=> Error occurred while running SQL.");
@@ -207,6 +213,7 @@ async function evaluatePython() {
     program: program,
     output: stdout,
     files: files,
+    lang: "*.py",
   }; 
   await runningPipe.updateData(updatedData);
   if (error) {
@@ -226,6 +233,7 @@ async function evaluateJS() {
       program: program,
       output: output,
       files: files,
+      lang: "*.js",
     }; 
     await runningPipe.updateData(updatedData);
   }
@@ -236,6 +244,7 @@ async function evaluateJS() {
       program: program,
       output: output,
       files: files,
+      lang: "*.js",
     }; 
     await runningPipe.updateData(updatedData);
     throw new Error("test error inside js");

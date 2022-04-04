@@ -11,13 +11,19 @@ export function updateAwesomeBar() {
 // Helper functions to navigate pipes and pipelines.
 export async function updateDisplayedPipe(pipe) {
   if (!pipe) { return; }
-  editor.getDoc().setValue(pipe.program());
+  // Swap in the cached document for this pipe.
+  let doc = pipe.doc();
+  if (!doc) {
+    doc = CodeMirror.Doc(pipe.program(), Object);
+  }
+  editor.swapDoc(doc);
+  editor.setOption("mode", cmLangs[pipe.lang()].syntax);
   outputWrapper.updateContent(pipe.output());
   updateAwesomeBar();
   inputWrapper.updateContent(await pipe.input(), pipeline.currentPipeIndex() == 0);
 }
 async function insertBefore() {
-  pipeline.currentPipe().updateProgram(editor.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.insertBefore();
   updateDisplayedPipe(pipe);
 }
@@ -26,37 +32,33 @@ async function deleteCurrent() {
   updateDisplayedPipe(pipe);
 }
 async function insertAfter() {
-  pipeline.currentPipe().updateProgram(editor.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.insertAfter();
   updateDisplayedPipe(pipe);
 }
 async function previousPipe() {
-  editor.getDoc().clearHistory();
-  pipeline.currentPipe().updateProgram(editor.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.moveToPreviousPipe();
   updateDisplayedPipe(pipe);
 }
 export async function moveToFirstPipe() {
-  editor.getDoc().clearHistory();
-  pipeline.currentPipe().updateProgram(editor.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.moveToFirstPipe();
   updateDisplayedPipe(pipe);
   return pipe;
 }
 export async function nextPipe() {
-  editor.getDoc().clearHistory();
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
-  pipeline.currentPipe().updateProgram(editor.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.moveToNextPipe();
   updateDisplayedPipe(pipe);
   return pipe;
 }
 async function nextPipeline() {
-  editor.getDoc().clearHistory();
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
-  pipeline.currentPipe().updateProgram(editor.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   if (currentPipelineIndex < pipelines.length - 1) {
     currentPipelineIndex++;
     pipeline = await getPipeline(pipelines[currentPipelineIndex]);
@@ -75,7 +77,7 @@ async function nextPipeline() {
 async function prevPipeline() {
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
-  pipeline.currentPipe().updateProgram(editor.getValue());
+  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   if (!currentPipelineIndex) {
     return;
   }
@@ -138,10 +140,12 @@ updateAwesomeBar();
 let editor = null;
 let inputWrapper = null;
 let outputWrapper = null;
-export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interruptExecution) {
+let cmLangs = null;
+export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interruptExecution, langs) {
   editor = e;
   inputWrapper = i;
   outputWrapper = o;
+  cmLangs = langs;
   editor.setOption("extraKeys", {
         "Ctrl-Enter": determineLanguageAndRun,
         "Alt-Right": nextPipe,
