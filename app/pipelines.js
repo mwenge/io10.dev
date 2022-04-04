@@ -154,7 +154,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interr
         "Alt-Q": deletePipeline,
         "Alt-R": runPipeline,
         "Ctrl-O": openFile,
-        "Ctrl-C": interruptExecution,
+        "Ctrl-D": interruptExecution,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });
