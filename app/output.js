@@ -58,7 +58,7 @@ function calculateChunkLength() {
   let ph = document.getElementById("output").clientHeight;
   let lh = document.getElementsByClassName("CodeMirror-line")[0].clientHeight;
   let chunkLength = ph / (lh);
-  return parseInt(chunkLength, 10) - 2;
+  return parseInt(chunkLength, 10) - 1;
 }
 // Set up the input/output pane.
 function setUpOutput(div, c = "Output appears here", editable) {

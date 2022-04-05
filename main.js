@@ -100,7 +100,7 @@ function determineLanguageAndRun() {
   }
   runningPipe = ps.pipeline.currentPipe();
   updateProgress("Running..");
-  runningPipe.updateProgram(editor.getValue());
+  runningPipe.updateProgram(editor.getValue(), editor.getDoc());
   running.style.display = "block";
   setTimeout(determineLanguageAndRunImpl, 0);
 }
@@ -171,23 +171,11 @@ async function evaluateSQL() {
       return e.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
     }));
     output = output.join('');
-    let updatedData = {
-      program: program,
-      output: output,
-      files: files,
-      lang: "*.sql",
-    }; 
-    await runningPipe.updateData(updatedData);
+    await runningPipe.updateOutput(output);
   }
   if (error) {
     console.log("sqlworker error: ", error);
-    let updatedData = {
-      program: program,
-      output: error,
-      files: files,
-      lang: "*.sql",
-    }; 
-    await runningPipe.updateData(updatedData);
+    await runningPipe.updateOutput(error);
     throw new Error("=> Error occurred while running SQL.");
   }
 }
@@ -209,13 +197,7 @@ async function evaluatePython() {
   if (output) {
     stdout += output;
   }
-  let updatedData = {
-    program: program,
-    output: stdout,
-    files: files,
-    lang: "*.py",
-  }; 
-  await runningPipe.updateData(updatedData);
+  await runningPipe.updateOutput(stdout);
   if (error) {
     console.log("pyodideWorker error: ", error);
     throw new Error("=> Error occured while running Python");
@@ -229,24 +211,12 @@ async function evaluateJS() {
   let files = runningPipe.files();
   const { results, error, output } = await asyncRunJS(input, program);
   if (output) {
-    let updatedData = {
-      program: program,
-      output: output,
-      files: files,
-      lang: "*.js",
-    }; 
-    await runningPipe.updateData(updatedData);
+    await runningPipe.updateOutput(output);
   }
   if (error) {
     console.log("jsWorker error: ", error);
     error += '\n';
-    let updatedData = {
-      program: program,
-      output: output,
-      files: files,
-      lang: "*.js",
-    }; 
-    await runningPipe.updateData(updatedData);
+    await runningPipe.updateOutput(output);
     throw new Error("test error inside js");
   }
 }
@@ -275,6 +245,8 @@ fileUpload.onchange = function () {
 	}
 	r.readAsArrayBuffer(f);
 }
+
+// Recalculate chunk size when zooming in or out.
 window.onzoom = async function(e) {
   await ps.updateDisplayedPipe(await ps.pipeline.refreshCurrentPipe());
 }

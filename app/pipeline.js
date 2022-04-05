@@ -111,10 +111,6 @@ async function getPipeline(id) {
     updateInput: async function(data) {
       await pipe.updateInput(data);
     },
-    updatePipeData: async function(data) {
-      await pipe.updateData(data);
-      return;
-    },
     currentPipe: function() {
       return pipe;
     },

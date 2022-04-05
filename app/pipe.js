@@ -96,10 +96,6 @@ async function getPipe(prevID, id) {
       data.output = p;
       storage.setOutput(id, data.output);
     },
-    updateData: async function(p) {
-      data = {...p};
-      storage.setData(id, data);
-    },
   };
   return rangeIterator;
 }
