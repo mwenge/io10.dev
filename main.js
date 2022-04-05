@@ -275,3 +275,16 @@ fileUpload.onchange = function () {
 	}
 	r.readAsArrayBuffer(f);
 }
+window.onzoom = async function(e) {
+  await ps.updateDisplayedPipe(await ps.pipeline.refreshCurrentPipe());
+}
+// detect resize
+window.onresize = function(e) {
+  var event = window.event || e;
+  if(typeof(oldresize) === 'function' && !oldresize.call(window, event)) {
+    return false;
+  }
+  if(typeof(window.onzoom) === 'function') {
+    return window.onzoom.call(window, event);
+  }
+};

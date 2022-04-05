@@ -54,11 +54,17 @@ function contentChunker(content, chunkLength) {
   return chunkIterator;
 }
 
+function calculateChunkLength() {
+  let ph = document.getElementById("output").clientHeight;
+  let lh = document.getElementsByClassName("CodeMirror-line")[0].clientHeight;
+  let chunkLength = ph / (lh);
+  return parseInt(chunkLength, 10) - 2;
+}
 // Set up the input/output pane.
 function setUpOutput(div, c = "Output appears here", editable) {
   let content = c;
   let isEditable = editable;
-  let chunkLength = 30;
+  let chunkLength = calculateChunkLength();
   let chunker = contentChunker(content, chunkLength);
   let commandsElm = document.createElement('textarea');
   if (isEditable) {
@@ -131,6 +137,7 @@ function setUpOutput(div, c = "Output appears here", editable) {
       return content;
     },
     updateContent: function(c, editable=false) {
+      let chunkLength = calculateChunkLength();
       content = c;
       isEditable = editable;
       if (isEditable) {
