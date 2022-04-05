@@ -113,7 +113,7 @@ if (!savedPipelines) {
     await localforage.setItem(p.key+"-metadata", { files: p.files, lang: p.lang });
   }));
   // Add the example file.
-  await localforage.setItem('file.tsv', enc.encode(`fjkdlsjfdkl\tfjkdslfdslk
+  await localforage.setItem('file.txt', enc.encode(`fjkdlsjfdkl\tfjkdslfdslk
   fdsjklfdjfkls\tfjdsklfjkdslfd
   dsjkldsjak\tdjskaldsjakl`).buffer);
   await localforage.setItem('table.csv', enc.encode(`id\tvalue

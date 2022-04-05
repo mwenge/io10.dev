@@ -55,12 +55,12 @@ for i in range(0,20):
 --      +-------+     +-------+ |  +-------+    +-------+    +-------+ |
 --                              +--------------------------------------+
 -- 
---  The table containing the input in the top-right pane is always available as a table called "input.tsv",
+--  The table containing the input in the top-right pane is always available as a table called "input.txt",
 --  so our query is as follows. Press Ctrl-Enter to run the query, then navigate to the
 --  the next step by pressing Alt-Right.
 --
 SELECT colid, count(*) colsum
-FROM "input.tsv" A 
+FROM "input.txt" A 
 GROUP BY 1
 `,
     input: ``,
@@ -88,18 +88,18 @@ GROUP BY 1
 #                               |               +-------+              |
 #                               +--------------------------------------+
 #
-# The file, 'file.tsv', has already been loaded for this example. Loading
+# The file, 'file.txt', has already been loaded for this example. Loading
 # a file of your own is simple: press Ctrl-O and select the file. It will
 # then be available with it's original name to your Python script.
 #
 import sys
-l = open('file.tsv', 'r')
+l = open('file.txt', 'r')
 print("colid" + '\t' + "colval")
 print(l.readline())
     `,
     input: ``,
     output: '',
-    files: ['file.tsv'],
+    files: ['file.txt'],
     lang: "*.py",
   },
   {

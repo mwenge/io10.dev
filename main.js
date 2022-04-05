@@ -139,11 +139,12 @@ async function evaluateSQL() {
   let buffInput = enc.encode(input);
 
   // Drop the table if it already exists.
-  let tableName = "input.tsv";
+  let tableName = "input.txt";
   await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
   // Write the standard input to a TSV table first.
   updateProgress("Loading input as a table..");
+  await localforage.setItem(tableName, enc.encode(buffInput).buffer);
   const { vsvtable } = await asyncCreateTable(buffInput, tableName);
 
   // Load the files associated with the pipe to tables.
@@ -185,8 +186,12 @@ async function evaluatePython() {
   console.assert(runningPipe);
   let input = await runningPipe.input();
   let program = runningPipe.program();
+
+  // Get any files and add the input to 'input.txt'.
   let files = runningPipe.files();
-  const { results, error, output } = await asyncRun(program, input, files);
+  await localforage.setItem("input.txt", enc.encode(input).buffer);
+
+  const { results, error, output } = await asyncRun(program, input, files.concat(["input.txt"]));
   let stdout = '';
   if (error) {
     stdout += error;
