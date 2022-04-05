@@ -16,6 +16,7 @@ function setUpEditor(content) {
     mode: 'text/x-mysql',
     viewportMargin: Infinity,
     indentWithTabs: true,
+    scrollbarStyle: 'simple',
     smartIndent: true,
     lineNumbers: true,
     matchBrackets: true,
