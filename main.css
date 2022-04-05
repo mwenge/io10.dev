@@ -130,6 +130,8 @@
   padding: 0 5px 0 5px;
   display: inline-block;
   color: white;
+  background: black;
+  padding: 3px;
   height: 100%;
   text-transform: none;
 }
