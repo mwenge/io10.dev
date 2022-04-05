@@ -2,7 +2,7 @@ import {setUpEditor} from "./app/program.js";
 import {setUpOutput} from "./app/output.js";
 import * as ps from "./app/pipelines.js";
 import { asyncRun, interruptPythonExecution } from "./app/pyodide-py-worker.js";
-import { asyncRunJS } from "./app/duktape.js";
+import { asyncRunJS } from "./app/js.js";
 import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
 
 const cmLangs = {
@@ -215,13 +215,19 @@ async function evaluateJS() {
   let program = runningPipe.program();
   let files = runningPipe.files();
   const { results, error, output } = await asyncRunJS(input, program);
-  if (output) {
-    await runningPipe.updateOutput(output);
+  let stdout = '';
+  if (error) {
+    stdout += error;
   }
+  if (results) {
+    stdout += results;
+  }
+  if (output) {
+    stdout += output;
+  }
+  await runningPipe.updateOutput(stdout);
   if (error) {
     console.log("jsWorker error: ", error);
-    error += '\n';
-    await runningPipe.updateOutput(output);
     throw new Error("test error inside js");
   }
 }
