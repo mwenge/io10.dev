@@ -4,11 +4,13 @@ import * as ps from "./app/pipelines.js";
 import { asyncRun, interruptPythonExecution } from "./app/pyodide-py-worker.js";
 import { asyncRunJS } from "./app/js.js";
 import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
+import { asyncRunLua } from "./app/lua.js";
 
 const cmLangs = {
   "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
   "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
   "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
+  "*.lua" : { lang: "*.lua",  syntax: "text/x-lua", run: evaluateLua },
 };
 // Set up the editor.
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
@@ -232,6 +234,28 @@ async function evaluateJS() {
   }
 }
 
+// Helper for running Javascript
+async function evaluateLua() {
+  let input = await runningPipe.input();
+  let program = runningPipe.program();
+  let files = runningPipe.files();
+  const { results, error, output } = await asyncRunLua(input, program);
+  let stdout = '';
+  if (error) {
+    stdout += error;
+  }
+  if (results) {
+    stdout += results;
+  }
+  if (output) {
+    stdout += output;
+  }
+  await runningPipe.updateOutput(stdout);
+  if (error) {
+    console.log("luaWorker error: ", error);
+    throw new Error("test error inside lua");
+  }
+}
 // Allow the user to add a file. Doing so associates the file with the current
 // pipe only. 
 var fileUpload = document.getElementById('file-upload');
