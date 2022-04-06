@@ -2,7 +2,6 @@ import {setUpEditor} from "./app/program.js";
 import {setUpOutput} from "./app/output.js";
 import * as ps from "./app/pipelines.js";
 import { asyncRunJS } from "./app/js.js";
-import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
 import { asyncRunLua } from "./app/lua.js";
 
 const cmLangs = {
@@ -140,51 +139,53 @@ async function determineLanguageAndRunImpl() {
 // Helper for running SQL
 var enc = new TextEncoder(); // always utf-8
 async function evaluateSQL() {
-  console.assert(runningPipe);
-  let input = await runningPipe.input();
-  let buffInput = enc.encode(input);
+	await import("./app/sql.js-worker.js").then(async (sql) => {
+    console.assert(runningPipe);
+    let input = await runningPipe.input();
+    let buffInput = enc.encode(input);
 
-  // Drop the table if it already exists.
-  let tableName = "input.txt";
-  await asyncRunSQL("DROP TABLE \"" + tableName + "\";");
+    // Drop the table if it already exists.
+    let tableName = "input.txt";
+    await sql.asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
-  // Write the standard input to a TSV table first.
-  updateProgress("Loading input as a table..");
-  await localforage.setItem(tableName, enc.encode(buffInput).buffer);
-  const { vsvtable } = await asyncCreateTable(buffInput, tableName);
+    // Write the standard input to a TSV table first.
+    updateProgress("Loading input as a table..");
+    await localforage.setItem(tableName, enc.encode(buffInput).buffer);
+    const { vsvtable } = await sql.asyncCreateTable(buffInput, tableName);
 
-  // Load the files associated with the pipe to tables.
-  let files = runningPipe.files();
-  await Promise.all(files.map(async (f) => {
-    await asyncRunSQL("DROP TABLE \"" + f + "\";");
-  }));
-  await Promise.all(files.map(async (f) => {
-    updateProgress("Loading " + f + " as a table..");
-    let data = await localforage.getItem(f);
-    await asyncCreateTable(new Uint8Array(data), f);
-  }));
-
-  // Now run the query against it.
-  let program = runningPipe.program();
-  updateProgress("Running Query..");
-  const { results, error } = await asyncRunSQL(program);
-
-  // Convert the output into tab-separated rows.
-  if (results) {
-    // First the header row.
-    let output = results[0].columns.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
-    // Then the results row.
-    output = output.concat(results[0].values.flatMap((e) => {
-      return e.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
+    // Load the files associated with the pipe to tables.
+    let files = runningPipe.files();
+    await Promise.all(files.map(async (f) => {
+      await sql.asyncRunSQL("DROP TABLE \"" + f + "\";");
     }));
-    output = output.join('');
-    await runningPipe.updateOutput(output);
-  }
-  if (error) {
-    console.log("sqlworker error: ", error);
-    await runningPipe.updateOutput(error);
-    throw new Error("=> Error occurred while running SQL.");
-  }
+    await Promise.all(files.map(async (f) => {
+      updateProgress("Loading " + f + " as a table..");
+      let data = await localforage.getItem(f);
+      await sql.asyncCreateTable(new Uint8Array(data), f);
+    }));
+
+    // Now run the query against it.
+    let program = runningPipe.program();
+    updateProgress("Running Query..");
+    const { results, error } = await sql.asyncRunSQL(program);
+
+    // Convert the output into tab-separated rows.
+    if (results) {
+      // First the header row.
+      let output = results[0].columns.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
+      // Then the results row.
+      output = output.concat(results[0].values.flatMap((e) => {
+        return e.map((e,i,a) => (e + (i == (a.length - 1) ? '\n' : '\t')));
+      }));
+      output = output.join('');
+      await runningPipe.updateOutput(output);
+    }
+    if (error) {
+      console.log("sqlworker error: ", error);
+      await runningPipe.updateOutput(error);
+      throw new Error("=> Error occurred while running SQL.");
+    }
+  });
 }
 
 // Helper for running Python
