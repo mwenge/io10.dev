@@ -1,7 +1,6 @@
 import {setUpEditor} from "./app/program.js";
 import {setUpOutput} from "./app/output.js";
 import * as ps from "./app/pipelines.js";
-import { asyncRun, interruptPythonExecution } from "./app/pyodide-py-worker.js";
 import { asyncRunJS } from "./app/js.js";
 import { asyncRunSQL, asyncCreateTable } from "./app/sql.js-worker.js";
 import { asyncRunLua } from "./app/lua.js";
@@ -20,6 +19,11 @@ const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(),
 ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun,
               runPipeline, interruptExecution, cmLangs);
 
+function interruptPythonExecution() {
+	import("./app/pyodide-py-worker.js").then((py) => {
+    py.interruptPythonExecution();
+	});
+}
 // Update the syntax highlighting to suit the language being used.
 // Detection is a bit off sometimes so we use workarounds.
 setInterval(determineLanguage, 2000);
@@ -185,30 +189,32 @@ async function evaluateSQL() {
 
 // Helper for running Python
 async function evaluatePython() {
-  console.assert(runningPipe);
-  let input = await runningPipe.input();
-  let program = runningPipe.program();
+	await import("./app/pyodide-py-worker.js").then(async (py) => {
+		console.assert(runningPipe);
+		let input = await runningPipe.input();
+		let program = runningPipe.program();
 
-  // Get any files and add the input to 'input.txt'.
-  let files = runningPipe.files();
-  await localforage.setItem("input.txt", enc.encode(input).buffer);
+		// Get any files and add the input to 'input.txt'.
+		let files = runningPipe.files();
+		await localforage.setItem("input.txt", enc.encode(input).buffer);
 
-  const { results, error, output } = await asyncRun(program, input, files.concat(["input.txt"]));
-  let stdout = '';
-  if (error) {
-    stdout += error;
-  }
-  if (results) {
-    stdout += results;
-  }
-  if (output) {
-    stdout += output;
-  }
-  await runningPipe.updateOutput(stdout);
-  if (error) {
-    console.log("pyodideWorker error: ", error);
-    throw new Error("=> Error occured while running Python");
-  }
+		const { results, error, output } = await py.asyncRun(program, input, files.concat(["input.txt"]));
+		let stdout = '';
+		if (error) {
+			stdout += error;
+		}
+		if (results) {
+			stdout += results;
+		}
+		if (output) {
+			stdout += output;
+		}
+		await runningPipe.updateOutput(stdout);
+		if (error) {
+			console.log("pyodideWorker error: ", error);
+			throw new Error("=> Error occured while running Python");
+		}
+	})
 }
 
 // Helper for running Javascript
