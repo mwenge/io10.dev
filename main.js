@@ -200,7 +200,7 @@ async function evaluateR() {
     let files = runningPipe.files();
     await localforage.setItem("input.txt", enc.encode(input).buffer);
 
-    const { results, error, output } = await R.asyncRunR(program, input, files.concat(["input.txt"]));
+    const { results, error, output } = await R.asyncRunR(program, input, files);
     let stdout = '';
     if (error) {
       stdout += error;

@@ -56624,7 +56624,17 @@ else if (typeof exports === 'object'){
 
 "use strict";
 
-function onModuleReady(R) {
+importScripts("../localforage.min.js");
+async function onModuleReady(R) {
+    let dec = new TextDecoder();
+    async function loadFile(f) {
+      try {
+        R.FS_unlink("/" + f);
+      } catch {
+      }
+      let data = await localforage.getItem(f);
+      R.FS_createDataFile('/', f, dec.decode(data), true, true, true);
+    }
     var buff; var data; var result;
     data = this["data"];
     var config = data["config"] ? data["config"] : {};
@@ -56640,6 +56650,13 @@ function onModuleReady(R) {
             } catch {
             }
             R.FS_createDataFile('/', "input.txt", inputText, true, true, true);
+
+            // Load any files.
+            let files = data["files"] ? data["files"] : [];
+            console.log(files);
+            await Promise.all(files.map(async (f) => {
+              await loadFile(f);
+            }));
 
             var res = R._run_R_from_JS(R.allocate(R.intArrayFromString(buff), 0), buff.length);
             return postMessage({

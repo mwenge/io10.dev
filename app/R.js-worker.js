@@ -21,12 +21,12 @@ worker.onmessage = (event) => {
 
 const asyncRunR = (() => {
   let id = 0; // identify a Promise
-  return (code, input) => {
+  return (code, input, files) => {
     // the id could be generated more carefully
     id = (id + 1) % Number.MAX_SAFE_INTEGER;
     return new Promise((onSuccess) => {
       callbacks[id] = onSuccess;
-      worker.postMessage({ action: 'exec', code: code, input: input, id: id });
+      worker.postMessage({ action: 'exec', code: code, input: input, files: files, id: id });
     });
   };
 })();
