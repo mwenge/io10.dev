@@ -1,5 +1,5 @@
 import { getPipeline } from "./pipeline.js";
-import { examplePipeline } from "./example.js";
+import { examplePipelines } from "./example.js";
 import { updatePipelineOnAwesomeBar } from "./awesomebar-pipeline.js";
 
 export function updateAwesomeBar() {
@@ -104,14 +104,22 @@ var enc = new TextEncoder(); // always utf-8
 // Initialize the example pipeline if necessary.
 let savedPipelines = localStorage.getItem("pipelines");
 if (!savedPipelines) {
-  localStorage.setItem("pipelines", JSON.stringify(["Example Pipeline"]));
-  localStorage.setItem("pipelinePrettyNames", JSON.stringify(["Example Pipeline"]));
-  await Promise.all(examplePipeline.map(async (p) => {
-    await localforage.setItem(p.key+"-input", p.input);
-    await localforage.setItem(p.key+"-program", p.program);
-    await localforage.setItem(p.key+"-output", p.output);
-    await localforage.setItem(p.key+"-metadata", { files: p.files, lang: p.lang });
-  }));
+  let names = examplePipelines.map(x => x.name);
+  localStorage.setItem("pipelines", JSON.stringify(names));
+  localStorage.setItem("pipelinePrettyNames", JSON.stringify(names));
+  for (var examplePipeline of examplePipelines) {
+    await Promise.all(examplePipeline.pipeline.map(async (p) => {
+      await localforage.setItem(p.key+"-input", p.input);
+      await localforage.setItem(p.key+"-program", p.program);
+      await localforage.setItem(p.key+"-output", p.output);
+      await localforage.setItem(p.key+"-metadata", { files: p.files, lang: p.lang });
+    }));
+    let newPipeline = [];
+    examplePipeline.pipeline.forEach(p => {
+      newPipeline.push({pid: p.key, lang: p.lang});
+    });
+    localStorage.setItem(examplePipeline.name, JSON.stringify(newPipeline));
+  }
   // Add the example file.
   await localforage.setItem('file.txt', enc.encode(`fjkdlsjfdkl\tfjkdslfdslk
   fdsjklfdjfkls\tfjdsklfjkdslfd
@@ -120,17 +128,12 @@ if (!savedPipelines) {
   fdsjklfdjfkls\tfjdsklfjkdslfd
   dsjkldsjak\tdjskaldsjakl`).buffer);
 
-  let newPipeline = [];
-  examplePipeline.forEach(p => {
-    newPipeline.push({pid: p.key, lang: p.lang});
-  });
-  localStorage.setItem("Example Pipeline", JSON.stringify(newPipeline));
 }
 
 // Initialize the main pipeline data.
 let pipelines = JSON.parse(localStorage.pipelines);
 let pipelinePrettyNames = JSON.parse(localStorage.pipelinePrettyNames);
-let currentPipelineIndex = pipelines.length - 1;
+let currentPipelineIndex = 0;
 export let pipeline = await getPipeline(pipelines[currentPipelineIndex]);
 
 // Update the awesome bar.
