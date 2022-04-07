@@ -9,6 +9,7 @@ const cmLangs = {
   "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
   "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
   "*.lua" : { lang: "*.lua",  syntax: "text/x-lua", run: evaluateLua },
+  "*.r" : { lang: "*.r",  syntax: "text/x-rsrc", run: evaluateR },
 };
 // Set up the editor.
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
@@ -186,6 +187,36 @@ async function evaluateSQL() {
       throw new Error("=> Error occurred while running SQL.");
     }
   });
+}
+
+// Helper for running Python
+async function evaluateR() {
+	await import("./app/R.js-worker.js").then(async (R) => {
+		console.assert(runningPipe);
+		let input = await runningPipe.input();
+		let program = runningPipe.program();
+
+		// Get any files and add the input to 'input.txt'.
+		let files = runningPipe.files();
+		await localforage.setItem("input.txt", enc.encode(input).buffer);
+
+		const { results, error, output } = await R.asyncRunR(program, input, files.concat(["input.txt"]));
+		let stdout = '';
+		if (error) {
+			stdout += error;
+		}
+		if (results) {
+			stdout += results;
+		}
+		if (output) {
+			stdout += output;
+		}
+		await runningPipe.updateOutput(stdout);
+		if (error) {
+			console.log("R Worker error: ", error);
+			throw new Error("=> Error occured while running R");
+		}
+	})
 }
 
 // Helper for running Python
