@@ -13,6 +13,7 @@
 var initRJsPromise = undefined;
 
 var outputText;
+var inputText;
 
 var initRJs = function (moduleConfig) {
 
@@ -50,6 +51,7 @@ var initRJs = function (moduleConfig) {
         Module['printErr'] = function(text) {
           outputText += text +'\n';
         }
+
         Module['postRun'] = Module['postRun'] || [];
         Module['postRun'].push(function () {
             // When Emscripted calls postRun, this promise resolves with the built Module
@@ -56630,6 +56632,15 @@ function onModuleReady(R) {
         case "exec":
             buff = data["code"];
             outputText = '';
+
+            // Create an input file.
+            inputText = data["input"]; 
+            try {
+              R.FS_unlink("/input.txt");
+            } catch {
+            }
+            R.FS_createDataFile('/', "input.txt", inputText, true, true, true);
+
             var res = R._run_R_from_JS(R.allocate(R.intArrayFromString(buff), 0), buff.length);
             return postMessage({
                 id: data["id"],

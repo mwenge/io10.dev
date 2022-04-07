@@ -1,0 +1,3 @@
+[submodule "webR"]
+	path = webR
+	url = git@github.com:mwenge/webR.git
