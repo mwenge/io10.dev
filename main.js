@@ -17,12 +17,12 @@ const editor = setUpEditor(ps.pipeline.currentPipe().program());
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(), true);
 ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun,
-              runPipeline, interruptExecution, cmLangs);
+  runPipeline, interruptExecution, cmLangs);
 
 function interruptPythonExecution() {
-	import("./app/pyodide-py-worker.js").then((py) => {
+  import("./app/pyodide-py-worker.js").then((py) => {
     py.interruptPythonExecution();
-	});
+  });
 }
 // Update the syntax highlighting to suit the language being used.
 // Detection is a bit off sometimes so we use workarounds.
@@ -140,7 +140,7 @@ async function determineLanguageAndRunImpl() {
 // Helper for running SQL
 var enc = new TextEncoder(); // always utf-8
 async function evaluateSQL() {
-	await import("./app/sql.js-worker.js").then(async (sql) => {
+  await import("./app/sql.js-worker.js").then(async (sql) => {
     console.assert(runningPipe);
     let input = await runningPipe.input();
     let buffInput = enc.encode(input);
@@ -191,62 +191,62 @@ async function evaluateSQL() {
 
 // Helper for running Python
 async function evaluateR() {
-	await import("./app/R.js-worker.js").then(async (R) => {
-		console.assert(runningPipe);
-		let input = await runningPipe.input();
-		let program = runningPipe.program();
+  await import("./app/R.js-worker.js").then(async (R) => {
+    console.assert(runningPipe);
+    let input = await runningPipe.input();
+    let program = runningPipe.program();
 
-		// Get any files and add the input to 'input.txt'.
-		let files = runningPipe.files();
-		await localforage.setItem("input.txt", enc.encode(input).buffer);
+    // Get any files and add the input to 'input.txt'.
+    let files = runningPipe.files();
+    await localforage.setItem("input.txt", enc.encode(input).buffer);
 
-		const { results, error, output } = await R.asyncRunR(program, input, files.concat(["input.txt"]));
-		let stdout = '';
-		if (error) {
-			stdout += error;
-		}
-		if (results) {
-			stdout += results;
-		}
-		if (output) {
-			stdout += output;
-		}
-		await runningPipe.updateOutput(stdout);
-		if (error) {
-			console.log("R Worker error: ", error);
-			throw new Error("=> Error occured while running R");
-		}
-	})
+    const { results, error, output } = await R.asyncRunR(program, input, files.concat(["input.txt"]));
+    let stdout = '';
+    if (error) {
+      stdout += error;
+    }
+    if (results) {
+      stdout += results;
+    }
+    if (output) {
+      stdout += output;
+    }
+    await runningPipe.updateOutput(stdout);
+    if (error) {
+      console.log("R Worker error: ", error);
+      throw new Error("=> Error occured while running R");
+    }
+  })
 }
 
 // Helper for running Python
 async function evaluatePython() {
-	await import("./app/pyodide-py-worker.js").then(async (py) => {
-		console.assert(runningPipe);
-		let input = await runningPipe.input();
-		let program = runningPipe.program();
+  await import("./app/pyodide-py-worker.js").then(async (py) => {
+    console.assert(runningPipe);
+    let input = await runningPipe.input();
+    let program = runningPipe.program();
 
-		// Get any files and add the input to 'input.txt'.
-		let files = runningPipe.files();
-		await localforage.setItem("input.txt", enc.encode(input).buffer);
+    // Get any files and add the input to 'input.txt'.
+    let files = runningPipe.files();
+    await localforage.setItem("input.txt", enc.encode(input).buffer);
 
-		const { results, error, output } = await py.asyncRun(program, input, files.concat(["input.txt"]));
-		let stdout = '';
-		if (error) {
-			stdout += error;
-		}
-		if (results) {
-			stdout += results;
-		}
-		if (output) {
-			stdout += output;
-		}
-		await runningPipe.updateOutput(stdout);
-		if (error) {
-			console.log("pyodideWorker error: ", error);
-			throw new Error("=> Error occured while running Python");
-		}
-	})
+    const { results, error, output } = await py.asyncRun(program, input, files.concat(["input.txt"]));
+    let stdout = '';
+    if (error) {
+      stdout += error;
+    }
+    if (results) {
+      stdout += results;
+    }
+    if (output) {
+      stdout += output;
+    }
+    await runningPipe.updateOutput(stdout);
+    if (error) {
+      console.log("pyodideWorker error: ", error);
+      throw new Error("=> Error occured while running Python");
+    }
+  })
 }
 
 // Helper for running Javascript
@@ -304,19 +304,19 @@ fileUpload.onchange = function () {
   runningPipe = ps.pipeline.currentPipe();
   running.style.display = "block";
 
-	var f = fileUpload.files[0];
+  var f = fileUpload.files[0];
   if (!f) { return; }
   running.textContent = "Loading " + f.name;
-	var r = new FileReader();
-	r.onload = async function () {
+  var r = new FileReader();
+  r.onload = async function () {
     await localforage.setItem(f.name, r.result);
     await runningPipe.addFile(f.name);
     ps.updateAwesomeBar();
     runningPipe = null;
     running.style.display = "none";
     running.textContent = "Busy";
-	}
-	r.readAsArrayBuffer(f);
+  }
+  r.readAsArrayBuffer(f);
 }
 
 // Recalculate chunk size when zooming in or out.
