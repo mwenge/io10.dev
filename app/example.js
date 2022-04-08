@@ -31,6 +31,7 @@ export const examplePipelines = [
 #       +-----------+-------+
 #  
 #   io10.dev supports Python, SQL, Javascript, R, and Lua.
+#   Everything is run and stored locally in your browser. No data leaves your computer.
 #
 #   Let's start by running the Python program below to generate its output. 
 #    - Press Ctrl-Enter to run the program. 

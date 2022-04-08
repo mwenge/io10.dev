@@ -139,7 +139,12 @@ async function determineLanguageAndRunImpl() {
 
 // Helper for running SQL
 var enc = new TextEncoder(); // always utf-8
+let sqlLoaded = 0;
 async function evaluateSQL() {
+  if (!sqlLoaded) {
+    updateProgress("Loading SQLite Engine for the first time..");
+    sqlLoaded=1;
+  }
   await import("./app/sql.js-worker.js").then(async (sql) => {
     console.assert(runningPipe);
     let input = await runningPipe.input();
@@ -189,8 +194,13 @@ async function evaluateSQL() {
   });
 }
 
+let RLoaded = 0;
 // Helper for running Python
 async function evaluateR() {
+  if (!RLoaded) {
+    updateProgress("Loading R for the first time..");
+    RLoaded=1;
+  }
   await import("./app/R.js-worker.js").then(async (R) => {
     console.assert(runningPipe);
     let input = await runningPipe.input();
@@ -219,8 +229,13 @@ async function evaluateR() {
   })
 }
 
+let pythonLoaded = 0;
 // Helper for running Python
 async function evaluatePython() {
+  if (!pythonLoaded) {
+    updateProgress("Loading Python for the first time..");
+    pythonLoaded=1;
+  }
   await import("./app/pyodide-py-worker.js").then(async (py) => {
     console.assert(runningPipe);
     let input = await runningPipe.input();
