@@ -157,7 +157,11 @@ async function evaluateSQL() {
     // Write the standard input to a TSV table first.
     updateProgress("Loading input as a table..");
     await localforage.setItem(tableName, enc.encode(buffInput).buffer);
-    const { vsvtable } = await sql.asyncCreateTable(buffInput, tableName);
+    let res = await sql.asyncCreateTable(buffInput, tableName);
+    if (res.error) {
+      await runningPipe.updateOutput("Error creating input.txt table: " + res.error);
+      throw new Error("=> Error occurred while running SQL.");
+    }
 
     // Load the files associated with the pipe to tables.
     let files = runningPipe.files();
