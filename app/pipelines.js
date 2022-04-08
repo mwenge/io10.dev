@@ -1,8 +1,8 @@
 import { getPipeline } from "./pipeline.js";
 import { examplePipelines } from "./example.js";
-import { updatePipelineOnAwesomeBar } from "./awesomebar-pipeline.js";
+import { updatePipelineOnAwesomeBar, quickPipeDisplayUpdate } from "./awesomebar-pipeline.js";
 
-export function updateAwesomeBar() {
+export function updateAwesomeBar(i = 0) {
   updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
     pipeline.currentPipeIndex(),
     pipelinePrettyNames[currentPipelineIndex],
@@ -37,9 +37,12 @@ async function insertAfter() {
   updateDisplayedPipe(pipe);
 }
 async function previousPipe() {
-  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
-  let pipe = await pipeline.moveToPreviousPipe();
-  updateDisplayedPipe(pipe);
+  quickPipeDisplayUpdate(pipeline.currentPipeIndex(), -1);
+  await setTimeout(async ()=> { 
+    pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
+    let pipe = await pipeline.moveToPreviousPipe();
+    updateDisplayedPipe(pipe);
+  }, 10);
 }
 export async function moveToFirstPipe() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
@@ -48,12 +51,25 @@ export async function moveToFirstPipe() {
   return pipe;
 }
 export async function nextPipe() {
-  if (!pipeline.currentPipeIndex())
-    pipeline.currentPipe().updateInput(inputWrapper.getValue());
-  pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
-  let pipe = await pipeline.moveToNextPipe();
-  updateDisplayedPipe(pipe);
-  return pipe;
+  function nextPipeImpl() {
+    var promise = new Promise(function(resolve, reject) {
+      setTimeout(async function() {
+        if (!pipeline.currentPipeIndex())
+          pipeline.currentPipe().updateInput(inputWrapper.getValue());
+        pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
+        let pipe = await pipeline.moveToNextPipe();
+        updateDisplayedPipe(pipe);
+        resolve(pipe);
+      });
+    });
+    return promise;
+  }
+  quickPipeDisplayUpdate(pipeline.currentPipeIndex(), 1);
+  async function getNextPipe() {
+    let pipe = await nextPipeImpl();
+    return pipe
+  }
+  return await getNextPipe();
 }
 async function nextPipeline() {
   if (!pipeline.currentPipeIndex())

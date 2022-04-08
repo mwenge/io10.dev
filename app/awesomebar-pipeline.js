@@ -21,6 +21,17 @@ function updateTips() {
   document.getElementById("tip2").innerHTML = tips[i][1];
 }
 
+function quickPipeDisplayUpdate(cur, inc) {
+  if (!cur) {
+    return;
+  }
+  const c = document.getElementById("pipeline-container");
+  let ch = c.getElementsByClassName("pipe");
+  let x = ch[cur];
+  x.className = "pipe";
+  x = ch[cur + inc];
+  x.className = "pipe activepipe";
+}
 let cv = createColorValueArray();
 function updatePipelineOnAwesomeBar(pl, cur, name, files) {
   document.getElementById("pipeline-name").innerHTML = name;
@@ -48,4 +59,4 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files) {
   });
 }
 
-export {createColorValueArray, updatePipelineOnAwesomeBar};
+export {createColorValueArray, updatePipelineOnAwesomeBar, quickPipeDisplayUpdate};
