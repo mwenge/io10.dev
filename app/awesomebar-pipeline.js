@@ -27,6 +27,9 @@ function quickPipeDisplayUpdate(cur, inc) {
   }
   const c = document.getElementById("pipeline-container");
   let ch = c.getElementsByClassName("pipe");
+  if (cur + inc == ch.length) {
+    return;
+  }
   let x = ch[cur];
   x.className = "pipe";
   x = ch[cur + inc];
