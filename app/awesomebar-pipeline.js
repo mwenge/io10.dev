@@ -27,20 +27,14 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files) {
   const c = document.getElementById("pipeline-container");
   c.innerHTML = "";
 
-  let d = document.createElement("div"); 
-  d.className = "arrow-right second-arrow";
-  d.style.background = cv[0];
-  c.appendChild(d);
-
-  let lastChild = null;
+	let d;
+  let z = 1000;
   pl.forEach((p,i) => {
-    let d = document.createElement("div"); 
-    d.className = "shortcut-tip";
-    d.style.backgroundColor = cv[i % colorWheelLength];
+    d = document.createElement("div"); 
+    d.className = "pipe";
     d.textContent = p.lang;
     if (i == cur) {
-      d.className += " currentpipe";
-      d.style.color = "white";
+      d.className += " activepipe";
       if (files.length) {
         // Add the file tip.
         let f = document.createElement("div"); 
@@ -50,15 +44,8 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files) {
       }
     }
     c.appendChild(d);
-    d = document.createElement("div"); 
-    d.className = "arrow-right first-arrow";
-    d.style.borderLeftColor = cv[i % colorWheelLength];
-    d.style.background = cv[(i % colorWheelLength) + 1];
-    c.appendChild(d);
-    lastChild = d;
+    d.style.zIndex = z--;
   });
-  if (lastChild)
-    lastChild.style.background = 'black';
 }
 
 export {createColorValueArray, updatePipelineOnAwesomeBar};
