@@ -41,17 +41,6 @@
   width: 50%;
   height: 49.99%;
 }
-.awesomebar {
-  position: absolute;
-  text-transform: uppercase;
-  z-index: 9998;
-  left: 0;
-  bottom: 4px;
-  width: 100%;
-  font-family: "Inconsolata";
-  max-height: 17px;
-  height: 17px;
-}
 /* Copied from http://aleclownes.com/2017/02/01/crt-display.html */
 .running {
   display: none;
@@ -80,8 +69,19 @@
   background-size: 100% 2px, 3px 100%;
   pointer-events: none;
 }
-.pipeline-name,.title {
-  padding: 0 5px 0 15px;
+.awesomebar {
+  position: absolute;
+  text-transform: uppercase;
+  z-index: 9998;
+  left: 0;
+  bottom: 9px;
+  width: 100%;
+  font-family: "Inconsolata";
+  max-height: 17px;
+  height: 17px;
+}
+.pipe,.pipeline-name,.title {
+  padding: 3px 10px 2px 15px;
   background: black;
   color: lightgray;
   position: relative;
@@ -92,22 +92,15 @@
   border-right:none;
 }
 .pipeline-name {
-  background: grey;
-  color: black;
+  background: #404040;
+  color: white;
 }
 .pipeline-container {
   display: inline-block;
 }
 
 .pipe {
-  padding: 0 5px 0 15px;
-  background: black;
-  color: lightgray;
-  position: relative;
-  display: inline-block;
   border: 1px solid white;
-  max-height: 17px;
-  height: 17px;
   text-transform: lowercase;
 }
 
@@ -125,16 +118,16 @@
 
 /* this border color controlls the color of the triangle (what looks like the fill of the triangle) */
 .pipe:after {
-  top: 0px;
+  top: 1px;
   border-color: transparent transparent transparent black;
-  border-width: 9px;
+  border-width: 10px;
 }
 
 /* this border color controlls the outside, thin border */
 .pipe:before {
   top:-2px;
   border-color: transparent transparent transparent white;
-  border-width: 11px;
+  border-width: 13px;
 }
 .activepipe {
   background: orange;
