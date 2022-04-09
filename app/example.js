@@ -6,9 +6,9 @@ export const examplePipelines = [
   {
     key: "Example Pipeline-0",
     program: `# Welcome to io10.dev.
-#   This is a data analysis notebook that allows you to structure your work as a pipeline
-#   of inputs and outputs. 
-#   
+#   This is a data analysis utility that structures your work as a pipeline
+#   of inputs and outputs. Each step in the pipeline can use a different
+#   language and can side-load files into the pipeline.
 #   The first two steps in this example pipeline look like this:
 #   
 #       +-------+     +-------+    +-------+    +-------+    +-------+
@@ -17,8 +17,8 @@ export const examplePipelines = [
 #       |       |     |       |    |       |    |       |    |       |
 #       +-------+     +-------+    +-------+    +-------+    +-------+
 #  
-#   On this screen we are at the first step of the pipeline. The input is at the top right. As we
-#   navigate the output of the previous step becomes our input. 
+#   On this screen we are at the first step of the pipeline. The input is at the
+#   top right. As we navigate the output of the previous step becomes our input. 
 #  
 #       +-----------+-------+
 #       |           |       |
@@ -31,7 +31,8 @@ export const examplePipelines = [
 #       +-----------+-------+
 #  
 #   io10.dev supports Python, SQL, Javascript, R, and Lua.
-#   Everything is run and stored locally in your browser. No data leaves your computer.
+#   Everything is run and stored locally in your browser. No data leaves your
+#   computer.
 #
 #   Let's start by running the Python program below to generate its output. 
 #    - Press Ctrl-Enter to run the program. 
