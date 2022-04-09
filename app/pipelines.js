@@ -1,5 +1,5 @@
 import { getPipeline } from "./pipeline.js";
-import { examplePipelines } from "./example.js";
+import { examplePipelines, exampleFiles } from "./example.js";
 import { updatePipelineOnAwesomeBar, quickPipeDisplayUpdate } from "./awesomebar-pipeline.js";
 
 export function updateAwesomeBar(i = 0) {
@@ -136,13 +136,10 @@ if (!savedPipelines) {
     });
     localStorage.setItem(examplePipeline.name, JSON.stringify(newPipeline));
   }
-  // Add the example file.
-  await localforage.setItem('file.txt', enc.encode(`fjkdlsjfdkl\tfjkdslfdslk
-  fdsjklfdjfkls\tfjdsklfjkdslfd
-  dsjkldsjak\tdjskaldsjakl`).buffer);
-  await localforage.setItem('table.csv', enc.encode(`id\tvalue
-  fdsjklfdjfkls\tfjdsklfjkdslfd
-  dsjkldsjak\tdjskaldsjakl`).buffer);
+  // Add the example files.
+  for (var file of exampleFiles) {
+    await localforage.setItem(file.name, enc.encode(file.data).buffer);
+  }
 
 }
 

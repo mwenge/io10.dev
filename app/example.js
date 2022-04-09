@@ -167,17 +167,41 @@ FROM "table.csv" A
 //                              +--------------------------------------+
 // 
 // The output from the previous step is stored in an array of strings called 'input'.
-// We reference it below in the loop.
+// In this Javascript snippet we filter for entries where 'dept' contains 'IT'.
+// We use the 'return' statement to return the script's output
 // 
-// Now that you've seen the basics, you can start creating pipelines of your own.
+var filtered = input.filter(x => x.split('\t')[4] == 'IT');
+var output =  input[0]+'\\n' + filtered.join('\\n');
+return output;
+`,
+    input: ``,
+    output: '',
+    files: [],
+    lang: "*.js",
+  },
+  {
+    key: "Example Pipeline-5",
+    program: `// Welcome to the sixth step in our pipeline.
+//
+// Hopefully by now it will be clear that Alt in combination with Left and Right allows
+// you to navigate between the steps in a pipeline.
+// 
+// To naviagate between pipelines we use Alt-Up and Alt-Down. Alt-Up will create a new pipeline
+// if one doesn't already exist there. 
+//
+// So in summary for pipeline navigation.:
 //   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.
 //   - Press Alt-Up to create a new pipeline.
 //   - Use Alt-Up and Alt-Down to navigate between your pipelines.
 //   - Use Alt-A to add a new step to a pipeline.
-var l = [1,2,3,4,5,6];
-for (var k = 0; k < l.length; k++) {
-    print(3, input[k]);
-}
+//
+// One useful thing: at any time you can run all the steps in the pipeline from the start by
+// using Alt-R. Why not try it now? The pipeline will run from the start and end up back here
+// at the end.
+//
+// Now that you've seen the basics, let's look at a little more advanced usage.
+// Use Alt-Up to navigate to the next pipeline containing the next stage of the tutorial.
+//
 `,
     input: ``,
     output: '',
@@ -192,46 +216,16 @@ for (var k = 0; k < l.length; k++) {
   [
   {
     key: "Introduction Part Two-0",
-    program: `# Welcome to io10.dev.
-#   This is a data analysis notebook that allows you to structure your work as a pipeline
-#   of inputs and outputs. 
-#   
-#   The first two steps in this example pipeline look like this:
-#   
-#       +-------+     +-------+    +-------+    +-------+    +-------+
-#       |       |     |       |    |       |    |       |    |       |
-#       | Input |-----| *.py  |----| Output|----- *.sql |----|Output |
-#       |       |     |       |    |       |    |       |    |       |
-#       +-------+     +-------+    +-------+    +-------+    +-------+
-#  
-#   On this screen we are at the first step of the pipeline. The input is at the top right. As we
-#   navigate the output of the previous step becomes our input. 
-#  
-#       +-----------+-------+
-#       |           |       |
-#       |           | Input |
-#       |           |       |
-#       +  *.py     +-------+
-#       |           |       |
-#       |           | Output|
-#       |           |       |
-#       +-----------+-------+
-#  
-#   io10.dev supports Python, SQL, Javascript, R, and Lua.
-#
-#   Let's start by running the Python program below to generate its output. 
-#    - Press Ctrl-Enter to run the program. 
-#    - Then press Alt-Right to navigate to the next step in the pipeline.
-#  
-import sys
-w = sys.stdin.readline();
-print("colid" + '\t' + "colval")
-for i in range(0,20):
-  print(str(1) + '\t' + w.strip() +str(i))
+    program: `# 
+# Let's run some R. We have a file loaded called 'file.csv'. Let's read it in and print it out.
+# Reminder: press Ctrl-Enter to run! :) 
+data <- read.csv("file.csv")
+print(data)
     `,
     input: ``,
     output: '',
     lang: "*.py",
+    files: ['file.csv'],
   },
   {
     key: "Introduction Part Two-1",
@@ -350,17 +344,12 @@ FROM "table.csv" A
 //                              +--------------------------------------+
 // 
 // The output from the previous step is stored in an array of strings called 'input'.
-// We reference it below in the loop.
+// In this Javascript snippet we filter for entries where 'dept' contains 'IT'.
+// We use the 'return' statement to return the script's output
 // 
-// Now that you've seen the basics, you can start creating pipelines of your own.
-//   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.
-//   - Press Alt-Up to create a new pipeline.
-//   - Use Alt-Up and Alt-Down to navigate between your pipelines.
-//   - Use Alt-A to add a new step to a pipeline.
-var l = [1,2,3,4,5,6];
-for (var k = 0; k < l.length; k++) {
-    print(3, input[k]);
-}
+var filtered = input.filter(x => x.split('\t')[4] == 'IT');
+var output =  input[0]+'\n' + filtered.join('\n');
+return output;
 `,
     input: ``,
     output: '',
@@ -371,3 +360,29 @@ for (var k = 0; k < l.length; k++) {
   },
 ];
 
+export const exampleFiles = [
+  {
+  name: 'table.csv',
+  data: `id,name,salary,start_date,dept
+1,Rick,623.3,2012-01-01,IT
+2,Dan,515.2,2013-09-23,Operations
+3,Michelle,611,2014-11-15,IT
+4,Ryan,729,2014-05-11,HR
+5,Gary,843.25,2015-03-27,Finance
+6,Nina,578,2013-05-21,IT
+7,Simon,632.8,2013-07-30,Operations
+8,Guru,722.5,2014-06-17,Finance`,
+  },
+  {
+  name: 'file.csv',
+  data: `id,name,salary,start_date,dept
+1,Rick,623.3,2012-01-01,IT
+2,Dan,515.2,2013-09-23,Operations
+3,Michelle,611,2014-11-15,IT
+4,Ryan,729,2014-05-11,HR
+5,Gary,843.25,2015-03-27,Finance
+6,Nina,578,2013-05-21,IT
+7,Simon,632.8,2013-07-30,Operations
+8,Guru,722.5,2014-06-17,Finance`,
+  },
+];
