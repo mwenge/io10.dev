@@ -71,7 +71,6 @@ async function getPipeline(id) {
       if (!current) {
         return pipe;
       }
-      current--;
       let pid = simpleHash(pipeline[current].pid + Math.floor(Math.random() * 1000).toString());
       pipeline.splice(current, 0, {pid:pid, lang:"*.py"});
       localStorage.setItem(id, JSON.stringify(pipeline));
