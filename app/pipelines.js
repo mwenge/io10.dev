@@ -1,3 +1,4 @@
+import { pipelineNames } from './pipelinenames.js';
 import { getPipeline } from "./pipeline.js";
 import { examplePipelines, exampleFiles } from "./example.js";
 import { updatePipelineOnAwesomeBar, quickPipeDisplayUpdate } from "./awesomebar-pipeline.js";
@@ -6,7 +7,8 @@ export function updateAwesomeBar(i = 0) {
   updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
     pipeline.currentPipeIndex(),
     pipelinePrettyNames[currentPipelineIndex],
-    pipeline.currentPipe().files()); 
+    pipeline.currentPipe().files(),
+		currentPipelineIndex); 
 }
 // Helper functions to navigate pipes and pipelines.
 export async function updateDisplayedPipe(pipe) {
@@ -82,8 +84,13 @@ async function nextPipeline() {
     return;
   }
   let cur = pipelines.length;
-  pipelines.push("New Pipeline " + cur);
-  pipelinePrettyNames.push("New Pipeline " + cur);
+  //Maximum of 100 or so pipelines
+  if (cur >= pipelineNames.length - 1) {
+    return;
+  }
+  let newPipelineName = pipelineNames[cur];
+  pipelines.push(newPipelineName);
+  pipelinePrettyNames.push(newPipelineName);
   currentPipelineIndex = pipelines.length - 1;
   localStorage.setItem("pipelines", JSON.stringify(pipelines));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));

@@ -1,8 +1,10 @@
+
 let colorWheelLength = 40;
 function createColorValueArray() {
-  let [r,g,b] = [0,0,139];
-  let [inr, ing, inb] = [10, 20, 30];
+  let [r,g,b] = [40,40,40];
+  let [inr, ing, inb] = [80, 20, 10];
   let colors = [];
+  colors.push("#404040");
   for (let i = 0; i < colorWheelLength; i++)
     colors.push("rgb(" + ((r+=inr)%255).toString() + "," + ((g+=ing)%255).toString() + "," + ((b+=inb)%255).toString());
   return colors;
@@ -36,8 +38,11 @@ function quickPipeDisplayUpdate(cur, inc) {
   x.className = "pipe activepipe";
 }
 let cv = createColorValueArray();
-function updatePipelineOnAwesomeBar(pl, cur, name, files) {
-  document.getElementById("pipeline-name").innerHTML = name;
+function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
+  const pln = document.getElementById("pipeline-name");
+	pln.innerHTML = name;
+  document.getElementsByClassName("pipeline-name")[0].style.background = cv[pli];
+
   const c = document.getElementById("pipeline-container");
   c.innerHTML = "";
 
