@@ -8,7 +8,7 @@
 */
 
 .cm-s-io.CodeMirror { background: #1C1C1C; color: #d4d4d4; } /**/
-.cm-s-io div.CodeMirror-selected { background: rgba(252, 69, 133, 0.478); } /**/
+.cm-s-io div.CodeMirror-selected { background: rgba(196, 195, 208, 0.478); } /**/
 .cm-s-io .CodeMirror-selectedtext,
 .cm-s-io .CodeMirror-selected,
 .cm-s-io .CodeMirror-line::selection,
@@ -16,14 +16,14 @@
 .cm-s-io .CodeMirror-line > span > span::selection,
 .cm-s-io .CodeMirror-line::-moz-selection,
 .cm-s-io .CodeMirror-line > span::-moz-selection,
-.cm-s-io .CodeMirror-line > span > span::-moz-selection { background: rgba(252, 67, 132, 0.47); }
+.cm-s-io .CodeMirror-line > span > span::-moz-selection { background: rgba(196, 195, 208, 0.47); }
 
 .cm-s-io.CodeMirror pre { padding-left: 0px; }
 .cm-s-io .CodeMirror-gutters {background: #1C1C1C; border-right: 0px;}
 .cm-s-io .CodeMirror-linenumber {color: #777777;  padding-right: 10px; }
 .cm-s-io .CodeMirror-activeline .CodeMirror-linenumber.CodeMirror-gutter-elt { background: #1C1C1C; color: #fc4384; }
 .cm-s-io .CodeMirror-linenumber { color: #777; }
-.cm-s-io .CodeMirror-cursor { border-left: 2px solid #FC4384; }
+.cm-s-io .CodeMirror-cursor { border-left: 2px solid #98fb98; }
 .cm-s-io .cm-searching { background: rgba(243, 155, 53, .3) !important; outline: 1px solid #F39B35; }
 .cm-s-io .cm-searching.CodeMirror-selectedtext { background: rgba(243, 155, 53, .7) !important; color: white; }
 
