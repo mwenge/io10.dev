@@ -7,9 +7,9 @@ function setUpEditor(content) {
 
   // let selectedTheme = "default";
   // Use dark theme by default
-  let selectedTheme = "3024-night";
+  let selectedTheme = "blackboard";
   if (prefersDarkScheme.matches) {
-    selectedTheme = "3024-night";
+    selectedTheme = "blackboard";
   }
   // Add syntax highlihjting to the textarea
   var editor = CodeMirror.fromTextArea(commandsElm, {

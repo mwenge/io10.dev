@@ -78,9 +78,9 @@ function setUpOutput(div, c = "Output appears here", editable) {
   const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
   // let selectedTheme = "default";
   // Use dark theme by default
-  let selectedTheme = "3024-night";
+  let selectedTheme = "blackboard";
   if (prefersDarkScheme.matches) {
-    selectedTheme = "3024-night";
+    selectedTheme = "blackboard";
   }
 
   function first() {

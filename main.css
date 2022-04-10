@@ -1,3 +1,7 @@
+/* Matches the background color of the codemirror theme */
+:root {
+  --main-bg-color: #0C1021;
+}
 @font-face {
   font-family: 'ABCFavoritMono';
   font-style: normal;
@@ -82,7 +86,6 @@
 }
 .pipe,.pipeline-name,.title {
   padding: 3px 10px 2px 15px;
-  background: black;
   color: lightgray;
   position: relative;
   display: inline-block;
@@ -90,9 +93,9 @@
   max-height: 17px;
   height: 17px;
   border-right:none;
+  background-color: var(--main-bg-color);
 }
 .pipeline-name {
-  background: #404040;
   color: white;
 }
 .pipeline-container {
@@ -119,7 +122,7 @@
 /* this border color controlls the color of the triangle (what looks like the fill of the triangle) */
 .pipe:after {
   top: 1px;
-  border-color: transparent transparent transparent black;
+  border-color: transparent transparent transparent var(--main-bg-color);
   border-width: 10px;
 }
 
@@ -131,7 +134,7 @@
 }
 .activepipe {
   background: orange;
-  color: black;
+  color: var(--main-bg-color);
 }
 .activepipe:after {
   border-color: transparent transparent transparent orange;
