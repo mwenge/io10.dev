@@ -1,6 +1,7 @@
 /* Matches the background color of the codemirror theme */
 :root {
   --main-bg-color: #0C1021;
+  --main-fg-color: #98fb98;
 }
 @font-face {
   font-family: 'ABCFavoritMono';
@@ -133,11 +134,11 @@
   border-width: 13px;
 }
 .activepipe {
-  background: orange;
+  background: var(--main-fg-color);
   color: var(--main-bg-color);
 }
 .activepipe:after {
-  border-color: transparent transparent transparent orange;
+  border-color: transparent transparent transparent var(--main-fg-color);
 }
 .tip-container {
   position: absolute;
@@ -174,11 +175,6 @@ body{
   overflow: hidden;
 }
 
-.CodeMirror-cursor {
-  background-color: yellow !important;
-  opacity: 80% !important;
-  width: 2px;
-}
 .CodeMirror-simplescroll-horizontal div, .CodeMirror-simplescroll-vertical div {
   background: grey;
   border: 1px solid black;

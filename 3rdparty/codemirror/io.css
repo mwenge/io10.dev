@@ -1,0 +1,57 @@
+/*
+
+    Name:       yoncé
+    Author:     Thomas MacLean (http://github.com/thomasmaclean)
+
+    Original yoncé color scheme by Mina Markham (https://github.com/minamarkham)
+
+*/
+
+.cm-s-io.CodeMirror { background: #1C1C1C; color: #d4d4d4; } /**/
+.cm-s-io div.CodeMirror-selected { background: rgba(252, 69, 133, 0.478); } /**/
+.cm-s-io .CodeMirror-selectedtext,
+.cm-s-io .CodeMirror-selected,
+.cm-s-io .CodeMirror-line::selection,
+.cm-s-io .CodeMirror-line > span::selection,
+.cm-s-io .CodeMirror-line > span > span::selection,
+.cm-s-io .CodeMirror-line::-moz-selection,
+.cm-s-io .CodeMirror-line > span::-moz-selection,
+.cm-s-io .CodeMirror-line > span > span::-moz-selection { background: rgba(252, 67, 132, 0.47); }
+
+.cm-s-io.CodeMirror pre { padding-left: 0px; }
+.cm-s-io .CodeMirror-gutters {background: #1C1C1C; border-right: 0px;}
+.cm-s-io .CodeMirror-linenumber {color: #777777;  padding-right: 10px; }
+.cm-s-io .CodeMirror-activeline .CodeMirror-linenumber.CodeMirror-gutter-elt { background: #1C1C1C; color: #fc4384; }
+.cm-s-io .CodeMirror-linenumber { color: #777; }
+.cm-s-io .CodeMirror-cursor { border-left: 2px solid #FC4384; }
+.cm-s-io .cm-searching { background: rgba(243, 155, 53, .3) !important; outline: 1px solid #F39B35; }
+.cm-s-io .cm-searching.CodeMirror-selectedtext { background: rgba(243, 155, 53, .7) !important; color: white; }
+
+.cm-s-io .cm-atom { color: #F39B35; }
+.cm-s-io .cm-number, .cm-s-io span.cm-type { color:  #A06FCA; } /**/
+.cm-s-io .cm-def { color: #98E342; }
+.cm-s-io .cm-property,
+.cm-s-io span.cm-variable { color: #D4D4D4; }
+.cm-s-io span.cm-variable-2 { color: #da7dae; }
+.cm-s-io span.cm-variable-3 { color: #A06FCA; }
+.cm-s-io .cm-type.cm-def { color: #FC4384; font-style: normal; text-decoration: underline; }
+.cm-s-io .cm-property.cm-def { color: #FC4384; font-style: normal; }
+.cm-s-io .cm-callee { color: #FC4384; font-style: normal; }
+.cm-s-io .cm-operator { color: #FC4384; } /**/
+.cm-s-io .cm-qualifier,
+.cm-s-io .cm-tag { color: #FC4384; }
+.cm-s-io .cm-tag.cm-bracket { color: #D4D4D4; }
+.cm-s-io .cm-attribute { color: #A06FCA; }
+.cm-s-io .cm-comment { color:#e8f48c; font-weight:normal; } /**/
+.cm-s-io .cm-comment.cm-tag { color: #FC4384 }
+.cm-s-io .cm-comment.cm-attribute { color: #D4D4D4; }
+.cm-s-io .cm-string { color:#E6DB74; } /**/
+.cm-s-io .cm-string-2 { color:#F39B35; } /*?*/
+.cm-s-io .cm-meta { color: #D4D4D4; background: inherit; }
+.cm-s-io .cm-header { color: #da7dae; }
+.cm-s-io .cm-hr { color: #98E342; }
+.cm-s-io .cm-link { color:#696d70; font-style:italic; text-decoration:none; } /**/
+.cm-s-io .cm-error { border-bottom: 1px solid #C42412; }
+
+.cm-s-io .CodeMirror-activeline-background { background: #272727; }
+.cm-s-io .CodeMirror-matchingbracket { outline:1px solid grey; color:#D4D4D4 !important; }
