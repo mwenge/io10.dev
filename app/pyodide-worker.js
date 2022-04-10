@@ -22,7 +22,11 @@ async function loadFile(f) {
 async function loadPyodideAndPackages() {
   self.pyodide = await loadPyodide({
     indexURL: "https://cdn.jsdelivr.net/pyodide/v0.19.1/full/",
-    stdout: (text) => {self.postMessage({text:text});},
+    stdout: (text) => {
+      if (text == "Python initialization complete")
+        return;
+      self.postMessage({text:text});
+    },
     stdin: () => { return stdinIterator.next().value; },
   });
 }
