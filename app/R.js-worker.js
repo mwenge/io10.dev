@@ -1,23 +1,41 @@
-const worker = new Worker("3rdparty/webR/worker.R.bin.js");
-
+let worker;
 const callbacks = {};
-let textOutput = "";
+setUpWorker();
 
-worker.onmessage = (event) => {
-  console.log("event data", event.data);
-  if (event.data.progress) {
-    return;
-  }
-  const { id, ...data } = event.data;
-  const onSuccess = callbacks[id];
-  console.log("onsuccess", onSuccess);
-  if (!onSuccess) {
-    return;
-  }
-  delete callbacks[id];
-  data.output = textOutput;
-  onSuccess(data);
-};
+function setUpWorker() {
+  worker = new Worker("3rdparty/webR/worker.R.bin.js");
+  // Open a database
+  worker.postMessage({ action: 'open' });
+  worker.onmessage = (event) => {
+    console.log("event data", event.data);
+    if (event.data.progress) {
+      return;
+    }
+    const { id, ...data } = event.data;
+    const onSuccess = callbacks[id];
+    console.log("onsuccess", onSuccess);
+    if (!onSuccess) {
+      return;
+    }
+    delete callbacks[id];
+    onSuccess(data);
+  };
+}
+
+function interruptExecution() {
+  Object.keys(callbacks).forEach(function(id) {
+    const onSuccess = callbacks[id];
+    if (!onSuccess) {
+      return;
+    }
+    delete callbacks[id];
+    let data = {};
+    data.error = "Cancelled";
+    onSuccess(data);
+  });
+  worker.terminate();
+  setUpWorker();
+}
 
 const asyncRunR = (() => {
   let id = 0; // identify a Promise
@@ -31,4 +49,4 @@ const asyncRunR = (() => {
   };
 })();
 
-export { asyncRunR };
+export { asyncRunR, interruptExecution };

@@ -13,6 +13,9 @@ const defaultData =
 #    - Alt-D: Delete the current step from a pipeline.
 #    - Ctrl-O: Add a file to the current step in the pipeline.
 #
+#  Current Step
+#    - Ctrl-D: Interrupt execution (Python, R, and SQL only)
+#
 #  Input/Output
 #    - PageUp/PageDown: Page up and down through input/output.
 #    - Ctrl-Home: Move back to start of input/output

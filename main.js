@@ -6,10 +6,10 @@ import { asyncRunLua } from "./app/lua.js";
 
 const cmLangs = {
   "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
-  "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL },
+  "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL, interrupt: interruptSQLExecution },
   "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
   "*.lua" : { lang: "*.lua",  syntax: "text/x-lua", run: evaluateLua },
-  "*.r" : { lang: "*.r",  syntax: "text/x-rsrc", run: evaluateR },
+  "*.r" : { lang: "*.r",  syntax: "text/x-rsrc", run: evaluateR, interrupt: interruptRExecution },
 };
 // Set up the editor.
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
@@ -24,6 +24,17 @@ function interruptPythonExecution() {
     py.interruptPythonExecution();
   });
 }
+function interruptSQLExecution() {
+  import("./app/sql.js-worker.js").then((sql) => {
+    sql.interruptExecution();
+  });
+}
+function interruptRExecution() {
+  import("./app/R.js-worker.js").then((r) => {
+    r.interruptExecution();
+  });
+}
+
 // Update the syntax highlighting to suit the language being used.
 // Detection is a bit off sometimes so we use workarounds.
 setInterval(determineLanguage, 2000);
@@ -147,6 +158,7 @@ async function evaluateSQL() {
   }
   await import("./app/sql.js-worker.js").then(async (sql) => {
     console.assert(runningPipe);
+    console.log("evaluating sql");
     let input = await runningPipe.input();
     let buffInput = enc.encode(input);
 

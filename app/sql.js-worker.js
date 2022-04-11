@@ -1,30 +1,50 @@
-const worker = new Worker("3rdparty/sql.js/worker.sql-wasm.js");
+let worker;
 import { getDataAndSeparator } from "./delimiters.js";
-// Open a database
-worker.postMessage({ action: 'open' });
 
 const callbacks = {};
 let textOutput = "";
+setUpWorker();
 
-worker.onmessage = (event) => {
-  console.log("event data", event.data);
-  if (event.data.progress) {
-    return;
-  }
-  const { id, ...data } = event.data;
-  const onSuccess = callbacks[id];
-  console.log("onsuccess", onSuccess);
-  if (!onSuccess) {
-    return;
-  }
-  delete callbacks[id];
-  data.output = textOutput;
-  onSuccess(data);
-};
+function setUpWorker() {
+  worker = new Worker("3rdparty/sql.js/worker.sql-wasm.js");
+  // Open a database
+  worker.postMessage({ action: 'open' });
+  worker.onmessage = (event) => {
+    console.log("event data", event.data);
+    if (event.data.progress) {
+      return;
+    }
+    const { id, ...data } = event.data;
+    const onSuccess = callbacks[id];
+    console.log("onsuccess", onSuccess);
+    if (!onSuccess) {
+      return;
+    }
+    delete callbacks[id];
+    data.output = textOutput;
+    onSuccess(data);
+  };
+}
+
+function interruptExecution() {
+  Object.keys(callbacks).forEach(function(id) {
+    const onSuccess = callbacks[id];
+    if (!onSuccess) {
+      return;
+    }
+    delete callbacks[id];
+    let data = {};
+    data.error = "Cancelled";
+    onSuccess(data);
+  });
+  worker.terminate();
+  setUpWorker();
+}
 
 const asyncRunSQL = (() => {
   let id = 0; // identify a Promise
   return (sql) => {
+    console.log(worker);
     // the id could be generated more carefully
     id = (id + 1) % Number.MAX_SAFE_INTEGER;
     return new Promise((onSuccess) => {
@@ -55,4 +75,4 @@ const asyncCreateTable = (() => {
     });
   };
 })();
-export { asyncCreateTable, asyncRunSQL };
+export { asyncCreateTable, asyncRunSQL, interruptExecution };
