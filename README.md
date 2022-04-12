@@ -1,4 +1,6 @@
 # io10.dev
+![favicon](https://user-images.githubusercontent.com/58846/162999976-65b1f8b3-3445-432d-bd60-ed95a0c21233.png)
+
 A data dipeline in the browser? A REPL chain?
 
 This is what it looks like, but what is it?
