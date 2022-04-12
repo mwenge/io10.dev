@@ -4,19 +4,20 @@ import * as storage from "./storage.js";
 const defaultData = 
   {
     program: `# Keyboard Commands.
-#  Current Pipeline
+#  Current Step
 #    - Ctrl-Enter: Run the current step.
+#    - Ctrl-D: Interrupt execution (Python, R, and SQL only)
+#
+#  Current Pipeline
 #    - Alt-R: Run the entire pipeline from the start.
 #    - Alt-Left: Navigate to the previous step in the pipeline.
 #    - Alt-Right: Navigate to the next step in the pipeline.
-#    - Alt-A: Add a new step to a pipeline.
-#    - Alt-D: Delete the current step from a pipeline.
-#    - Ctrl-O: Add a file to the current step in the pipeline.
+#    - Alt-A: Add a new step after the current one.
+#    - Alt-B: Add a new step before the current one.
+#    - Alt-D: Delete the current step.
+#    - Ctrl-O: Add a file to the current step.
 #
-#  Current Step
-#    - Ctrl-D: Interrupt execution (Python, R, and SQL only)
-#
-#  Input/Output
+#  When Cursor in Input/Output panes
 #    - PageUp/PageDown: Page up and down through input/output.
 #    - Ctrl-Home: Move back to start of input/output
 #
