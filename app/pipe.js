@@ -14,7 +14,7 @@ const defaultData =
 #    - Alt-Right: Navigate to the next step in the pipeline.
 #    - Alt-A: Add a new step after the current one.
 #    - Alt-B: Add a new step before the current one.
-#    - Alt-D: Delete the current step.
+#    - Alt-C: Delete the current step.
 #    - Ctrl-O: Add a file to the current step.
 #
 #  When Cursor in Input/Output panes
