@@ -25,6 +25,26 @@ const defaultData =
 #    - Alt-Up: Create a new pipeline or navigate to the next pipeline.
 #    - Alt-Down: Navigate to the previous pipeline.
 #    - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
+#
+#  Language Detection
+#  io10.dev will automatically detect the language you're using, most of the time.
+#  For short one-liners, you can force language detection by using a 'shebang' on the
+#  first line of the script, e.g.:
+#
+#    #!/bin/python
+#    x = 9
+#    print(x)
+#
+#  The available shebangs are:
+#
+#    #!/bin/python
+#    #!/bin/py
+#    #!/bin/javascript
+#    #!/bin/js
+#    #!/bin/sql
+#    #!/bin/r
+#    #!/bin/lua
+
 
 import sys
 w = sys.stdin.readline();

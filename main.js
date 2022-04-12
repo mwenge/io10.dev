@@ -35,6 +35,27 @@ function interruptRExecution() {
   });
 }
 
+const shebangs = {
+  "#!/bin/python" : "*.py",
+  "#!/bin/py" : "*.py",
+  "#!/bin/javascript" : "*.js",
+  "#!/bin/js" : "*.js",
+  "#!/bin/sql" : "*.sql",
+  "#!/bin/r" : "*.r",
+  "#!/bin/lua" : "*.lua",
+};
+function langFromShebang(p) {
+  for (var k of Object.keys(shebangs)) {
+    if (p.startsWith(k) && shebangs[k] in cmLangs) return cmLangs[shebangs[k]];
+  }
+  return null;
+}
+function preprocessedProgram(p) {
+  let program = p.program();
+  if (langFromShebang(program))
+    program = program.slice(program.indexOf('\n') + 1);
+  return program;
+}
 // Update the syntax highlighting to suit the language being used.
 // Detection is a bit off sometimes so we use workarounds.
 setInterval(determineLanguage, 2000);
@@ -43,17 +64,18 @@ async function determineLanguage() {
   if (runningPipe) {
     return;
   }
-  let pipe = ps.pipeline.currentPipe();
-  // Strip comments, which confuse guesslang.
-  let program = editor.getValue()
-    .split('\n')
-    .filter(x => !x.startsWith('--') && !x.startsWith('#') && !x.startsWith('//'))
-    .join('\n');
-  const result = await guessLang.runModel(program);
-  const fileType = (result.length) ? "*." + result[0].languageId : "";
-  if (!(fileType in cmLangs)) { return null; }
-
-  const lang = cmLangs[fileType];
+  let p = editor.getValue();
+  let lang = langFromShebang(p);
+  if (!lang) { 
+    // Strip comments, which confuse guesslang.
+    let program = p.split('\n')
+      .filter(x => !x.startsWith('--') && !x.startsWith('#') && !x.startsWith('//'))
+      .join('\n');
+    const result = await guessLang.runModel(program);
+    const fileType = (result.length) ? "*." + result[0].languageId : "";
+    if (!(fileType in cmLangs)) { return null; }
+    lang = cmLangs[fileType];
+  }
   editor.setOption("mode", lang.syntax);
   if (ps.pipeline.lang() == lang.lang) return;
   ps.pipeline.updateLanguage(lang.lang);
@@ -187,7 +209,7 @@ async function evaluateSQL() {
     }));
 
     // Now run the query against it.
-    let program = runningPipe.program();
+    let program = preprocessedProgram(runningPipe);
     updateProgress("Running Query..");
     const { results, error } = await sql.asyncRunSQL(program);
 
@@ -220,7 +242,7 @@ async function evaluateR() {
   await import("./app/R.js-worker.js").then(async (R) => {
     console.assert(runningPipe);
     let input = await runningPipe.input();
-    let program = runningPipe.program();
+    let program = preprocessedProgram(runningPipe);
 
     // Get any files and add the input to 'input.txt'.
     let files = runningPipe.files();
@@ -255,7 +277,7 @@ async function evaluatePython() {
   await import("./app/pyodide-py-worker.js").then(async (py) => {
     console.assert(runningPipe);
     let input = await runningPipe.input();
-    let program = runningPipe.program();
+    let program = preprocessedProgram(runningPipe);
 
     // Get any files and add the input to 'input.txt'.
     let files = runningPipe.files();
@@ -283,7 +305,7 @@ async function evaluatePython() {
 // Helper for running Javascript
 async function evaluateJS() {
   let input = await runningPipe.input();
-  let program = runningPipe.program();
+  let program = preprocessedProgram(runningPipe);
   let files = runningPipe.files();
   const { results, error, output } = await asyncRunJS(input, program);
   let stdout = '';
@@ -306,7 +328,7 @@ async function evaluateJS() {
 // Helper for running Javascript
 async function evaluateLua() {
   let input = await runningPipe.input();
-  let program = runningPipe.program();
+  let program = preprocessedProgram(runningPipe);
   let files = runningPipe.files();
   const { results, error, output } = await asyncRunLua(input, program);
   let stdout = '';
