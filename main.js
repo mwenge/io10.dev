@@ -46,7 +46,9 @@ const shebangs = {
 };
 function langFromShebang(p) {
   for (var k of Object.keys(shebangs)) {
-    if (p.startsWith(k) && shebangs[k] in cmLangs) return cmLangs[shebangs[k]];
+    if (p.startsWith(k) && shebangs[k] in cmLangs) {
+      return cmLangs[shebangs[k]];
+    }
   }
   return null;
 }
