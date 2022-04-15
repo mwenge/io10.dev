@@ -4,8 +4,6 @@ setUpWorker();
 
 function setUpWorker() {
   worker = new Worker("3rdparty/webR/worker.R.bin.js");
-  // Open a database
-  worker.postMessage({ action: 'open' });
   worker.onmessage = (event) => {
     console.log("event data", event.data);
     if (event.data.progress) {

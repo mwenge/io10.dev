@@ -11,6 +11,7 @@
 
 // TODO: Make this not declare a global if used in the browser
 var initRJsPromise = undefined;
+const PKG_URL = "https://cdn.jsdelivr.net/gh/georgestagg/webr-ports/dist/";
 
 var outputText;
 var inputText;
@@ -44,7 +45,7 @@ var initRJs = function (moduleConfig) {
               originalOnAbortFunction(errorThatCausedAbort);
             }
         };
-
+			
         Module['print'] = function(text) {
           outputText += text +'\n';
         }
@@ -56624,64 +56625,136 @@ else if (typeof exports === 'object'){
 
 "use strict";
 
+let loadedPackages = [];
+let builtinPackages = ['base', 'compiler', 'datasets', 'grDevices', 'graphics', 'grid', 'methods', 'parallel',
+  'splines', 'stats', 'stats4', 'tcltk', 'tools', 'translations', 'utils'];
+let preReqPackages = {
+  'dplyr': [ 'generics', 'glue', 'lifecycle', 'magrittr', 'pillar', 'R6', 'rlang', 'tibble', 'tidyselect', 'vctrs'],
+  'ellipsis': ['rlang'],
+  'ggplot2': ['digest', 'glue', 'gtable', 'isoband', 'MASS', 'mgcv', 'rlang', 'scales', 'tibble', 'withr'],
+  'lifecycle': ['rlang', 'glue'],
+      'lubridate': ['generics'],
+  'Matrix': ['lattice'],
+  'mgcv': ['nlme', 'Matrix'],
+  'munsell': ['colorspace'],
+  'nlme': ['lattice'],
+  'pillar': ['cli', 'crayon', 'ellipsis', 'fansi', 'glue', 'lifecycle', 'rlang', 'utf8', 'vctrs'],
+  'purrr': ['magrittr', 'rlang'],
+  'readr': ['cli', 'clipr', 'crayon', 'hms', 'lifecycle', 'R6', 'rlang', 'tibble', 'vroom'],
+  'stringr': ['glue', 'magrittr', 'stringi'],
+  'tibble': ['ellipsis', 'fansi', 'lifecycle', 'magrittr', 'pillar', 'pkgconfig', 'rlang', 'vctrs'],
+  'tidyselect': ['ellipsis', 'glue', 'purrr', 'rlang', 'vctrs'],
+  'scales': ['farver', 'labeling', 'lifecycle', 'munsell', 'R6', 'RColorBrewer', 'viridisLite'],
+  'vctrs': ['ellipsis', 'glue', 'rlang'],
+  'vroom': ['bit64', 'crayon', 'cli', 'glue', 'hms', 'lifecycle', 'rlang', 'tibble', 'tzdb', 'vctrs', 'tidyselect', 'withr'],
+};
 importScripts("../localforage.min.js");
+
 async function onModuleReady(R) {
-    let dec = new TextDecoder();
-    async function loadFile(f) {
+  // This hack is necessary to make package loading kind-of-work. It makes the R Module object
+  // global so that the package modules we download can load into the same environment. THere's
+  // presumably a proper way of doing this. Very often we get 'memory access out of bounds'.
+  R["calledRun"] = true;
+  globalThis.Module = R;
+  function loadPackages(packages){
+    return packages.reduce(function(curPromise, packageName) {
+      return curPromise.then(_ => {
+        var nextPromise = new Promise(function (resolve, reject) {
+          console.log("loadedPackages", loadedPackages);
+          if (loadedPackages.includes(packageName)){
+            resolve();
+          } else if (builtinPackages.includes(packageName)){
+            resolve();
+          } else {
+            loadedPackages.push(packageName);
+            Module['locateFile'] = function(path, prefix) {
+              return PKG_URL + packageName + "/" + path;
+            }
+            console.log("trying", packageName);
+            importScripts(PKG_URL + packageName + "/" + packageName + ".js");
+            Module.monitorRunDependencies = function(left) {
+              if(left == 0){
+                resolve();
+              }
+            };
+          }
+        }.bind(this));
+        var prereq = (packageName in preReqPackages)?preReqPackages[packageName]:[];
+        console.log("prereq", prereq);
+        return nextPromise.then(_ => loadPackages(prereq));
+      });
+    }.bind(this), Promise.resolve());
+  }
+
+  let dec = new TextDecoder();
+  async function loadFile(f) {
+    try {
+      R.FS_unlink("/" + f);
+    } catch {
+    }
+    let data = await localforage.getItem(f);
+    R.FS_createDataFile('/', f, dec.decode(data), true, true, true);
+  }
+  var buff; var data; var result;
+  data = this["data"];
+  var config = data["config"] ? data["config"] : {};
+  switch (data && data["action"]) {
+    case "exec":
+      buff = data["code"];
+      outputText = '';
+
+      // Create an input file.
+      inputText = data["input"]; 
       try {
-        R.FS_unlink("/" + f);
+        R.FS_unlink("/input.txt");
       } catch {
       }
-      let data = await localforage.getItem(f);
-      R.FS_createDataFile('/', f, dec.decode(data), true, true, true);
-    }
-    var buff; var data; var result;
-    data = this["data"];
-    var config = data["config"] ? data["config"] : {};
-    switch (data && data["action"]) {
-        case "exec":
-            buff = data["code"];
-            outputText = '';
+      R.FS_createDataFile('/', "input.txt", inputText, true, true, true);
 
-            // Create an input file.
-            inputText = data["input"]; 
-            try {
-              R.FS_unlink("/input.txt");
-            } catch {
-            }
-            R.FS_createDataFile('/', "input.txt", inputText, true, true, true);
+      // Load any files.
+      let files = data["files"] ? data["files"] : [];
+      console.log(files);
+      await Promise.all(files.map(async (f) => {
+        await loadFile(f);
+      }));
 
-            // Load any files.
-            let files = data["files"] ? data["files"] : [];
-            console.log(files);
-            await Promise.all(files.map(async (f) => {
-              await loadFile(f);
-            }));
-
-            var res = R._run_R_from_JS(R.allocate(R.intArrayFromString(buff), 0), buff.length);
-            return postMessage({
-                id: data["id"],
-                results: outputText,
-            });
-        default:
-            throw new Error("Invalid action : " + (data && data["action"]));
-    }
+      var reg = /(library|require)\(['"]?(.*?)['"]?\)/g;
+      var res;
+      var packages = [];
+      while((res = reg.exec(buff)) !== null) {
+        packages.push(res[2]);
+      }
+      console.log("packages", packages);
+      try {
+        await loadPackages(packages);
+      } catch (e) {
+        console.log(e);
+      }
+      console.log("Running package");
+      var res = R._run_R_from_JS(R.allocate(R.intArrayFromString(buff), 0), buff.length);
+      return postMessage({
+        id: data["id"],
+        results: outputText,
+      });
+    default:
+      throw new Error("Invalid action : " + (data && data["action"]));
+  }
 }
 
 function onError(err) {
-    return postMessage({
-        id: this["data"]["id"],
-        error: err["message"]
-    });
+  return postMessage({
+    id: this["data"]["id"],
+    error: err["message"]
+  });
 }
 
 if (typeof importScripts === "function") {
-    var RJSModuleReady = initRJs();
-    self.onmessage = function onmessage(event) {
-        return RJSModuleReady
-            .then(onModuleReady.bind(event))
-            .catch(onError.bind(event));
-    };
+  var RJSModuleReady = initRJs();
+  self.onmessage = function onmessage(event) {
+    return RJSModuleReady
+      .then(onModuleReady.bind(event))
+      .catch(onError.bind(event));
+  };
 }
 
 
