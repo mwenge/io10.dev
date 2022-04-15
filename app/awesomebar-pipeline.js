@@ -43,6 +43,12 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
 	pln.innerHTML = name;
   document.getElementsByClassName("pipeline-name")[0].style.background = cv[pli];
 
+  const aw = document.getElementById("awesomebar");
+  const t = document.getElementById("site-title");
+  const n = document.getElementById("pln-container");
+  const avail = aw.clientWidth - (t.clientWidth + n.clientWidth);
+  const mw = Math.max(2, parseInt(avail / pl.length, 10) - 30);
+
   const c = document.getElementById("pipeline-container");
   c.innerHTML = "";
 
@@ -52,8 +58,10 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
     d = document.createElement("div"); 
     d.className = "pipe";
     d.textContent = p.lang;
+    d.style.maxWidth = mw + "px";
     if (i == cur) {
       d.className += " activepipe";
+      d.style.maxWidth = "none";
       if (files.length) {
         // Add the file tip.
         let f = document.createElement("div"); 

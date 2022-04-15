@@ -79,11 +79,9 @@
   text-transform: uppercase;
   z-index: 9998;
   left: 0;
-  bottom: 9px;
+  bottom: 0px;
   width: 100%;
   font-family: "Inconsolata";
-  max-height: 17px;
-  height: 17px;
 }
 .pipe,.pipeline-name,.title {
   padding: 3px 10px 2px 15px;
@@ -91,8 +89,6 @@
   position: relative;
   display: inline-block;
   border: 1px solid white;
-  max-height: 17px;
-  height: 17px;
   border-right:none;
   background-color: var(--main-bg-color);
 }
