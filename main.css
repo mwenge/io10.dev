@@ -146,13 +146,12 @@
 .file-tip {
   position: absolute;
   left: 0;
-  bottom: 18px;
+  bottom: 26px;
   padding: 0 5px 0 5px;
   display: inline-block;
   color: white;
   background: black;
   padding: 3px;
-  height: 100%;
   text-transform: none;
 }
 .shortcut-tip {
