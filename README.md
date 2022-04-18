@@ -17,3 +17,4 @@ It has a built in tutorial to introduce you to the commands and languages suppor
 - [CodeMirror](https://codemirror.net)
 - [Fengari](https://github.com/fengari-lua/fengari-web)
 - [WebR](https://github.com/georgestagg/webR)
+- [coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker)
