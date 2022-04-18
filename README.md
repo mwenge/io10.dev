@@ -18,3 +18,6 @@ It has a built in tutorial to introduce you to the commands and languages suppor
 - [Fengari](https://github.com/fengari-lua/fengari-web)
 - [WebR](https://github.com/georgestagg/webR)
 - [coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker)
+- [sheetJS](https://sheetjs.com/)
+- [guesslang](https://github.com/yoeo/guesslang)
+- [localforage](https://localforage.github.io/)
