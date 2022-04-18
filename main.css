@@ -3,6 +3,9 @@
   --main-bg-color: #0C1021;
   --main-fg-color: #98fb98;
 }
+body {
+  background-color: #1C1C1C;
+}
 @font-face {
   font-family: 'ABCFavoritMono';
   font-style: normal;
