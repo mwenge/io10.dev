@@ -1,5 +1,5 @@
 import {getPipe} from "./pipe.js";
-async function getPipeline(id) {
+async function getPipeline(id, initialIndex = 0) {
   function previousPipeID() {
     if (!current)
       return null;
@@ -24,7 +24,7 @@ async function getPipeline(id) {
     localStorage.setItem(id, JSON.stringify(pipeline));
   }
 
-  let current = 0;
+  let current = initialIndex;
   let pipe = null;
   const rangeIterator = {
     lang: function() {

@@ -23,6 +23,10 @@ export async function updateDisplayedPipe(pipe) {
   outputWrapper.updateContent(pipe.output());
   updateAwesomeBar();
   inputWrapper.updateContent(await pipe.input(), pipeline.currentPipeIndex() == 0);
+  localStorage.setItem("checkpoint", JSON.stringify({
+    currentPipelineIndex: currentPipelineIndex,
+    initialIndex: pipeline.currentPipeIndex()
+  }));
 }
 async function insertBefore() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
@@ -147,14 +151,14 @@ if (!savedPipelines) {
   for (var file of exampleFiles) {
     await localforage.setItem(file.name, enc.encode(file.data).buffer);
   }
-
+  localStorage.setItem("checkpoint", JSON.stringify({ currentPipelineIndex: 0, initialIndex: 0 }));
 }
 
 // Initialize the main pipeline data.
+let { currentPipelineIndex, initialIndex } = JSON.parse(localStorage.getItem("checkpoint"));
 let pipelines = JSON.parse(localStorage.pipelines);
 let pipelinePrettyNames = JSON.parse(localStorage.pipelinePrettyNames);
-let currentPipelineIndex = 0;
-export let pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+export let pipeline = await getPipeline(pipelines[currentPipelineIndex], initialIndex);
 
 // Update the awesome bar.
 updateAwesomeBar();
