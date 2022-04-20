@@ -55,13 +55,17 @@ for i in range(0,20):
     input: ``,
     output: '',
     lang: "*.py",
-    files: [],
   };
 
 async function getPipe(prevID, id) {
   let data = await storage.getData(id);
   if (!data) {
-    data = {...defaultData};
+    data = {};
+    data.program = defaultData.program;
+    data.input = defaultData.input;
+    data.output = defaultData.output;
+    data.lang = defaultData.lang;
+    data.files = [];
     storage.setData(id, data);
   }
   const rangeIterator = {
