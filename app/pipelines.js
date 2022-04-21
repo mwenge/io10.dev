@@ -168,11 +168,13 @@ let editor = null;
 let inputWrapper = null;
 let outputWrapper = null;
 let cmLangs = null;
-export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interruptExecution, langs) {
+let download = null;
+export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interruptExecution, langs, download) {
   editor = e;
   inputWrapper = i;
   outputWrapper = o;
   cmLangs = langs;
+  download = download;
   editor.setOption("extraKeys", {
         "Ctrl-Enter": determineLanguageAndRun,
         "Alt-Right": nextPipe,
@@ -186,6 +188,7 @@ export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interr
         "Alt-R": runPipeline,
         "Ctrl-O": openFile,
         "Ctrl-D": interruptExecution,
+        "Ctrl-S": download,
         "Shift-Tab": false,
         "Ctrl-Space": "autocomplete",
       });
@@ -208,6 +211,9 @@ export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interr
   });
 }
 
+export function pipelinePrettyName() {
+  return pipelinePrettyNames[currentPipelineIndex];
+}
 // Handle changes to the current pipeline's pretty name.
 function updatePipelinePrettyName(name) {
   pipelinePrettyNames[currentPipelineIndex] = name;

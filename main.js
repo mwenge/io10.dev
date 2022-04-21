@@ -17,7 +17,7 @@ const editor = setUpEditor(ps.pipeline.currentPipe().program());
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(), true);
 ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun,
-  runPipeline, interruptExecution, cmLangs);
+  runPipeline, interruptExecution, cmLangs, download);
 
 function interruptPythonExecution() {
   import("./app/pyodide-py-worker.js").then((py) => {
@@ -372,6 +372,35 @@ fileUpload.onchange = function () {
     running.textContent = "Busy";
   }
   r.readAsArrayBuffer(f);
+}
+
+// Download the current pipeline as a zip file. 
+async function download() {
+  if (runningPipe) {
+    return;
+  }
+  let count = 0;
+  var zip = new JSZip();
+  async function zipFile() {
+    zip.file((count++).toString() + " - input.txt", await pipe.input());
+    zip.file((count++).toString() + " - program" + pipe.lang().replace('*',''), pipe.program());
+    zip.file((count++).toString() + " - output.txt", await pipe.output());
+  }
+  let curPipe = -1;
+  let pipe = await ps.pipeline.getNextPipe(curPipe);
+  while (pipe) {
+    try {
+      await zipFile();
+    } catch(error) {
+      console.error(`Failed to zip: ${error}`);
+      break;
+    }
+    pipe = await ps.pipeline.getNextPipe(++curPipe);
+  }
+  zip.generateAsync({type:"blob"})
+    .then(function (blob) {
+          saveAs(blob, ps.pipelinePrettyName() + ".zip");
+    });
 }
 
 // Recalculate chunk size when zooming in or out.

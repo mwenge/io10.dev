@@ -16,6 +16,7 @@ const defaultData =
 #    - Alt-B: Add a new step before the current one.
 #    - Alt-C: Delete the current step.
 #    - Ctrl-O: Add a file to the current step.
+#    - Ctrl-S: Download the current pipeline as a zip file.
 #
 #  When Cursor in Input/Output panes
 #    - PageUp/PageDown: Page up and down through input/output.
