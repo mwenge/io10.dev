@@ -16,8 +16,45 @@ const editor = setUpEditor(ps.pipeline.currentPipe().program());
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(), true);
-ps.setUpPanes(editor, inputWrapper, outputWrapper, determineLanguageAndRun,
-  runPipeline, interruptExecution, cmLangs, download);
+
+// Set up the keyboard shortcuts and the editor panel options.
+ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
+editor.setOption("extraKeys", {
+      "Ctrl-Enter": determineLanguageAndRun,
+      "Alt-Right": ps.nextPipe,
+      "Alt-Left": ps.previousPipe,
+      "Alt-A": ps.insertAfter,
+      "Alt-B": ps.insertBefore,
+      "Alt-C": ps.deleteCurrent,
+      "Alt-Up": ps.nextPipeline,
+      "Alt-Down": ps.prevPipeline,
+      "Alt-Q": ps.deletePipeline,
+      "Alt-R": runPipeline,
+      "Ctrl-O": ps.openFile,
+      "Ctrl-D": interruptExecution,
+      "Ctrl-S": download,
+      "Shift-Tab": false,
+      "Ctrl-Space": "autocomplete",
+    });
+[inputWrapper, outputWrapper].forEach(x => {
+  let extraKeys = x.editor().getOption("extraKeys");
+  x.editor().setOption("extraKeys", {
+      ...extraKeys,
+      "Ctrl-Enter": determineLanguageAndRun,
+      "Alt-Right": ps.nextPipe,
+      "Alt-Left": ps.previousPipe,
+      "Alt-A": ps.insertAfter,
+      "Alt-B": ps.insertBefore,
+      "Alt-C": ps.deleteCurrent,
+      "Alt-Up": ps.nextPipeline,
+      "Alt-Down": ps.prevPipeline,
+      "Alt-Q": ps.deletePipeline,
+      "Alt-R": runPipeline,
+      "Ctrl-O": ps.openFile,
+      "Ctrl-D": interruptExecution,
+      "Ctrl-S": download,
+    });
+});
 
 function interruptPythonExecution() {
   import("./app/pyodide-py-worker.js").then((py) => {

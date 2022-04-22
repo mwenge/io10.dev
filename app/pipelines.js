@@ -28,21 +28,21 @@ export async function updateDisplayedPipe(pipe) {
     initialIndex: pipeline.currentPipeIndex()
   }));
 }
-async function insertBefore() {
+export async function insertBefore() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.insertBefore();
   updateDisplayedPipe(pipe);
 }
-async function deleteCurrent() {
+export async function deleteCurrent() {
   let pipe = await pipeline.deleteCurrent();
   updateDisplayedPipe(pipe);
 }
-async function insertAfter() {
+export async function insertAfter() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.insertAfter();
   updateDisplayedPipe(pipe);
 }
-async function previousPipe() {
+export async function previousPipe() {
   quickPipeDisplayUpdate(pipeline.currentPipeIndex(), -1);
   await setTimeout(async ()=> { 
     pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
@@ -77,7 +77,7 @@ export async function nextPipe() {
   }
   return await getNextPipe();
 }
-async function nextPipeline() {
+export async function nextPipeline() {
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
@@ -101,7 +101,7 @@ async function nextPipeline() {
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
-async function prevPipeline() {
+export async function prevPipeline() {
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
@@ -112,7 +112,7 @@ async function prevPipeline() {
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
-async function deletePipeline() {
+export async function deletePipeline() {
   if (!currentPipelineIndex) return;
   pipelines.splice(currentPipelineIndex, 1);
   pipelinePrettyNames.splice(currentPipelineIndex, 1);
@@ -122,7 +122,7 @@ async function deletePipeline() {
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
-function openFile() {
+export function openFile() {
   const fileUpload = document.getElementById('file-upload');
   fileUpload.click();
 }
@@ -168,47 +168,11 @@ let editor = null;
 let inputWrapper = null;
 let outputWrapper = null;
 let cmLangs = null;
-let download = null;
-export function setUpPanes(e, i, o, determineLanguageAndRun, runPipeline, interruptExecution, langs, download) {
+export function setPanes(e, i, o, langs) {
   editor = e;
   inputWrapper = i;
   outputWrapper = o;
   cmLangs = langs;
-  download = download;
-  editor.setOption("extraKeys", {
-        "Ctrl-Enter": determineLanguageAndRun,
-        "Alt-Right": nextPipe,
-        "Alt-Left": previousPipe,
-        "Alt-A": insertAfter,
-        "Alt-B": insertBefore,
-        "Alt-C": deleteCurrent,
-        "Alt-Up": nextPipeline,
-        "Alt-Down": prevPipeline,
-        "Alt-Q": deletePipeline,
-        "Alt-R": runPipeline,
-        "Ctrl-O": openFile,
-        "Ctrl-D": interruptExecution,
-        "Ctrl-S": download,
-        "Shift-Tab": false,
-        "Ctrl-Space": "autocomplete",
-      });
-  [inputWrapper, outputWrapper].forEach(x => {
-    let extraKeys = x.editor().getOption("extraKeys");
-    x.editor().setOption("extraKeys", {
-        ...extraKeys,
-        "Ctrl-Enter": determineLanguageAndRun,
-        "Alt-Right": nextPipe,
-        "Alt-Left": previousPipe,
-        "Alt-A": insertAfter,
-        "Alt-B": insertBefore,
-        "Alt-C": deleteCurrent,
-        "Alt-Up": nextPipeline,
-        "Alt-Down": prevPipeline,
-        "Alt-Q": deletePipeline,
-        "Alt-R": runPipeline,
-        "Ctrl-O": openFile,
-      });
-  });
 }
 
 export function pipelinePrettyName() {
