@@ -36,6 +36,11 @@ editor.setOption("extraKeys", {
       "Shift-Tab": false,
       "Ctrl-Space": "autocomplete",
     });
+let syntaxDirty = false;
+editor.on("change",function(cm,change){
+  syntaxDirty = true;
+});
+
 [inputWrapper, outputWrapper].forEach(x => {
   let extraKeys = x.editor().getOption("extraKeys");
   x.editor().setOption("extraKeys", {
@@ -97,9 +102,15 @@ function preprocessedProgram(p) {
 }
 // Update the syntax highlighting to suit the language being used.
 // Detection is a bit off sometimes so we use workarounds.
-setInterval(determineLanguage, 2000);
+setInterval(determineLanguage, 2000, false);
 const guessLang = new GuessLang();
-async function determineLanguage() {
+async function determineLanguage(force = true) {
+  if (!force) {
+    if (!syntaxDirty) {
+      return;
+    }
+    syntaxDirty = false;
+  }
   if (runningPipe) {
     return;
   }
