@@ -66,7 +66,12 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
         // Add the file tip.
         let f = document.createElement("div"); 
         f.className = "file-tip";
-        f.textContent = "FILES AVAILABLE: '" + files.join('\', \'') + "'";
+        f.innerHTML = "FILES AVAILABLE: ";
+        for (var k = 0; k < files.length; k++) {
+          f.innerHTML += `&nbsp;<span><span tabindex=0 class=\"filename\" onclick=navigator.clipboard.writeText('\"` + files[k] + `\"')>` 
+                          + files[k] + `&nbsp;</span><button type=\"button\" class=\"copy-icon\"
+                          onclick=navigator.clipboard.writeText('\"` + files[k] + `\"')></button></span>`
+        }
         c.appendChild(f);
       }
     }
