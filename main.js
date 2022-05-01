@@ -15,7 +15,8 @@ const cmLangs = {
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
-const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(), true);
+const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(),
+  ps.pipeline.currentPipeIndex() ? false : true);
 
 // Set up the keyboard shortcuts and the editor panel options.
 ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
