@@ -78,21 +78,34 @@ export async function nextPipe() {
   return await getNextPipe();
 }
 export async function nextPipeline() {
+  function getNewName(c) {
+    let i = 0;
+    while (true) {
+      if (c >= pipelineNames.length) {
+        c = 0;
+        i++;
+      }
+      let name = pipelineNames[c++] + (i ? (" " + i) : "");
+      if (!pipelines.includes(name)) return name;
+    }
+  }
+
+  // Store the current pipe before moving away from it.
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
+
+  // The pipeline already exist, so display it.
   if (currentPipelineIndex < pipelines.length - 1) {
     currentPipelineIndex++;
     pipeline = await getPipeline(pipelines[currentPipelineIndex]);
     updateDisplayedPipe(pipeline.currentPipe());
     return;
   }
+
+  // We have to create the pipeline.
   let cur = pipelines.length;
-  //Maximum of 100 or so pipelines
-  if (cur >= pipelineNames.length - 1) {
-    return;
-  }
-  let newPipelineName = pipelineNames[cur];
+  let newPipelineName = getNewName(cur);
   pipelines.push(newPipelineName);
   pipelinePrettyNames.push(newPipelineName);
   currentPipelineIndex = pipelines.length - 1;
