@@ -439,12 +439,13 @@ async function createZipFile() {
 
     // Zip the program, input, and output.
     p.entries = [];
-    p.entries.push({fileName: (++count).toString() + " - input.txt", name: 'input'});
-    zip.file((count).toString() + " - input.txt", await pipe.input());
-    p.entries.push({fileName: (++count).toString() + " - program" + pipe.lang().replace('*',''), name: 'program'});
-    zip.file((count).toString() + " - program" + pipe.lang().replace('*',''), pipe.program());
-    p.entries.push({fileName: (++count).toString() + " - output.txt", name: 'output'});
-    zip.file((count).toString() + " - output.txt", await pipe.output());
+    p.entries.push({fileName: (++count).toString().padStart(3, '0') + " - input.txt", name: 'input'});
+    zip.file((count).toString().padStart(3, '0')  + " - input.txt", await pipe.input());
+    p.entries.push({fileName: (++count).toString().padStart(3, '0')  + " - program"
+      + pipe.lang().replace('*',''), name: 'program'});
+    zip.file((count).toString().padStart(3, '0')  + " - program" + pipe.lang().replace('*',''), pipe.program());
+    p.entries.push({fileName: (++count).toString().padStart(3, '0')  + " - output.txt", name: 'output'});
+    zip.file((count).toString().padStart(3, '0')  + " - output.txt", await pipe.output());
 
     // Zip any files associated with the pipe.
     p.metadata = {files: pipe.files(), lang: pipe.lang()};
