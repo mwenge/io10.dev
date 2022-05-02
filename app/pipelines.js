@@ -106,6 +106,9 @@ export async function nextPipeline() {
   // We have to create the pipeline.
   let cur = pipelines.length;
   let newPipelineName = getNewName(cur);
+  await addPipeline(newPipelineName);
+}
+export async function addPipeline(newPipelineName) {
   pipelines.push(newPipelineName);
   pipelinePrettyNames.push(newPipelineName);
   currentPipelineIndex = pipelines.length - 1;
@@ -127,10 +130,23 @@ export async function prevPipeline() {
 }
 export async function deletePipeline() {
   if (!currentPipelineIndex) return;
+
+  // Delete the storage for each pipe.
+  let curPipe = -1;
+  let pipe = await pipeline.getNextPipe(curPipe);
+  while (pipe) {
+    pipe.delete();
+    pipe = await pipeline.getNextPipe(++curPipe);
+  }
+
+  // Delete the current pipeline.
+  localStorage.removeItem(pipelines[currentPipelineIndex]);
   pipelines.splice(currentPipelineIndex, 1);
   pipelinePrettyNames.splice(currentPipelineIndex, 1);
   localStorage.setItem("pipelines", JSON.stringify(pipelines));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
+
+  // Move to the previous pipe.
   if (currentPipelineIndex) currentPipelineIndex--;
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
@@ -168,8 +184,8 @@ if (!savedPipelines) {
 }
 
 // Initialize the main pipeline data.
-let { currentPipelineIndex, initialIndex } = JSON.parse(localStorage.getItem("checkpoint"));
-let pipelines = JSON.parse(localStorage.pipelines);
+export let { currentPipelineIndex, initialIndex } = JSON.parse(localStorage.getItem("checkpoint"));
+export let pipelines = JSON.parse(localStorage.pipelines);
 let pipelinePrettyNames = JSON.parse(localStorage.pipelinePrettyNames);
 export let pipeline = await getPipeline(pipelines[currentPipelineIndex], initialIndex);
 

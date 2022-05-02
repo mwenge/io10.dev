@@ -140,6 +140,7 @@ function runPipeline() {
     return;
   }
   running.style.display = "block";
+  running.textContent = "Busy";
   setTimeout(runPipelineImpl, 0);
 }
 async function runPipelineImpl() {
@@ -192,6 +193,7 @@ function determineLanguageAndRun() {
   updateProgress("Running..");
   runningPipe.updateProgram(editor.getValue(), editor.getDoc());
   running.style.display = "block";
+  running.textContent = "Busy";
   setTimeout(determineLanguageAndRunImpl, 0);
 }
 // Determine what the language is and the run the script.
@@ -215,6 +217,7 @@ async function determineLanguageAndRunImpl() {
     outputWrapper.editor().replaceRange('\n' + e, {line: Infinity});
   }
   running.style.display = "none";
+  running.textContent = "Busy";
   runningPipe = null;
   // Refresh the current pipe with the results (if necessary) and update
   // the display.
@@ -401,55 +404,125 @@ async function evaluateLua() {
 // Allow the user to add a file. Doing so associates the file with the current
 // pipe only. 
 var fileUpload = document.getElementById('file-upload');
-fileUpload.onchange = function () {
+fileUpload.oninput = function () {
   if (runningPipe) {
     return;
   }
   runningPipe = ps.pipeline.currentPipe();
   running.style.display = "block";
+  running.textContent = "Busy";
 
   var f = fileUpload.files[0];
-  if (!f) { return; }
+  if (!f) { return; };
   running.textContent = "Loading " + f.name;
+  if (f.name.endsWith(".zip")) {
+    upload(f);
+    runningPipe = null;
+    return;
+  }
   var r = new FileReader();
   r.onload = async function () {
     await localforage.setItem(f.name, r.result);
     await runningPipe.addFile(f.name);
     ps.updateAwesomeBar();
     runningPipe = null;
-    running.style.display = "none";
-    running.textContent = "Busy";
+    running.textContent = `loaded ${f.name}`;
   }
   r.readAsArrayBuffer(f);
 }
 
 // Download the current pipeline as a zip file. 
 async function download() {
+  async function zipFile(pipe) {
+    let p = {};
+    p.key = pipe.id();
+
+    // Zip the program, input, and output.
+    p.entries = [];
+    p.entries.push({fileName: (++count).toString() + " - input.txt", name: 'input'});
+    zip.file((count).toString() + " - input.txt", await pipe.input());
+    p.entries.push({fileName: (++count).toString() + " - program" + pipe.lang().replace('*',''), name: 'program'});
+    zip.file((count).toString() + " - program" + pipe.lang().replace('*',''), pipe.program());
+    p.entries.push({fileName: (++count).toString() + " - output.txt", name: 'output'});
+    zip.file((count).toString() + " - output.txt", await pipe.output());
+
+    // Zip any files associated with the pipe.
+    p.metadata = {files: pipe.files(), lang: pipe.lang()};
+    pipe.files().forEach(async (f) => {
+      zip.file(f, await localforage.getItem(f));
+    });
+    return p;
+  }
+
   if (runningPipe) {
     return;
   }
   let count = 0;
   var zip = new JSZip();
-  async function zipFile() {
-    zip.file((count++).toString() + " - input.txt", await pipe.input());
-    zip.file((count++).toString() + " - program" + pipe.lang().replace('*',''), pipe.program());
-    zip.file((count++).toString() + " - output.txt", await pipe.output());
-  }
+  let manifest = {};
+  manifest.pipelineName = ps.pipelines[ps.currentPipelineIndex]; 
+  manifest.pipelineArray = localStorage.getItem(manifest.pipelineName); 
+  manifest.pipes = [];
+
   let curPipe = -1;
   let pipe = await ps.pipeline.getNextPipe(curPipe);
+
   while (pipe) {
     try {
-      await zipFile();
+      let p = await zipFile(pipe);
+      manifest.pipes.push(p);
     } catch(error) {
       console.error(`Failed to zip: ${error}`);
       break;
     }
     pipe = await ps.pipeline.getNextPipe(++curPipe);
   }
+  zip.file("manifest.json", JSON.stringify(manifest, null, '\t'));
   zip.generateAsync({type:"blob"})
     .then(function (blob) {
           saveAs(blob, ps.pipelinePrettyName() + ".zip");
     });
+}
+
+// Upload a zip file and load it as a pipeline.
+async function upload(f) {
+  var r = new FileReader();
+  r.onload = async function () {
+    let zip;
+    try {
+      zip = await JSZip.loadAsync(r.result)
+    } catch(e) {
+      console.log(e);
+      running.style.display = "block";
+      running.textContent = "Not a valid zip file";
+      return;
+    }
+    let m;
+    try {
+      m = await zip.file("manifest.json").async("string");
+    } catch(e) {
+      console.log(e);
+      running.style.display = "block";
+      running.textContent = "Not a Valid pipeline file";
+      return;
+    }
+    let manifest = JSON.parse(m);
+    localStorage.setItem(manifest.pipelineName, manifest.pipelineArray);
+    await manifest.pipes.forEach(async(p) => {
+      await localforage.setItem(p.key + "-metadata", p.metadata);
+      await p.metadata.files.forEach(async (file) => {
+        let fc = await zip.file(file).async("arraybuffer");
+        await localforage.setItem(file, fc);
+      });
+      await p.entries.forEach(async(e) => {
+        let fc = await zip.file(e.fileName).async("string");
+        await localforage.setItem(p.key + "-" + e.name, fc);
+      });
+    });
+    await ps.addPipeline(manifest.pipelineName);
+    running.textContent = "Loaded pipeline file successfully";
+  }
+  r.readAsArrayBuffer(f);
 }
 
 // Recalculate chunk size when zooming in or out.

@@ -58,6 +58,6 @@ export async function deleteData(id, files) {
   let slots = zip(Array(suffices.length).fill(id), suffices);
   slots.forEach(id => cachedData.delete(id.join('')));
   slots.forEach(id => localforage.removeItem(id.join('')));
-  files.forEach(id => localforage.removeItem(id));
+  if (files) files.forEach(id => localforage.removeItem(id));
 }
 

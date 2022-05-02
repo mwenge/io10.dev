@@ -6,26 +6,30 @@ const defaultData =
     program: `# Keyboard Commands.
 #  Current Step
 #    - Ctrl-Enter: Run the current step.
-#    - Ctrl-D: Interrupt execution (Python, R, and SQL only)
+#    - Ctrl-D:     Interrupt execution (Python, R, and SQL only)
 #
 #  Current Pipeline
-#    - Alt-R: Run the entire pipeline from the start.
-#    - Alt-Left: Navigate to the previous step in the pipeline.
+#    - Alt-R:     Run the entire pipeline from the start.
+#    - Alt-Left:  Navigate to the previous step in the pipeline.
 #    - Alt-Right: Navigate to the next step in the pipeline.
-#    - Alt-A: Add a new step after the current one.
-#    - Alt-B: Add a new step before the current one.
-#    - Alt-C: Delete the current step.
-#    - Ctrl-O: Add a file to the current step.
-#    - Ctrl-S: Download the current pipeline as a zip file.
+#    - Alt-A:     Add a new step after the current one.
+#    - Alt-B:     Add a new step before the current one.
+#    - Alt-C:     Delete the current step.
+#    - Ctrl-O:    Add a file to the current step.
+#
+#  Saving and Loading Pipelines
+#    - Ctrl-S:    Download the current pipeline as a zip file.
+#    - Ctrl-O:    Select and load a previously saved zip file.
 #
 #  When Cursor in Input/Output panes
 #    - PageUp/PageDown: Page up and down through input/output.
-#    - Ctrl-Home: Move back to start of input/output
+#    - Ctrl-Home:       Move back to start of input/output
 #
 #  Other Pipelines
-#    - Alt-Up: Create a new pipeline or navigate to the next pipeline.
+#    - Alt-Up:   Create a new pipeline or navigate to the next pipeline.
 #    - Alt-Down: Navigate to the previous pipeline.
-#    - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
+#    - Click on the pipeline name in the bottom left to give it a
+#      meaningful name of your own.
 #
 #  Language Detection
 #  io10.dev will automatically detect the language you're using, most of the time.
