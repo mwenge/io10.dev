@@ -18,7 +18,8 @@ const defaultData =
 #    - Ctrl-O:    Add a file to the current step.
 #
 #  Saving and Loading Pipelines
-#    - Ctrl-S:    Download the current pipeline as a zip file.
+#    - Ctrl-S:    Download and save the current pipeline as a zip file.
+#    - Ctrl-G:    Save the current pipeline to Google Drive.
 #    - Ctrl-O:    Select and load a previously saved zip file.
 #
 #  When Cursor in Input/Output panes
