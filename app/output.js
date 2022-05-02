@@ -62,7 +62,7 @@ function calculateChunkLength() {
 }
 // Set up the input/output pane.
 function setUpOutput(div, c = "Output appears here", editable) {
-  let content = c;
+  let content = c ? c : "";
   let isEditable = editable;
   let chunkLength = calculateChunkLength();
   let chunker = contentChunker(content, chunkLength);

@@ -22,31 +22,14 @@
     <script type="text/javascript" src="3rdparty/jszip.min.js"></script>
     <script type="text/javascript" src="3rdparty/FileSaver.min.js"></script>
 		<script src="https://apis.google.com/js/api.js"></script>
-		<script>
-		function start() {
-			// 2. Initialize the JavaScript client library.
-			gapi.client.init({
-				'apiKey': 'AIzaSyCmrP2EaZ1947hTLfVdNL2tS9-6R1hHL9o',
-				// clientId and scope are optional if auth is not required.
-				'clientId': '814095371108-5t63a26bqn3q0l1cd8e3pkctjaacn8pm.apps.googleusercontent.com.apps.googleusercontent.com',
-				'scope': 'profile',
-			}).then(function() {
-				// 3. Initialize and make the API request.
-				return gapi.client.request({
-					'path': 'https://people.googleapis.com/v1/people/me?requestMask.includeField=person.names',
-				})
-			}).then(function(response) {
-				console.log(response.result);
-			}, function(reason) {
-				console.log('Error: ' + reason.result.error.message);
-			});
-		};
-		// 1. Load the JavaScript client library.
-		gapi.load('client', start);
-		</script>
   </head> 
 
   <body> 
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
+
+    <div id="content"></div>
     <input type='file' 
            accept=".csv,.txt,.json,.xls,.xlsx,.ods,.db,.sqlite"
            id='file-upload' style="display:none">
@@ -70,5 +53,10 @@
   <script src="3rdparty/xlsx.full.min.js"></script>
   <script src="3rdparty/lua/fengari-web.js"></script>
   <script type="module" src="main.js"></script>
-
+  <script src="app/gapi.js"></script>
+  <script async defer src="https://apis.google.com/js/api.js" 
+    onload="this.onload=function(){};handleClientLoad()" 
+    onreadystatechange="if (this.readyState === 'complete') this.onload()">
+  </script>
+	<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </html> 
