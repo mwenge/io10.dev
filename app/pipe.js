@@ -19,8 +19,9 @@ const defaultData =
 #
 #  Saving and Loading Pipelines
 #    - Ctrl-S:    Download and save the current pipeline as a zip file.
-#    - Ctrl-G:    Save the current pipeline to Google Drive.
 #    - Ctrl-O:    Select and load a previously saved zip file.
+#    - Alt-G:    Save the current pipeline to Google Drive.
+#    - Alt-L:     Load all saved pipelines from Google Drive. 
 #
 #  When Cursor in Input/Output panes
 #    - PageUp/PageDown: Page up and down through input/output.

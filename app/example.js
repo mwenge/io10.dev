@@ -220,15 +220,15 @@ return output;
   {
     key: "Introduction Part Two-0",
     program: `# 
-# Let's run some R. We have a file loaded called 'file.csv'. Let's read it in and print it out.
+# Let's run some R. We have a file loaded called 'testfile.csv'. Let's read it in and print it out.
 # Reminder: press Ctrl-Enter to run! :) 
-data <- read.csv("file.csv")
+data <- read.csv("testfile.csv")
 print(data)
     `,
     input: ``,
     output: '',
     lang: "*.r",
-    files: ['file.csv'],
+    files: ['testfile.csv'],
   },
   {
     key: "Introduction Part Two-1",
@@ -265,7 +265,7 @@ export const exampleFiles = [
 8,Guru,722.5,2014-06-17,Finance`,
   },
   {
-  name: 'file.csv',
+  name: 'testfile.csv',
   data: `id,name,salary,start_date,dept
 1,Rick,623.3,2012-01-01,IT
 2,Dan,515.2,2013-09-23,Operations

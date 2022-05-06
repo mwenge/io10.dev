@@ -7,7 +7,7 @@ async function get(file) {
         method: 'GET',
         headers: new Headers({ 'Authorization': 'Bearer ' + accessToken })});
     if (response.status >= 200 && response.status <= 299) {
-      result = await response.blob();
+      result = response;
     } else {
       throw Error(response.statusText);
     }
@@ -78,42 +78,29 @@ async function blobToText(blob) {
   return t;
 
 }
-async function getFileManifest() {
+
+async function getFileID(name) {
 	let result = await gapi.client.drive.files.list({
 			fields: 'nextPageToken, files(id, name)',
 			spaces: 'drive',
       pageSize: 100,
 	});
   console.log('Raw File List', result.result.files);
-	let fileList = result.result.files.filter(x => x.name === "io10-manifest.json");
+	let fileList = result.result.files.filter(x => x.name === name);
   console.log('fileList', fileList);
   if (fileList.length) {
     let file = fileList[0];
-    return {id: file.id, content: await blobToText(await get(file))};
+    return file.id;
   }
-	// 'io10' folder doesn't exist: create it.
-  const defaultContent = "{}";
-	var file = new Blob([defaultContent], {type: 'application/zip'});
-	var metadata = {
-    'name': 'io10-manifest.json',
-    'mimeType': 'application/json', // mimeType at Google Drive
-	};
-  result = await create(file, metadata);
-  console.log('upload manifest result', result);
-  return {id: result ? result.id : null, content: defaultContent};
+  return null;
 }
 
 export async function savePipelineToGoogleDrive(zipFile, zipFileName, running) {
   running.textContent = "Signing into Google Drive";
   if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-    gapi.auth2.getAuthInstance().signIn();
+    await gapi.auth2.getAuthInstance().signIn();
   }
-  let fileManifest = await getFileManifest();
-  console.log("file manifest", await getFileManifest());
-  if (!fileManifest.id) {
-    running.textContent = "Failed to get list of files on Google Drive";
-    return;
-  }
+  let fileID = await getFileID(zipFileName);
   running.textContent = "Uploading to Google Drive";
 	// Store the zip file.
 	var file = new Blob([zipFile], {type: 'application/zip'});
@@ -122,21 +109,50 @@ export async function savePipelineToGoogleDrive(zipFile, zipFileName, running) {
 			'mimeType': 'application/zip', // mimeType at Google Drive
 			//'parents': [folderId], // Folder ID at Google Drive
 	};
-  let manifestContent = JSON.parse(fileManifest.content);
-  if (manifestContent[zipFileName]) {
-    let result = await update(manifestContent[zipFileName], file, metadata);
+  if (fileID) {
+    let result = await update(fileID, file, metadata);
     console.log(`update ${zipFileName} result`, result);
     return;
   }
   let result = await create(file, metadata);
   console.log(`upload ${zipFileName} result`, result);
+}
 
-  manifestContent[zipFileName] = result.id;
-	metadata = {
-    'name': 'io10-manifest.json',
-    'mimeType': 'application/json', // mimeType at Google Drive
-	};
-  result = await update(fileManifest.id, JSON.stringify(manifestContent), metadata);
-  console.log(`update manifest result`, result);
+async function getFileList() {
+	let result = await gapi.client.drive.files.list({
+			fields: 'nextPageToken, files(id, name)',
+			spaces: 'drive',
+      pageSize: 100,
+	});
+  console.log('Raw File List', result.result.files);
+	let fileList = result.result.files;
+  console.log('getFileList', fileList);
+  if (fileList.length) {
+    return fileList;
+  }
+  return null;
+}
+export async function loadPipelinesFromGoogleDrive(loadZipFile) {
+  running.textContent = "Signing into Google Drive";
+  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    let result = await gapi.auth2.getAuthInstance().signIn();
+    console.log("signin", result);
+  }
+  let fileList = await getFileList();
+  if (!fileList) {
+    running.textContent = "No files to load on Google Drive";
+    return;
+  }
+  running.innerHTML = "Loading from Google Drive..<br>";
+  await fileList.forEach(async (f) => {
+    let response = await get(f);
+    let buf = await response.arrayBuffer();
+    let result = await loadZipFile(buf);
+    if (!result) {
+      running.innerHTML += `Failed to load ${f.name} from Google Drive<br>`;
+    } else {
+      running.innerHTML += `Loaded ${f.name} from Google Drive<br>`;
+    }
+  });
 }
 

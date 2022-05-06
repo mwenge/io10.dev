@@ -3,7 +3,7 @@ import {setUpOutput} from "./app/output.js";
 import * as ps from "./app/pipelines.js";
 import { asyncRunJS } from "./app/js.js";
 import { asyncRunLua } from "./app/lua.js";
-import { savePipelineToGoogleDrive } from "./app/gdrive.js";
+import * as gdrive from "./app/gdrive.js";
 
 const cmLangs = {
   "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
@@ -35,7 +35,8 @@ editor.setOption("extraKeys", {
       "Ctrl-O": ps.openFile,
       "Ctrl-D": interruptExecution,
       "Ctrl-S": download,
-      "Ctrl-G": uploadToGoogle,
+      "Alt-G": uploadToGoogleDrive,
+      "Alt-L": loadFromGoogleDrive,
       "Shift-Tab": false,
       "Ctrl-Space": "autocomplete",
     });
@@ -450,9 +451,9 @@ async function createZipFile() {
 
     // Zip any files associated with the pipe.
     p.metadata = {files: pipe.files(), lang: pipe.lang()};
-    pipe.files().forEach(async (f) => {
-      zip.file(f, await localforage.getItem(f));
-    });
+    for (var f of pipe.files()) {
+      zip.file(pipe.files()[0], await localforage.getItem(f));
+    }
     return p;
   }
 
@@ -477,6 +478,7 @@ async function createZipFile() {
     pipe = await ps.pipeline.getNextPipe(++curPipe);
   }
   zip.file("manifest.json", JSON.stringify(manifest, null, '\t'));
+  console.log("zip", zip);
   let zippedFile = await zip.generateAsync({type:"blob"});
   return zippedFile;
 }
@@ -486,6 +488,7 @@ async function download() {
     return;
   }
   let zipFile = await createZipFile();
+  console.log(zipFile);
   saveAs(zipFile, ps.pipelinePrettyName() + ".zip");
 }
 
@@ -497,6 +500,7 @@ async function loadZipFile(buffer) {
     console.log(e);
     running.style.display = "block";
     running.textContent = "Not a valid zip file";
+    console.error("Not a valid zip file");
     return false;
   }
   let m;
@@ -507,24 +511,31 @@ async function loadZipFile(buffer) {
   } catch(e) {
     console.log(e);
     running.style.display = "block";
-    running.textContent = "Not a Valid pipeline file";
+    running.innerHTML = `Not a Valid pipeline file<br>`;
+    return false;
+  }
+
+  if (JSON.parse(localStorage.pipelinePrettyNames).includes(manifest.pipelineName)) {
+    running.innerHTML += `Pipeline '${manifest.pipelineName}' already exists<br>`;
+    console.error(running.textContent);
     return false;
   }
   localStorage.setItem(manifest.pipelineName, manifest.pipelineArray);
-  await manifest.pipes.forEach(async(p) => {
+  for (var p of manifest.pipes) {
     await localforage.setItem(p.key + "-metadata", p.metadata);
-    await p.metadata.files.forEach(async (file) => {
+    for (var file of p.metadata.files) {
       let fc = await zip.file(file).async("arraybuffer");
       await localforage.setItem(file, fc);
-    });
-    await p.entries.forEach(async(e) => {
+    };
+    for (var e of p.entries) {
       let fc = await zip.file(e.fileName).async("string");
       await localforage.setItem(p.key + "-" + e.name, fc);
-    });
-  });
+    };
+  };
   await ps.addPipeline(manifest.pipelineName);
   return true;
 }
+
 // Upload a zip file and load it as a pipeline.
 async function upload(f) {
   var r = new FileReader();
@@ -553,7 +564,7 @@ window.onresize = function(e) {
   }
 };
 
-async function uploadToGoogle() {
+async function uploadToGoogleDrive() {
   if (runningPipe) {
     return;
   }
@@ -563,5 +574,27 @@ async function uploadToGoogle() {
   let zipFile = await createZipFile();
   let zipFileName = "io10.dev - " + ps.pipelinePrettyName() + ".zip";
 
-  await savePipelineToGoogleDrive(zipFile, zipFileName, running);
+  console.log("Saving to google", zipFileName);
+  try {
+    await gdrive.savePipelineToGoogleDrive(zipFile, zipFileName, running);
+    console.log("signin", result);
+  } catch(e) {
+    running.textContent = "try that again";
+    console.log("signin error", e);
+  }
 }
+
+async function loadFromGoogleDrive() {
+  if (runningPipe) {
+    return;
+  }
+  running.style.display = "block";
+  try {
+    let result = await gdrive.loadPipelinesFromGoogleDrive(loadZipFile);
+    console.log("signin", result);
+  } catch(e) {
+    running.textContent = "try that again";
+    console.log("signin error", e);
+  }
+}
+

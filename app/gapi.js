@@ -28,7 +28,7 @@ function initClient() {
     apiKey: apiKey,
     discoveryDocs: discoveryDocs,
     clientId: clientId,
-    scope: scopes
+    scope: scopes,
   });
 }
 
