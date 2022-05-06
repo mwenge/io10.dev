@@ -489,42 +489,50 @@ async function download() {
   saveAs(zipFile, ps.pipelinePrettyName() + ".zip");
 }
 
+async function loadZipFile(buffer) {
+  let zip;
+  try {
+    zip = await JSZip.loadAsync(buffer)
+  } catch(e) {
+    console.log(e);
+    running.style.display = "block";
+    running.textContent = "Not a valid zip file";
+    return false;
+  }
+  let m;
+  let manifest;
+  try {
+    m = await zip.file("manifest.json").async("string");
+    manifest = JSON.parse(m);
+  } catch(e) {
+    console.log(e);
+    running.style.display = "block";
+    running.textContent = "Not a Valid pipeline file";
+    return false;
+  }
+  localStorage.setItem(manifest.pipelineName, manifest.pipelineArray);
+  await manifest.pipes.forEach(async(p) => {
+    await localforage.setItem(p.key + "-metadata", p.metadata);
+    await p.metadata.files.forEach(async (file) => {
+      let fc = await zip.file(file).async("arraybuffer");
+      await localforage.setItem(file, fc);
+    });
+    await p.entries.forEach(async(e) => {
+      let fc = await zip.file(e.fileName).async("string");
+      await localforage.setItem(p.key + "-" + e.name, fc);
+    });
+  });
+  await ps.addPipeline(manifest.pipelineName);
+  return true;
+}
 // Upload a zip file and load it as a pipeline.
 async function upload(f) {
   var r = new FileReader();
   r.onload = async function () {
-    let zip;
-    try {
-      zip = await JSZip.loadAsync(r.result)
-    } catch(e) {
-      console.log(e);
-      running.style.display = "block";
-      running.textContent = "Not a valid zip file";
+    let result = await loadZipFile(r.result);
+    if (!result) {
       return;
     }
-    let m;
-    try {
-      m = await zip.file("manifest.json").async("string");
-    } catch(e) {
-      console.log(e);
-      running.style.display = "block";
-      running.textContent = "Not a Valid pipeline file";
-      return;
-    }
-    let manifest = JSON.parse(m);
-    localStorage.setItem(manifest.pipelineName, manifest.pipelineArray);
-    await manifest.pipes.forEach(async(p) => {
-      await localforage.setItem(p.key + "-metadata", p.metadata);
-      await p.metadata.files.forEach(async (file) => {
-        let fc = await zip.file(file).async("arraybuffer");
-        await localforage.setItem(file, fc);
-      });
-      await p.entries.forEach(async(e) => {
-        let fc = await zip.file(e.fileName).async("string");
-        await localforage.setItem(p.key + "-" + e.name, fc);
-      });
-    });
-    await ps.addPipeline(manifest.pipelineName);
     running.textContent = "Loaded pipeline file successfully";
   }
   r.readAsArrayBuffer(f);
@@ -555,5 +563,5 @@ async function uploadToGoogle() {
   let zipFile = await createZipFile();
   let zipFileName = "io10.dev - " + ps.pipelinePrettyName() + ".zip";
 
-  savePipelineToGoogleDrive(zipFile, zipFileName, running);
+  await savePipelineToGoogleDrive(zipFile, zipFileName, running);
 }
