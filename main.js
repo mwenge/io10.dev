@@ -576,7 +576,7 @@ async function uploadToGoogleDrive() {
 
   console.log("Saving to google", zipFileName);
   try {
-    await gdrive.savePipelineToGoogleDrive(zipFile, zipFileName, running);
+    let result = await gdrive.savePipelineToGoogleDrive(zipFile, zipFileName, running);
     console.log("signin", result);
   } catch(e) {
     running.textContent = "try that again";

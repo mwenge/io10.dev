@@ -20,12 +20,18 @@ const defaultData =
 #  Saving and Loading Pipelines
 #    - Ctrl-S:    Download and save the current pipeline as a zip file.
 #    - Ctrl-O:    Select and load a previously saved zip file.
-#    - Alt-G:    Save the current pipeline to Google Drive.
-#    - Alt-L:     Load all saved pipelines from Google Drive. 
+#
+#  Synchronizing with Google Drive
+#  The first attempt to connect to Google Drive may fail. If that happens
+#  just try again, it usually works on the second attempt.
+#    - Alt-G:     Save/Update the current pipeline on Google Drive.
+#    - Alt-L:     Load all saved pipelines from Google Drive. This won't
+#                 overwrite any open pipelines with the same name.
 #
 #  When Cursor in Input/Output panes
-#    - PageUp/PageDown: Page up and down through input/output.
-#    - Ctrl-Home:       Move back to start of input/output
+#    - PageUp/
+#      PageDown:  Page up and down through input/output.
+#    - Ctrl-Home: Move back to start of input/output
 #
 #  Other Pipelines
 #    - Alt-Up:   Create a new pipeline or navigate to the next pipeline.
