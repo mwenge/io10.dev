@@ -22,11 +22,11 @@ const defaultData =
 #    - Ctrl-O:    Select and load a previously saved zip file.
 #
 #  Synchronizing with Google Drive
-#  The first attempt to connect to Google Drive may fail. If that happens
-#  just try again, it usually works on the second attempt.
 #    - Alt-G:     Save/Update the current pipeline on Google Drive.
 #    - Alt-L:     Load all saved pipelines from Google Drive. This won't
 #                 overwrite any open pipelines with the same name.
+#    NOTE: The first attempt to connect to Google Drive may fail. If that
+#    happens just try again, it usually works on the second attempt.
 #
 #  When Cursor in Input/Output panes
 #    - PageUp/

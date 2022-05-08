@@ -136,16 +136,6 @@ print(l.readline())
 -- 
 --  As in the previous step, the file, 'table.csv', has already been loaded for this example.
 -- 
--- Now that you've seen the basics, you can start creating pipelines of your own.
---   - Press Alt-Up to create a new pipeline.
---   - Click on the pipeline name in the bottom left to give it a meaningful name of your own.
---   - Use Alt-Up and Alt-Down to navigate between your pipelines.
---   - Use Alt-A to add a new step to a pipeline.
---   - Use Alt-D to delete the current step from a pipeline.
---   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.
---
--- If you want to learn more, press Alt-Up to try the second part of the introduction to io10.dev.
---
 SELECT *
 FROM "table.csv" A 
 `,
@@ -234,6 +224,11 @@ print(data)
     key: "Introduction Part Two-1",
     program: `--  Now we're at the second step of our pipeline, this time we use Lua:
 -- Input is available as 'input' local variable.
+--
+-- Once you've run this you can use Alt-Up to start creating your own pipelines. If you
+-- find any bugs please click on the link at the bottom left to go to the project page
+-- in github, where you can report them.
+-- I hope you find io10.dev useful!
 local output = {}
 local colors = { "red", "green", "blue" }
 
