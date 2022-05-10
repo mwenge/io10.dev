@@ -15,8 +15,10 @@ function interruptPythonExecution() {
 }
 
 pyodideWorker.onmessage = (event) => {
-  if (event.data.text) {
-      textOutput += event.data.text + '\n';
+  // Stdout comes in as an ArrayBuffer
+  if (event.data instanceof ArrayBuffer) {
+    let dec = new TextDecoder();
+    textOutput = dec.decode(event.data)
     return;
   }
   const { id, ...data } = event.data;

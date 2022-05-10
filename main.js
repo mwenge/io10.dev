@@ -333,6 +333,7 @@ async function evaluatePython() {
   }
   await import("./app/pyodide-py-worker.js").then(async (py) => {
     console.assert(runningPipe);
+    const start = performance.now(); 
     let input = await runningPipe.input();
     let program = preprocessedProgram(runningPipe);
 
@@ -345,7 +346,7 @@ async function evaluatePython() {
     if (error) {
       stdout += error;
     }
-    if (results) {
+    if (results && results != undefined) {
       stdout += results;
     }
     if (output) {
@@ -356,6 +357,8 @@ async function evaluatePython() {
       console.log("pyodideWorker error: ", error);
       throw new Error("=> Error occured while running Python");
     }
+    const duration = performance.now() - start;
+    console.log("evaluatePython took: ", duration);
   })
 }
 

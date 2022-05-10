@@ -19,13 +19,14 @@ async function loadFile(f) {
   await self.pyodide.FS.writeFile(f, new Uint8Array(data));
 }
 
+let stdout;
 async function loadPyodideAndPackages() {
   self.pyodide = await loadPyodide({
     indexURL: "https://cdn.jsdelivr.net/pyodide/v0.19.1/full/",
     stdout: (text) => {
       if (text == "Python initialization complete")
         return;
-      self.postMessage({text:text});
+      stdout += text + '\n';
     },
     stdin: () => { return stdinIterator.next().value; },
   });
@@ -44,6 +45,7 @@ self.onmessage = async (event) => {
 
   // Don't bother yet with this line, suppose our API is built in such a way:
   const { id, python, stdin, files } = event.data;
+  stdout = '';
   // Load all the files, and wait until they're all loaded.
   await Promise.all(files.map(async (f) => {
     await loadFile(f);
@@ -53,6 +55,13 @@ self.onmessage = async (event) => {
   try {
     await self.pyodide.loadPackagesFromImports(python);
     let results = await self.pyodide.runPythonAsync(python);
+
+    // Make sure the stdout transfer is 'zero copy'
+    let enc = new TextEncoder();
+    let stdoutBuffer = enc.encode(stdout)
+    self.postMessage(stdoutBuffer.buffer, [stdoutBuffer.buffer] );
+
+    // Post the results.
     self.postMessage({ results, id });
   } catch (error) {
     self.postMessage({ error: error.message, id });
