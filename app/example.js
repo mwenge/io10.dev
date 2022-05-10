@@ -46,7 +46,9 @@ print("colid" + '\t' + "colval")
 for i in range(0,20):
   print(str(1) + '\t' + w.strip() +str(i))
     `,
-    input: ``,
+    input: `input line 1
+input line 2
+input line 3`,
     output: '',
     lang: "*.py",
   },
