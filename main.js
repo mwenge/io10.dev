@@ -3,12 +3,13 @@ import {setUpOutput} from "./app/output.js";
 import * as ps from "./app/pipelines.js";
 import { asyncRunJS } from "./app/js.js";
 import { asyncRunLua } from "./app/lua.js";
+import { asyncRunAwk } from "./app/awk.js";
 import * as gdrive from "./app/gdrive.js";
 
 const cmLangs = {
   "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
   "*.sql" : { lang: "*.sql",  syntax: "text/x-mysql", run: evaluateSQL, interrupt: interruptSQLExecution },
-  "*.awk" : { lang: "*.awk",  syntax: "text/x-awk", run: evaluateAwk, interrupt: interruptAwkExecution },
+  "*.awk" : { lang: "*.awk",  syntax: "text/x-awk", run: evaluateAwk},
   "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
   "*.lua" : { lang: "*.lua",  syntax: "text/x-lua", run: evaluateLua },
   "*.r" : { lang: "*.r",  syntax: "text/x-rsrc", run: evaluateR, interrupt: interruptRExecution },
@@ -296,42 +297,6 @@ async function evaluateSQL() {
   });
 }
 
-let awkLoaded = 0;
-// Helper for running Python
-async function evaluateAwk() {
-  if (!awkLoaded) {
-    updateProgress("Loading Awk for the first time..");
-    awkLoaded=1;
-  }
-  await import("./app/awk.js-worker.js").then(async (awk) => {
-    console.assert(runningPipe);
-    let input = await runningPipe.input();
-    let program = preprocessedProgram(runningPipe);
-
-    // Get any files and add the input to 'input.txt'.
-    let files = runningPipe.files();
-    await localforage.setItem("input.txt", enc.encode(input).buffer);
-
-    const { results, error, output } = await awk.asyncRunAwk(program, input, files, outputWrapper);
-    let stdout = '';
-    if (error) {
-      stdout += error;
-    }
-    if (results) {
-      stdout += results;
-    }
-    if (output) {
-      stdout += output;
-    }
-    await runningPipe.updateOutput(stdout);
-    if (error) {
-      console.log("Awk Worker error: ", error);
-      throw new Error("=> Error occured while running Awk");
-    }
-  })
-}
-
-
 let RLoaded = 0;
 // Helper for running Python
 async function evaluateR() {
@@ -450,6 +415,30 @@ async function evaluateLua() {
     throw new Error("test error inside lua");
   }
 }
+
+// Helper for running Javascript
+async function evaluateAwk() {
+  let input = await runningPipe.input();
+  let program = preprocessedProgram(runningPipe);
+  let files = runningPipe.files();
+  const { results, error, output } = await asyncRunAwk(input, program);
+  let stdout = '';
+  if (error) {
+    stdout += error;
+  }
+  if (results) {
+    stdout += results;
+  }
+  if (output) {
+    stdout += output;
+  }
+  await runningPipe.updateOutput(stdout);
+  if (error) {
+    console.log("awkWorker error: ", error);
+    throw new Error("test error inside awk");
+  }
+}
+
 // Allow the user to add a file. Doing so associates the file with the current
 // pipe only. 
 var fileUpload = document.getElementById('file-upload');

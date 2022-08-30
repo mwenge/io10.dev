@@ -30,7 +30,7 @@ export const examplePipelines = [
 #       |           |       |
 #       +-----------+-------+
 #  
-#   io10.dev supports Python, SQL, Javascript, R, and Lua.
+#   io10.dev supports Python, SQL, Javascript, R, Awk, and Lua.
 #
 #   Everything is run and stored locally in your browser.
 #
@@ -214,6 +214,7 @@ return output;
     program: `# 
 # Let's run some R. We have a file loaded called 'testfile.csv'. Let's read it in and print it out.
 # Reminder: press Ctrl-Enter to run! :) 
+# Reminder: press Alt-Right-Arrow to move to the next pipe! :) 
 data <- read.csv("testfile.csv")
 print(data)
     `,
@@ -227,10 +228,6 @@ print(data)
     program: `--  Now we're at the second step of our pipeline, this time we use Lua:
 -- Input is available as 'input' local variable.
 --
--- Once you've run this you can use Alt-Up to start creating your own pipelines. If you
--- find any bugs please click on the link at the bottom left to go to the project page
--- in github, where you can report them.
--- I hope you find io10.dev useful!
 local output = {}
 local colors = { "red", "green", "blue" }
 
@@ -243,6 +240,30 @@ return table.concat(output, '')
     input: ``,
     output: '',
     lang: "*.lua",
+  },
+  {
+    key: "Introduction Part Two-2",
+    program: `#  Now we're at the third step of our pipeline, this time we use Awk:
+# Once you have run this you can use Alt-Up to start creating your own pipelines. If you
+# find any bugs please click on the link at the bottom left to go to the project page
+# in github, where you can report them.
+# I hope you find io10.dev useful!
+#!/bin/awk
+BEGIN {
+      FS="[^a-zA-Z]+"
+}
+{
+      for (i=1; i<=NF; i++)
+            words[tolower($i)]++
+}
+END {
+      for (i in words)
+            print i, words[i]
+}
+`,
+    input: ``,
+    output: '',
+    lang: "*.awk",
   },
   ]
   },

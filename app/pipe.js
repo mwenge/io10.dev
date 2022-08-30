@@ -57,6 +57,7 @@ const defaultData =
 #    #!/bin/sql
 #    #!/bin/r
 #    #!/bin/lua
+#    #!/bin/awk
 
 
 import sys
