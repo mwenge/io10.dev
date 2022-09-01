@@ -243,7 +243,7 @@ return table.concat(output, '')
   },
   {
     key: "Introduction Part Two-2",
-    program: `#  Now we're at the third step of our pipeline, this time we use Awk:
+    program: `#  Now we are at the third step of our pipeline, this time we use Awk:
 # Once you have run this you can use Alt-Up to start creating your own pipelines. If you
 # find any bugs please click on the link at the bottom left to go to the project page
 # in github, where you can report them.
