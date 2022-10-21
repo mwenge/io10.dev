@@ -1,4 +1,5 @@
 ![favicon](https://user-images.githubusercontent.com/58846/162999976-65b1f8b3-3445-432d-bd60-ed95a0c21233.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmwenge%2Fio10.dev.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmwenge%2Fio10.dev?ref=badge_shield)
 
 It's [io10.dev](https://io10.dev). This is what it looks like, but what is it?
 
@@ -21,3 +22,7 @@ It has a built in tutorial to introduce you to the commands and languages suppor
 - [sheetJS](https://sheetjs.com/)
 - [guesslang](https://github.com/yoeo/guesslang)
 - [localforage](https://localforage.github.io/)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmwenge%2Fio10.dev.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmwenge%2Fio10.dev?ref=badge_large)
