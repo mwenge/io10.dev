@@ -107,8 +107,7 @@ GROUP BY 1
 #
 import sys
 l = open('file.txt', 'r')
-print("colid" + '\t' + "colval")
-print(l.readline())
+print(l.read())
     `,
     input: ``,
     output: '',
@@ -293,5 +292,12 @@ export const exampleFiles = [
 6,Nina,578,2013-05-21,IT
 7,Simon,632.8,2013-07-30,Operations
 8,Guru,722.5,2014-06-17,Finance`,
+  },
+  {
+  name: 'file.txt',
+  data: `id	name
+1	Rick
+2	Dan
+3	Michelle`
   },
 ];
