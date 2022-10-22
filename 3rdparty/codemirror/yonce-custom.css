@@ -56,4 +56,4 @@
 .cm-s-yonce .cm-error { border-bottom: 1px solid #C42412; }
 
 .cm-s-yonce .CodeMirror-activeline-background { background: #272727; }
-.cm-s-yonce .CodeMirror-matchingbracket { outline:1px solid grey; color:#D4D4D4 !important; }
+.cm-s-yonce .CodeMirror-matchingbracket { font-style: bold; background: grey; color:white !important; }

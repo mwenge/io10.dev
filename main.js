@@ -4,6 +4,7 @@ import * as ps from "./app/pipelines.js";
 import { asyncRunJS } from "./app/js.js";
 import { asyncRunLua } from "./app/lua.js";
 import { asyncRunAwk } from "./app/awk.js";
+import { asyncRunLisp } from "./app/lisp.js";
 import * as gdrive from "./app/gdrive.js";
 
 const cmLangs = {
@@ -13,6 +14,7 @@ const cmLangs = {
   "*.js" : { lang: "*.js",  syntax: "text/javascript", run: evaluateJS },
   "*.lua" : { lang: "*.lua",  syntax: "text/x-lua", run: evaluateLua },
   "*.r" : { lang: "*.r",  syntax: "text/x-rsrc", run: evaluateR, interrupt: interruptRExecution },
+  "*.lisp" : { lang: "*.lisp",  syntax: "text/x-scheme", run: evaluateLisp },
 };
 // Set up the editor.
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
@@ -97,6 +99,7 @@ const shebangs = {
   "#!/bin/r" : "*.r",
   "#!/bin/lua" : "*.lua",
   "#!/bin/awk" : "*.awk",
+  "#!/bin/lisp" : "*.lisp",
 };
 function langFromShebang(p) {
   for (var k of Object.keys(shebangs)) {
@@ -207,6 +210,7 @@ function determineLanguageAndRun() {
   running.textContent = "Busy";
   setTimeout(determineLanguageAndRunImpl, 0);
 }
+
 // Determine what the language is and the run the script.
 async function determineLanguageAndRunImpl() {
   let lang = await determineLanguage();
@@ -393,7 +397,7 @@ async function evaluateJS() {
   }
 }
 
-// Helper for running Javascript
+// Helper for running Lua
 async function evaluateLua() {
   let input = await runningPipe.input();
   let program = preprocessedProgram(runningPipe);
@@ -416,7 +420,7 @@ async function evaluateLua() {
   }
 }
 
-// Helper for running Javascript
+// Helper for running Awk
 async function evaluateAwk() {
   let input = await runningPipe.input();
   let program = preprocessedProgram(runningPipe);
@@ -436,6 +440,29 @@ async function evaluateAwk() {
   if (error) {
     console.log("awkWorker error: ", error);
     throw new Error("test error inside awk");
+  }
+}
+
+// Helper for running Lisp
+async function evaluateLisp() {
+  let input = await runningPipe.input();
+  let program = preprocessedProgram(runningPipe);
+  let files = runningPipe.files();
+  const { results, error, output } = await asyncRunLisp(input, program);
+  let stdout = '';
+  if (error) {
+    stdout += error;
+  }
+  if (results) {
+    stdout += results;
+  }
+  if (output) {
+    stdout += output;
+  }
+  await runningPipe.updateOutput(stdout);
+  if (error) {
+    console.log("lispWorker error: ", error);
+    throw new Error("test error inside lisp");
   }
 }
 
