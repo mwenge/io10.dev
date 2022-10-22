@@ -10,6 +10,7 @@ export function updateAwesomeBar(i = 0) {
     pipeline.currentPipe().files(),
 		currentPipelineIndex); 
 }
+
 // Helper functions to navigate pipes and pipelines.
 export async function updateDisplayedPipe(pipe) {
   if (!pipe) { return; }
@@ -28,20 +29,24 @@ export async function updateDisplayedPipe(pipe) {
     initialIndex: pipeline.currentPipeIndex()
   }));
 }
+
 export async function insertBefore() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.insertBefore();
   updateDisplayedPipe(pipe);
 }
+
 export async function deleteCurrent() {
   let pipe = await pipeline.deleteCurrent();
   updateDisplayedPipe(pipe);
 }
+
 export async function insertAfter() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.insertAfter();
   updateDisplayedPipe(pipe);
 }
+
 export async function previousPipe() {
   quickPipeDisplayUpdate(pipeline.currentPipeIndex(), -1);
   await setTimeout(async ()=> { 
@@ -50,12 +55,14 @@ export async function previousPipe() {
     updateDisplayedPipe(pipe);
   }, 10);
 }
+
 export async function moveToFirstPipe() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.moveToFirstPipe();
   updateDisplayedPipe(pipe);
   return pipe;
 }
+
 export async function nextPipe() {
   function nextPipeImpl() {
     var promise = new Promise(function(resolve, reject) {
@@ -77,6 +84,7 @@ export async function nextPipe() {
   }
   return await getNextPipe();
 }
+
 export async function nextPipeline() {
   function getNewName(c) {
     let i = 0;
@@ -108,6 +116,7 @@ export async function nextPipeline() {
   let newPipelineName = getNewName(cur);
   await addPipeline(newPipelineName);
 }
+
 export async function addPipeline(newPipelineName) {
   pipelines.push(newPipelineName);
   pipelinePrettyNames.push(newPipelineName);
@@ -117,6 +126,7 @@ export async function addPipeline(newPipelineName) {
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
+
 export async function prevPipeline() {
   if (!pipeline.currentPipeIndex())
     pipeline.currentPipe().updateInput(inputWrapper.getValue());
@@ -128,6 +138,7 @@ export async function prevPipeline() {
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
+
 export async function deletePipeline() {
   if (!currentPipelineIndex) return;
 
@@ -151,6 +162,7 @@ export async function deletePipeline() {
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
+
 export function openFile() {
   const fileUpload = document.getElementById('file-upload');
   fileUpload.click();
@@ -207,12 +219,14 @@ export function setPanes(e, i, o, langs) {
 export function pipelinePrettyName() {
   return pipelinePrettyNames[currentPipelineIndex];
 }
+
 // Handle changes to the current pipeline's pretty name.
 function updatePipelinePrettyName(name) {
   pipelinePrettyNames[currentPipelineIndex] = name;
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
   updateAwesomeBar();
 };
+
 document.getElementById("pipeline-name").addEventListener('keydown', (event) => {
   const keyName = event.key;
   if (keyName == 'Enter') {
