@@ -42,14 +42,29 @@
     <input type='file' 
            accept=".csv,.txt,.json,.xls,.xlsx,.ods,.db,.sqlite"
            id='file-upload' style="display:none">
-    <div id="program" class="program"></div>
-    <div id="input" class="input"></div>
-    <div id="output" class="output"></div>
-    <div id="running" class="running">BUSY (CTRL-D TO STOP)</div>
-    <div id="awesomebar" class="awesomebar">
-      <div id="site-title" class="title"><a href="https://github.com/mwenge/dirtylittlepipeline.com" target="_blank"><img src="assets/github-dark.png" height=12>io10.dev</a></div><div id="pln-container" class="pipeline-name">
-        <span id="pipeline-name" contenteditable=true>STUFF IS LOADING</span>
-      </div><div id="pipeline-container" class="pipeline-container"><div class="pipe">Made by @mwenge</div>
+    <div id="help" class="help">
+      <div class="lozenge"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> Run Current Step</div>
+      <div class="lozenge lozenge-alt"><kbd>Alt</kbd>+<kbd>R</kbd> Run Pipeline</div>
+      <div class="lozenge lozenge-alt"><kbd>Alt</kbd>+<kbd>&#8592;/&#8594;</kbd> Previous/Next Step</div>
+      <div class="lozenge lozenge-alt"><kbd>Alt</kbd>+<kbd>&#8595;/&#8593;</kbd> Previous/Next Pipeline</div>
+      <div class="lozenge lozenge-alt"><kbd>Alt</kbd>+<kbd>A</kbd> Insert After</div>
+      <div class="lozenge"><kbd>Alt</kbd>+<kbd>B</kbd> Insert Before</div>
+      <div class="lozenge"><kbd>Alt</kbd>+<kbd>C</kbd> Delete Current Step</div>
+      <div class="lozenge"><kbd>Alt</kbd>+<kbd>Q</kbd> Delete Pipeline</div>
+      <div class="lozenge lozenge-alt"><kbd>Ctrl</kbd>+<kbd>O</kbd> Add File</div>
+      <div class="lozenge lozenge-alt"><kbd>Alt</kbd>+<kbd>G</kbd> Upload to Google Drive</div>
+      <div class="lozenge"><kbd>Alt</kbd>+<kbd>L</kbd> Download from Google Drive</div>
+    </div>
+    <div class="container">
+      <div id="program" class="program"></div>
+      <div id="input" class="input"></div>
+      <div id="output" class="output"></div>
+      <div id="running" class="running">BUSY (CTRL-D TO STOP)</div>
+      <div id="awesomebar" class="awesomebar">
+        <div id="site-title" class="title"><a href="https://github.com/mwenge/dirtylittlepipeline.com" target="_blank"><img src="assets/github-dark.png" height=12>io10.dev</a></div><div id="pln-container" class="pipeline-name">
+          <span id="pipeline-name" contenteditable=true>STUFF IS LOADING</span>
+        </div><div id="pipeline-container" class="pipeline-container"><div class="pipe">Made by @mwenge</div>
+        </div>
       </div>
     </div>
   </body> 

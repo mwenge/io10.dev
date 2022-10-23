@@ -2,6 +2,7 @@
 :root {
   --main-bg-color: #0C1021;
   --main-fg-color: #98fb98;
+  --help-bg-color:  #e8f48c;
 }
 body {
   background-color: #1C1C1C;
@@ -27,6 +28,58 @@ body {
 .CodeMirror {
   font-family: "Inconsolata", monospace;
   font-size: 15px;
+}
+.help {
+  max-height: 1.5vh;
+  z-index: 9998;
+  left: 0;
+  bottom: 0px;
+  font-family: "Inconsolata";
+  font-size: 1.15vh;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  background-color: #242424;
+}
+.lozenge-alt > kbd {
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 0 0 0 rgba(255, 255, 255, .7) inset;
+}
+kbd {
+  background: var(--help-bg-color);
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;
+  color: #333;
+  display: inline-block;
+  font-weight: 700;
+  line-height: 1;
+  padding: 1px 1px;
+  white-space: nowrap;
+  font-family: "Inconsolata", monospace;
+}
+.lozenge {
+  color: white;
+  display: inline-block;
+  font-style: bold;
+}
+.lozenge-alt {
+  color: white;
+}
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+body{
+  overflow: hidden;
+}
+.container {
+  position: relative;
+  height: 98.5vh;
+  width: 100%;
 }
 .program {
   position: absolute;
@@ -166,11 +219,6 @@ body {
 .CodeMirror {
   border: 1px solid #222;
   height: 100%;
-}
-body{
-  padding: 10px 20px;
-  height: 100%;
-  overflow: hidden;
 }
 
 .CodeMirror-simplescroll-horizontal div, .CodeMirror-simplescroll-vertical div {
