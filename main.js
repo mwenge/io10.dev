@@ -27,7 +27,7 @@ const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(),
 ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
 editor.setOption("extraKeys", {
       "Ctrl-Enter": determineLanguageAndRun,
-      "Alt-Right": ps.nextPipe,
+      "Alt-Right": ps.nextPipeOrInsertAfter,
       "Alt-Left": ps.previousPipe,
       "Alt-A": ps.insertAfter,
       "Alt-B": ps.insertBefore,

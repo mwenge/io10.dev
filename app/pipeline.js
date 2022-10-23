@@ -123,6 +123,9 @@ async function getPipeline(id, initialIndex = 0) {
     currentPipeline: function() {
       return pipeline;
     },
+    atEndOfPipeline: function() {
+      return (current == pipeline.length - 1);
+    },
   };
   await rangeIterator.initializePipeInfo(current);
 

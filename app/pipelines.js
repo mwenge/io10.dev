@@ -41,6 +41,14 @@ export async function deleteCurrent() {
   updateDisplayedPipe(pipe);
 }
 
+export async function nextPipeOrInsertAfter() {
+  if (pipeline.atEndOfPipeline()) {
+    insertAfter();
+    return;
+  }
+  nextPipe();
+}
+
 export async function insertAfter() {
   pipeline.currentPipe().updateProgram(editor.getValue(), editor.getDoc());
   let pipe = await pipeline.insertAfter();
