@@ -23,6 +23,10 @@ function setUpEditor(content) {
     autofocus: true,
     theme: selectedTheme,
   });
+  editor.setOption("extraKeys", {
+    "Shift-Tab": false,
+    "Ctrl-Space": "autocomplete",
+  });
   return editor;
 }
 

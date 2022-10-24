@@ -1,5 +1,6 @@
 import {setUpEditor} from "./app/program.js";
 import {setUpOutput} from "./app/output.js";
+import {setUpShortcuts} from "./app/shortcuts.js";
 import * as ps from "./app/pipelines.js";
 import { asyncRunJS } from "./app/js.js";
 import { asyncRunLua } from "./app/lua.js";
@@ -25,48 +26,37 @@ const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(),
 
 // Set up the keyboard shortcuts and the editor panel options.
 ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
-editor.setOption("extraKeys", {
-      "Ctrl-Enter": determineLanguageAndRun,
-      "Alt-Right": ps.nextPipeOrInsertAfter,
-      "Alt-Left": ps.previousPipe,
-      "Alt-A": ps.insertAfter,
-      "Alt-B": ps.insertBefore,
-      "Alt-C": ps.deleteCurrent,
-      "Alt-Up": ps.nextPipeline,
-      "Alt-Down": ps.prevPipeline,
-      "Alt-Q": ps.deletePipeline,
-      "Alt-R": runPipeline,
-      "Ctrl-O": ps.openFile,
-      "Ctrl-D": interruptExecution,
-      "Ctrl-S": download,
-      "Alt-G": uploadToGoogleDrive,
-      "Alt-L": loadFromGoogleDrive,
-      "Shift-Tab": false,
-      "Ctrl-Space": "autocomplete",
-    });
+[editor, inputWrapper.editor(), outputWrapper.editor()].forEach(x => {
+  let extraKeys = x.getOption("extraKeys");
+  x.setOption("extraKeys", {
+    ...extraKeys,
+    "Ctrl-Enter": determineLanguageAndRun,
+    "Alt-Right": ps.nextPipeOrInsertAfter,
+    "Alt-Left": ps.previousPipe,
+    "Alt-A": ps.insertAfter,
+    "Alt-B": ps.insertBefore,
+    "Alt-C": ps.deleteCurrent,
+    "Alt-Up": ps.nextPipeline,
+    "Alt-Down": ps.prevPipeline,
+    "Alt-Q": ps.deletePipeline,
+    "Alt-R": runPipeline,
+    "Ctrl-O": ps.openFile,
+    "Ctrl-D": interruptExecution,
+    "Ctrl-S": download,
+    "Alt-G": uploadToGoogleDrive,
+    "Alt-L": loadFromGoogleDrive,
+    "Esc" : function() {
+      x.getWrapperElement().focus();
+    },
+  });
+  x.getWrapperElement().setAttribute("tabindex", "0");
+  x.getWrapperElement().className += " editorContainer";
+});
+setUpShortcuts(editor, inputWrapper, outputWrapper);
+
 let syntaxDirty = false;
 editor.on("change",function(cm,change){
   syntaxDirty = true;
-});
-
-[inputWrapper, outputWrapper].forEach(x => {
-  let extraKeys = x.editor().getOption("extraKeys");
-  x.editor().setOption("extraKeys", {
-      ...extraKeys,
-      "Ctrl-Enter": determineLanguageAndRun,
-      "Alt-Right": ps.nextPipe,
-      "Alt-Left": ps.previousPipe,
-      "Alt-A": ps.insertAfter,
-      "Alt-B": ps.insertBefore,
-      "Alt-C": ps.deleteCurrent,
-      "Alt-Up": ps.nextPipeline,
-      "Alt-Down": ps.prevPipeline,
-      "Alt-Q": ps.deletePipeline,
-      "Alt-R": runPipeline,
-      "Ctrl-O": ps.openFile,
-      "Ctrl-D": interruptExecution,
-      "Ctrl-S": download,
-    });
 });
 
 function interruptPythonExecution() {
