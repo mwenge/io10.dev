@@ -4,8 +4,46 @@ export const examplePipelines = [
     pipeline:
   [
   {
+    key: "Example Pipeline-0a",
+    program: `#
+#                                                                                                                      
+#                                                                                                                      
+#  o8o              .o    .oooo.             .o8                                                                       
+#  \`"'            o888   d8P'\`Y8b           "888                                                                       
+# oooo   .ooooo.   888  888    888      .oooo888   .ooooo.  oooo    ooo                                                
+# \`888  d88' \`88b  888  888    888     d88' \`888  d88' \`88b  \`88.  .8'                                                 
+#  888  888   888  888  888    888     888   888  888ooo888   \`88..8'                                                  
+#  888  888   888  888  \`88b  d88' .o. 888   888  888    .o    \`888'                                                   
+# o888o \`Y8bod8P' o888o  \`Y8bd8P'  Y8P \`Y8bod88P" \`Y8bod8P'     \`8'      .. is on.                                              
+#
+#   Hi. You can run pretty much anything in here: Python, SQL, Javascript,
+#   Lua, R, Awk, Lisp.
+#
+#   Everything is run and stored locally in your browser.
+#
+#   No data leaves your computer.
+#
+#   Let's run the script below.
+#    - Press Ctrl-Enter to run the program. 
+#    - Then press Alt-Right to navigate to the next step in the pipeline.
+#  
+import sys
+w = sys.stdin.readline();
+print("colid" + ' ' + "colval")
+for i in range(0,20):
+  print(w.strip())
+`,
+    input: `input line 1
+input line 2
+input line 3`,
+    output: '',
+    lang: "*.py",
+  },
+  {
     key: "Example Pipeline-0",
-    program: `# Welcome to io10.dev.
+    program: `#
+#   OK, so you go to the next step. And I said something about a pipeline.
+#
 #   This is a data analysis utility that structures your work as a pipeline
 #   of inputs and outputs. Each step in the pipeline can use a different
 #   language and can side-load files into the pipeline.
@@ -45,7 +83,7 @@ w = sys.stdin.readline();
 print("colid" + '\t' + "colval")
 for i in range(0,20):
   print(str(1) + '\t' + w.strip() +str(i))
-    `,
+`,
     input: `input line 1
 input line 2
 input line 3`,

@@ -106,10 +106,7 @@ body{
   height: 49.9%;
 }
 .editorContainer:focus {
-  outline: 0.5px solid lightblue;
-}
-.CodeMirror-focused {
-  border: 0.5px solid lightblue;
+  outline: 0.5px solid var(--help-bg-color);
 }
 /* Copied from http://aleclownes.com/2017/02/01/crt-display.html */
 .running {
