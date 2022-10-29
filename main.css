@@ -2,7 +2,7 @@
 :root {
   --main-bg-color: #0C1021;
   --main-fg-color: #98fb98;
-  --help-bg-color:  #e8f48c;
+  --help-bg-color:    #C0C0C0;
 }
 body {
   background-color: #1C1C1C;
@@ -30,7 +30,7 @@ body {
   font-size: 15px;
 }
 .help {
-  max-height: 1.5vh;
+  max-height: 1.6vh;
   z-index: 9998;
   left: 0;
   bottom: 0px;
@@ -50,14 +50,22 @@ kbd {
   background: var(--help-bg-color);
   border-radius: 3px;
   border: 1px solid #b4b4b4;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 1px 0 0 rgba(255, 255, 255, .7) inset;
   color: #333;
   display: inline-block;
   font-weight: 700;
-  line-height: 1;
   padding: 1px 1px;
   white-space: nowrap;
   font-family: "Inconsolata", monospace;
+}
+.alt {
+  background-color: #D0D0D0;
+}
+.ctrl {
+  background-color: #D0D0D0;
+}
+.enter {
+  background-color: #D0D0D0;
 }
 .lozenge {
   color: white;
