@@ -30,7 +30,7 @@ body {
   font-size: 15px;
 }
 .help {
-  max-height: 1.6vh;
+  max-height: 1.5vh;
   z-index: 9998;
   left: 0;
   bottom: 0px;
