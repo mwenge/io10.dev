@@ -6,15 +6,13 @@ export const examplePipelines = [
   {
     key: "Example Pipeline-0a",
     program: `#
-#                                                                                                                      
-#                                                                                                                      
-#  o8o              .o    .oooo.             .o8                                                                       
-#  \`"'            o888   d8P'\`Y8b           "888                                                                       
-# oooo   .ooooo.   888  888    888      .oooo888   .ooooo.  oooo    ooo                                                
-# \`888  d88' \`88b  888  888    888     d88' \`888  d88' \`88b  \`88.  .8'                                                 
-#  888  888   888  888  888    888     888   888  888ooo888   \`88..8'                                                  
-#  888  888   888  888  \`88b  d88' .o. 888   888  888    .o    \`888'                                                   
-# o888o \`Y8bod8P' o888o  \`Y8bd8P'  Y8P \`Y8bod88P" \`Y8bod8P'     \`8'      .. is on.                                              
+#    o8o              .o    .oooo.   
+#    \`"'            o888   d8P'\`Y8b
+#   oooo   .ooooo.   888  888    888 
+#   \`888  d88' \`88b  888  888    888 
+#    888  888   888  888  888    888  
+#    888  888   888  888  \`88b  d88'
+#   o888o \`Y8bod8P' o888o  \`Y8bd8P'
 #
 #   Hi. You can run pretty much anything in here: Python, SQL, Javascript,
 #   Lua, R, Awk, Lisp.
@@ -55,7 +53,7 @@ input line 3`,
 #       |       |     |       |    |       |    |       |    |       |
 #       +-------+     +-------+    +-------+    +-------+    +-------+
 #  
-#   On this screen we are at the first step of the pipeline. The input is at the
+#   On this screen we are at the second step of the pipeline. The input is at the
 #   top right. As we navigate the output of the previous step becomes our input. 
 #  
 #       +-----------+-------+
