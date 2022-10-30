@@ -6,6 +6,7 @@ import { asyncRunJS } from "./app/js.js";
 import { asyncRunLua } from "./app/lua.js";
 import { asyncRunAwk } from "./app/awk.js";
 import { asyncRunLisp } from "./app/lisp.js";
+import * as help from "./app/help.js";
 import * as gdrive from "./app/gdrive.js";
 
 const cmLangs = {
@@ -199,6 +200,7 @@ function determineLanguageAndRun() {
   running.style.display = "block";
   running.textContent = "Busy";
   setTimeout(determineLanguageAndRunImpl, 0);
+  help.getNextTip();
 }
 
 // Determine what the language is and the run the script.
