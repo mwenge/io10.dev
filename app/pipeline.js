@@ -44,7 +44,7 @@ async function getPipeline(id, initialIndex = 0) {
       pipe.delete();
       pipeline.splice(current,1);
       localStorage.setItem(id, JSON.stringify(pipeline));
-      if (current) current--;
+      if (current == pipeline.length) current--;
       let pid = pipeline[current].pid;
       pipe = await getPipe(previousPipeID(), pid);
       // If the pipe is now at the start of the pipeline, make sure it
