@@ -29,6 +29,20 @@ body {
   font-family: "Inconsolata", monospace;
   font-size: 15px;
 }
+.help-panel {
+  display: none;
+  background-color: #121213;
+  color: white;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 5px;
+  padding: 5px;
+  z-index: 999999;
+  cursor: pointer;
+  border-color:white;
+}
 .help {
   max-height: 1.5vh;
   z-index: 9998;
@@ -42,6 +56,7 @@ body {
   right: 4px;
   top:0;
   width: 12vw;
+  cursor: pointer;
 }
 .lozenge-alt > kbd {
   border-radius: 3px;

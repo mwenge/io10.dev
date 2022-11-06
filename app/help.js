@@ -9,7 +9,13 @@ const tips = [
 "<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>&#8595;/&#8593;</kbd> Previous/Next Pipeline</div>",
 "<div class=\"lozenge\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>C</kbd> Delete Current Step</div>",
 "<div class=\"lozenge\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>Q</kbd> Delete Pipeline</div>",
+"<div class=\"lozenge\">Tip: Click on the pipeline name to change.</div>",
 ];
+
+helppanel.innerHTML = ''
+tips.forEach(tip => {
+  helppanel.innerHTML += tip.replace(/Tip:/g, '') + "<br><br>";
+});
 
 let curTip = 0;
 help.innerHTML = tips[0];
@@ -27,4 +33,15 @@ document.addEventListener('keydown', (event) => {
   }
   getNextTip();
 });
+
+[help, helppanel].forEach(elem => {
+  elem.addEventListener("click", function(e) {
+    if (helppanel.style.display == 'block') {
+      helppanel.style.display = 'none'
+    } else {
+      helppanel.style.display = 'block'
+    }
+  });
+});
+
 
