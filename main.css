@@ -39,7 +39,7 @@ body {
   justify-content: space-between;
   background-color: #242424;
   position: absolute;
-  right: 0;
+  right: 4px;
   top:0;
 }
 .lozenge-alt > kbd {
