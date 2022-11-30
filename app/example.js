@@ -6,12 +6,12 @@ export const examplePipelines = [
   {
     key: "Example Pipeline-0a",
     program: `#
-#  ┏┓┏━━┓┏┓┏━━┓
-#  ┏┓┃┏┓┃┃┃┃┏┓┃ Hi. You can run pretty much anything in here:
-#  ┃┃┃┃┃┃┃┃┃┃┃┃ Python, SQL
-#  ┃┃┃┃┃┃┃┃┃┃┃┃ Javascript, Lua
-#  ┃┃┃┗┛┃┃┃┃┗┛┃ R, Awk, Lisp.
-#  ┗┛┗━━┛┗┛┗━━┛
+#  ┏┓┏━━┓┏ ┓┏━━┓
+#  ┏┓┃┏┓┃ ┃┃┃┏┓┃ Hi. You can run pretty much anything in here:
+#  ┃┃┃┃┃┃ ┃┃┃┃┃┃ Python, SQL
+#  ┃┃┃┃┃┃ ┃┃┃┃┃┃ Javascript, Lua
+#  ┃┃┃┗┛┃ ┃┃┃┗┛┃ R, Awk, Lisp.
+#  ┗┛┗━━┛ ┗┛┗━━┛
 #
 #   Everything is run and stored locally in your browser.
 #
