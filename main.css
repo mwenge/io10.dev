@@ -47,16 +47,13 @@ body {
   max-height: 1.5vh;
   z-index: 9998;
   font-family: "Inconsolata";
-  font-size: 1.15vh;
+  font-size: 1vh;
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
   background-color: #242424;
-  position: absolute;
-  right: 4px;
-  top:0;
-  width: 12vw;
   cursor: pointer;
+  bottom-border-color: white;
 }
 .lozenge-alt > kbd {
   border-radius: 3px;
@@ -103,7 +100,7 @@ body{
 }
 .container {
   position: relative;
-  height: 99.9vh;
+  height: 98.5vh;
   width: 100%;
 }
 .program {
