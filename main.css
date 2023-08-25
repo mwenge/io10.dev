@@ -44,10 +44,10 @@ body {
   border-color:white;
 }
 .help {
-  max-height: 1.5vh;
+  max-height: 2vh;
   z-index: 9998;
   font-family: "Inconsolata";
-  font-size: 1vh;
+  font-size: 0.8vw;
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
@@ -100,7 +100,7 @@ body{
 }
 .container {
   position: relative;
-  height: 98.5vh;
+  height: 98vh;
   width: 100%;
 }
 .program {

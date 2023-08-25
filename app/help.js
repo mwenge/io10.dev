@@ -1,15 +1,15 @@
 const tips = [
 "<div class=\"lozenge\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd class=\"enter\">Enter</kbd> Run Current Step</div>",
 "<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>&#8592;/&#8594;</kbd> Previous/Next Step</div>",
-"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>O</kbd> Load File</div>",
-"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>A/B</kbd> Insert Step After/Before</div>",
-"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>D</kbd> Interrupt Execution</div>",
 "<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>R</kbd> Run Pipeline</div>",
-"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>O</kbd> Load Pipeline</div>",
-"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>S</kbd> Save Pipeline as Zip File</div>",
+"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>A/B</kbd> Insert Step After/Before</div>",
+"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>O</kbd> Load File</div>",
 "<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>&#8595;/&#8593;</kbd> Previous/Next Pipeline</div>",
 "<div class=\"lozenge\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>C</kbd> Delete Current Step</div>",
 "<div class=\"lozenge\">Tip: <kbd class=\"alt\">Alt</kbd>+<kbd>Q</kbd> Delete Pipeline</div>",
+"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>D</kbd> Interrupt Execution</div>",
+"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>O</kbd> Load Pipeline</div>",
+"<div class=\"lozenge lozenge-alt\">Tip: <kbd class=\"ctrl\">Ctrl</kbd>+<kbd>S</kbd> Save Pipeline as Zip File</div>",
 "<div class=\"lozenge\">Tip: Click on the pipeline name to change.</div>",
 ];
 
@@ -19,7 +19,7 @@ tips.forEach(tip => {
 });
 
 help.innerHTML = ''
-tips.slice(0,-1).forEach(tip => {
+tips.slice(0,6).forEach(tip => {
   help.innerHTML += tip.replace(/Tip:/g, '');
 });
 
