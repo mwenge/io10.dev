@@ -13,15 +13,19 @@ const tips = [
 "<div class=\"lozenge\">Tip: Click on the pipeline name to change.</div>",
 ];
 
+const help_menu = 
+"<div class=\"lozenge\"><kbd class=\"enter\">F1</kbd> Help</div>";
+
 helppanel.innerHTML = ''
 tips.forEach(tip => {
   helppanel.innerHTML += tip.replace(/Tip:/g, '') + "<br><br>";
 });
 
 help.innerHTML = ''
-tips.slice(0,6).forEach(tip => {
+tips.slice(0,7).forEach(tip => {
   help.innerHTML += tip.replace(/Tip:/g, '');
 });
+help.innerHTML += help_menu;
 
 
 /*

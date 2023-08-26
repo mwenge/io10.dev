@@ -46,6 +46,9 @@ ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
     "Ctrl-S": download,
     "Alt-G": uploadToGoogleDrive,
     "Alt-L": loadFromGoogleDrive,
+    "F1": function() {
+      helppanel.style.display = 'block'
+    },
     "Esc" : function() {
       x.getWrapperElement().focus();
     },
