@@ -3,11 +3,11 @@ import { getPipeline } from "./pipeline.js";
 import { examplePipelines, exampleFiles } from "./example.js";
 import { updatePipelineOnAwesomeBar, quickPipeDisplayUpdate } from "./awesomebar-pipeline.js";
 
-export function updateAwesomeBar(i = 0) {
+export async function updateAwesomeBar(i = 0) {
   updatePipelineOnAwesomeBar(pipeline.currentPipeline(),
     pipeline.currentPipeIndex(),
     pipelinePrettyNames[currentPipelineIndex],
-    pipeline.currentPipe().files(),
+    await pipeline.getFilesForCurrentPipe(),
 		currentPipelineIndex); 
 }
 

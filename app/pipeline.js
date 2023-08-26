@@ -126,6 +126,16 @@ async function getPipeline(id, initialIndex = 0) {
     atEndOfPipeline: function() {
       return (current == pipeline.length - 1);
     },
+    getFilesForCurrentPipe: async function() {
+      let pipes = [...Array(current+1).keys()];
+      let files = [];
+      for (const c of pipes) {
+        let pid = pipeline[c].pid;
+        const p = await getPipe(0, pid);
+        files = files.concat(p.files());
+      }
+      return files;
+    },
   };
   await rangeIterator.initializePipeInfo(current);
 

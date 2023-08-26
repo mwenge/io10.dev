@@ -2,7 +2,8 @@
 :root {
   --main-bg-color: #0C1021;
   --main-fg-color: #98fb98;
-  --help-bg-color:    #C0C0C0;
+  --help-bg-color: #C0C0C0;
+  --alt-file-color: #e8f48c;
 }
 body {
   background-color: #1C1C1C;
@@ -167,6 +168,12 @@ body{
   width: 100%;
   font-family: "Inconsolata";
 }
+.filesbar {
+  left: 0;
+  bottom: 26px;
+  width: 100%;
+  font-family: "Inconsolata";
+}
 .pipe,.pipeline-name,.title {
   padding: 3px 10px 2px 15px;
   color: lightgray;
@@ -186,6 +193,11 @@ body{
 .pipe {
   border: 1px solid white;
   text-transform: lowercase;
+}
+
+.file {
+  border: 1px solid white;
+  text-transform: none;
 }
 
 /* this CS forms the triangles */
@@ -219,6 +231,13 @@ body{
 }
 .activepipe:after {
   border-color: transparent transparent transparent var(--main-fg-color);
+}
+.altfile {
+  background: var(--alt-file-color);
+  color: var(--main-bg-color);
+}
+.altfile:after {
+  border-color: transparent transparent transparent var(--alt-file-color);
 }
 .tip-container {
   position: absolute;
