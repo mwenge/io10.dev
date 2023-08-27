@@ -116,11 +116,12 @@ body{
   margin: 1px;
   position: absolute;
   right: 0;
-  top: 50.5%;
+  top: 0;
   width: 49.9%;
-  height: 49%;
+  height: 99.9%;
 }
 .input {
+  display: none;
   margin: 1px;
   position: absolute;
   right: 0;

@@ -32,44 +32,10 @@ export function setUpShortcuts(editor, inputWrapper, outputWrapper, keyMap) {
     if (keyName == 'ArrowRight' && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
-      var n = input.children[1];
-      n.focus();
-      return;
-    }
-    if (keyName == 'Escape') {
-      return;
-    }
-    maybeExecuteCommand(event);
-  });
-
-  input.addEventListener('keydown', (event) => {
-    // Ignore the event if we're not navigating the cell elements.
-    let w = inputWrapper.editor().getWrapperElement();
-    if (w.className != document.activeElement.className) {
-      return;
-    }
-    const keyName = event.key;
-    if (keyName == 'Enter' && !event.ctrlKey) {
-      event.preventDefault();
-      event.stopPropagation();
-      inputWrapper.editor().focus();
-      return;
-    }
-    if (keyName == 'ArrowDown' && !event.altKey) {
-      event.preventDefault();
-      event.stopPropagation();
       var n = output.children[1];
       n.focus();
       return;
     }
-    if (keyName == 'ArrowLeft' && !event.altKey) {
-      event.preventDefault();
-      event.stopPropagation();
-      var n = program.children[1];
-      n.focus();
-      return;
-    }
-
     if (keyName == 'Escape') {
       return;
     }
@@ -87,13 +53,6 @@ export function setUpShortcuts(editor, inputWrapper, outputWrapper, keyMap) {
       event.preventDefault();
       event.stopPropagation();
       outputWrapper.editor().focus();
-      return;
-    }
-    if (keyName == 'ArrowUp' && !event.altKey) {
-      event.preventDefault();
-      event.stopPropagation();
-      var n = input.children[1];
-      n.focus();
       return;
     }
     if (keyName == 'ArrowLeft' && !event.altKey) {
