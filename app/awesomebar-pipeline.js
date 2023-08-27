@@ -74,7 +74,6 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
 
 function addFiles(files, mw) {
   filesbar.style.display = "none";
-  console.log("files", files);
   if (!files.length) {
     return;
   }

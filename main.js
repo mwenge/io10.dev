@@ -18,37 +18,59 @@ const cmLangs = {
   "*.r" : { lang: "*.r",  syntax: "text/x-rsrc", run: evaluateR, interrupt: interruptRExecution },
   "*.lisp" : { lang: "*.lisp",  syntax: "text/x-scheme", run: evaluateLisp },
 };
+
 // Set up the editor.
 const editor = setUpEditor(ps.pipeline.currentPipe().program());
+
 // Set up the input and output panes.
 const outputWrapper = setUpOutput(output, ps.pipeline.currentPipe().output());
 const inputWrapper = setUpOutput(input, await ps.pipeline.currentPipe().input(),
   ps.pipeline.currentPipeIndex() ? false : true);
 
 // Set up the keyboard shortcuts and the editor panel options.
+const keyMap = {
+    "Ctrl-Enter": determineLanguageAndRun,
+    "Alt-Right": ps.nextPipeOrInsertAfter,
+    "Alt-ArrowRight": ps.nextPipeOrInsertAfter,
+    "Alt-Left": ps.previousPipe,
+    "Alt-ArrowLeft": ps.previousPipe,
+    "Alt-A": ps.insertAfter,
+    "Alt-a": ps.insertAfter,
+    "Alt-B": ps.insertBefore,
+    "Alt-b": ps.insertBefore,
+    "Alt-C": ps.deleteCurrent,
+    "Alt-c": ps.insertBefore,
+    "Alt-Up": ps.nextPipeline,
+    "Alt-ArrowUp": ps.nextPipeline,
+    "Alt-Down": ps.prevPipeline,
+    "Alt-ArrowDown": ps.prevPipeline,
+    "Alt-Q": ps.deletePipeline,
+    "Alt-q": ps.deletePipeline,
+    "Alt-R": runPipeline,
+    "Alt-r": runPipeline,
+    "Ctrl-O": ps.openFile,
+    "Ctrl-o": ps.openFile,
+    "Ctrl-D": interruptExecution,
+    "Ctrl-d": interruptExecution,
+    "Ctrl-S": download,
+    "Ctrl-s": download,
+    "Alt-G": uploadToGoogleDrive,
+    "Alt-g": uploadToGoogleDrive,
+    "Alt-L": loadFromGoogleDrive,
+    "Alt-l": loadFromGoogleDrive,
+    "F1": function() {
+      helppanel.style.display = 'block'
+    },
+    "Escape" : function() {
+      editor.getWrapperElement().focus();
+    },
+};
 ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
 [editor, inputWrapper.editor(), outputWrapper.editor()].forEach(x => {
   let extraKeys = x.getOption("extraKeys");
   x.setOption("extraKeys", {
     ...extraKeys,
-    "Ctrl-Enter": determineLanguageAndRun,
-    "Alt-Right": ps.nextPipeOrInsertAfter,
-    "Alt-Left": ps.previousPipe,
-    "Alt-A": ps.insertAfter,
-    "Alt-B": ps.insertBefore,
-    "Alt-C": ps.deleteCurrent,
-    "Alt-Up": ps.nextPipeline,
-    "Alt-Down": ps.prevPipeline,
-    "Alt-Q": ps.deletePipeline,
-    "Alt-R": runPipeline,
-    "Ctrl-O": ps.openFile,
-    "Ctrl-D": interruptExecution,
-    "Ctrl-S": download,
-    "Alt-G": uploadToGoogleDrive,
-    "Alt-L": loadFromGoogleDrive,
-    "F1": function() {
-      helppanel.style.display = 'block'
-    },
+    ...keyMap,
     "Esc" : function() {
       x.getWrapperElement().focus();
     },
@@ -56,13 +78,15 @@ ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
   x.getWrapperElement().setAttribute("tabindex", "0");
   x.getWrapperElement().className += " editorContainer";
 });
-setUpShortcuts(editor, inputWrapper, outputWrapper);
+setUpShortcuts(editor, inputWrapper, outputWrapper, keyMap);
 
+// Rate limit the syntax check.
 let syntaxDirty = false;
 editor.on("change",function(cm,change){
   syntaxDirty = true;
 });
 
+// Functions for interrupting execution.
 function interruptPythonExecution() {
   import("./app/pyodide-py-worker.js").then((py) => {
     py.interruptPythonExecution();

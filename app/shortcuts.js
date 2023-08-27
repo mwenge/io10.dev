@@ -1,4 +1,21 @@
-export function setUpShortcuts(editor, inputWrapper, outputWrapper) {
+function createKeyString(ev) {
+  let keyText = "";
+  keyText += (ev.ctrlKey ? 'Ctrl-' : '');
+  keyText += (ev.altKey ? 'Alt-' : '');
+  keyText += ev.key;
+  return keyText;
+}
+
+export function setUpShortcuts(editor, inputWrapper, outputWrapper, keyMap) {
+  function maybeExecuteCommand(event) {
+    // If the keystrokes match a command, run it.
+    const keyText = createKeyString(event);
+    if (keyText in keyMap) {
+      keyMap[keyText]();
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
   program.addEventListener('keydown', (event) => {
     // Ignore the event if we're not navigating the cell elements.
     let w = editor.getWrapperElement();
@@ -6,17 +23,24 @@ export function setUpShortcuts(editor, inputWrapper, outputWrapper) {
       return;
     }
     const keyName = event.key;
-    if (keyName == 'Enter') {
+    if (keyName == 'Enter' && !event.ctrlKey) {
       event.preventDefault();
       event.stopPropagation();
       editor.focus();
+      return;
     }
-    if (keyName == 'ArrowRight') {
+    if (keyName == 'ArrowRight' && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
       var n = input.children[1];
       n.focus();
+      return;
     }
+    if (keyName == 'Escape') {
+      return;
+    }
+    maybeExecuteCommand(event);
+
   });
 
   input.addEventListener('keydown', (event) => {
@@ -26,23 +50,31 @@ export function setUpShortcuts(editor, inputWrapper, outputWrapper) {
       return;
     }
     const keyName = event.key;
-    if (keyName == 'Enter') {
+    if (keyName == 'Enter' && !event.ctrlKey) {
       event.preventDefault();
       event.stopPropagation();
       inputWrapper.editor().focus();
+      return;
     }
-    if (keyName == 'ArrowDown') {
+    if (keyName == 'ArrowDown' && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
       var n = output.children[1];
       n.focus();
+      return;
     }
-    if (keyName == 'ArrowLeft') {
+    if (keyName == 'ArrowLeft' && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
       var n = program.children[1];
       n.focus();
+      return;
     }
+
+    if (keyName == 'Escape') {
+      return;
+    }
+    maybeExecuteCommand(event);
   });
 
   output.addEventListener('keydown', (event) => {
@@ -52,22 +84,30 @@ export function setUpShortcuts(editor, inputWrapper, outputWrapper) {
       return;
     }
     const keyName = event.key;
-    if (keyName == 'Enter') {
+    if (keyName == 'Enter' && !event.ctrlKey) {
       event.preventDefault();
       event.stopPropagation();
       outputWrapper.editor().focus();
+      return;
     }
-    if (keyName == 'ArrowUp') {
+    if (keyName == 'ArrowUp' && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
       var n = input.children[1];
       n.focus();
+      return;
     }
-    if (keyName == 'ArrowLeft') {
+    if (keyName == 'ArrowLeft' && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
       var n = program.children[1];
       n.focus();
+      return;
     }
+
+    if (keyName == 'Escape') {
+      return;
+    }
+    maybeExecuteCommand(event);
   });
 }
