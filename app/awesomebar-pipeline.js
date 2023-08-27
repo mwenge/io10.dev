@@ -65,15 +65,20 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
       d.className += " activepipe";
       d.style.maxWidth = "none";
       // List the files
-      addFiles(files, mw);
+      addFiles(files, mw, cur);
     }
     c.appendChild(d);
     d.style.zIndex = z--;
   });
 }
 
-function addFiles(files, mw) {
+function addFiles(files, mw, cur) {
   filesbar.style.display = "none";
+  // Add input.txt if we're not at the first step.
+  if (cur) {
+    files.unshift('input.txt');
+  }
+  // Bail if no files to display.
   if (!files.length) {
     return;
   }
