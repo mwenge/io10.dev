@@ -45,7 +45,7 @@ body {
   border-color:white;
 }
 .help {
-  max-height: 2vh;
+  max-height: 3vh;
   z-index: 9998;
   font-family: "Inconsolata";
   font-size: 0.8vw;
@@ -101,7 +101,7 @@ body{
 }
 .container {
   position: relative;
-  height: 98vh;
+  height: 97vh;
   width: 100%;
 }
 .program {

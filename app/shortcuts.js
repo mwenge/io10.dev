@@ -40,7 +40,6 @@ export function setUpShortcuts(editor, inputWrapper, outputWrapper, keyMap) {
       return;
     }
     maybeExecuteCommand(event);
-
   });
 
   input.addEventListener('keydown', (event) => {
