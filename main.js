@@ -59,7 +59,7 @@ const keyMap = {
     "Alt-L": loadFromGoogleDrive,
     "Alt-l": loadFromGoogleDrive,
     "F1": function() {
-      helppanel.style.display = 'block'
+      helppanel.style.display = (helppanel.style.display == 'block') ? "none" : "block";
     },
     "Escape" : function() {
       editor.getWrapperElement().focus();
