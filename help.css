@@ -1,0 +1,30 @@
+.help-panel {
+  display: none;
+  background-color: #121213;
+  color: white;
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 5px;
+  padding: 25px;
+  z-index: 999999;
+  cursor: pointer;
+  border-color:white;
+  min-width: 80%;
+  font-family: "Inconsolata";
+  font-size: 1em;
+}
+.col-container {
+  columns: 3;
+}
+.shortcut-row {
+}
+.shortcut-cell {
+  display: inline-block;  
+  margin: 5px;
+  width: 60%;
+}
+.keyboard-cell {
+  width: 25%;
+}

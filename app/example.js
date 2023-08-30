@@ -17,19 +17,17 @@ export const examplePipelines = [
    can operate on the output of the previous one. Each program can be
    written in the language best suited to the job. Everything is run and stored 
    locally in your browser. No data leaves your computer, but you can save your
-   work locally and load it again on another computer if you want.
+   work locally (Ctrl-S) and load it again on another computer (Ctrl-O) if you want.
 
    This is a short demonstration. Let's run the script below.
     - Press Ctrl-Enter to run the program. 
     - Then press Alt-Right to navigate to the next step in the pipeline.
   
-"""
-import sys
-"""
-This step reads in the file EXECUTIVE.agc, which is a file 
+This first step reads in the file EXECUTIVE.agc, which is a file 
 of source code from the Apollo 11's Lunar Guidance Module.
 """
 # Read in all the lines containing instructions
+import sys
 lines = [l for l in open('EXECUTIVE.agc', 'r').read().split('\\n') 
 		 if l and l[0] not in ['\\n','','#']]
 
