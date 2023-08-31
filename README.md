@@ -1,8 +1,6 @@
-![favicon](https://user-images.githubusercontent.com/58846/162999976-65b1f8b3-3445-432d-bd60-ed95a0c21233.png)
-
 It's [io10.dev](https://io10.dev). This is what it looks like, but what is it?
 
-![io10](https://user-images.githubusercontent.com/58846/162628741-053ab7a0-59df-4e82-b6e9-676bedacda04.gif)
+![io10](assets/favicon-dark.svg)
 
 A data dipeline in the browser? A REPL chain?
 
