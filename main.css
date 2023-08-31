@@ -2,7 +2,8 @@
 :root {
   --main-bg-color: #0C1021;
   --main-fg-color: #98fb98;
-  --help-bg-color: #C0C0C0;
+  --help-bg-color: #e6db77;
+  --help-bg-color-border: #e6df07;
   --alt-file-color: #e8f48c;
 }
 body {
@@ -48,15 +49,10 @@ body {
   cursor: pointer;
   bottom-border-color: white;
 }
-.lozenge-alt > kbd {
-  border-radius: 3px;
-  border: 1px solid #b4b4b4;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 0 0 0 rgba(255, 255, 255, .7) inset;
-}
 kbd {
   background: var(--help-bg-color);
   border-radius: 3px;
-  border: 1px solid #b4b4b4;
+  border: 1px solid var(--help-bg-color-border);
   box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 1px 0 0 rgba(255, 255, 255, .7) inset;
   color: #333;
   display: inline-block;
@@ -65,22 +61,10 @@ kbd {
   white-space: nowrap;
   font-family: "Inconsolata", monospace;
 }
-.alt {
-  background-color: #D0D0D0;
-}
-.ctrl {
-  background-color: #D0D0D0;
-}
-.enter {
-  background-color: #D0D0D0;
-}
 .lozenge {
-  color: white;
+  color: var(--help-bg-color);
   display: inline-block;
   font-style: bold;
-}
-.lozenge-alt {
-  color: white;
 }
 html, body {
   height: 100%;
