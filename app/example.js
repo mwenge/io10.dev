@@ -7,11 +7,13 @@ export const examplePipelines = [
     key: "Example Pipeline-0a",
     program: `"""
  Welcome to
-      
+          
   You can run pretty much anything in here:
-   Python, SQL,
-   Javascript, Lua,
+    Python, SQL,
+    Javascript, Lua,
   R, Awk, Lisp.
+
+
 
  What we do here is compose 'pipelines' of programs. Each program
  can operate on the output of the previous one. Each program can be
