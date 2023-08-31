@@ -1,4 +1,4 @@
-![favicon](favicon-dark.svg | width=100)
+<img src="assets/favicon-dark.svg" width=200/>
 
 It's [io10.dev](https://io10.dev). This is what it looks like, but what is it?
 
