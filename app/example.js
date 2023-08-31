@@ -13,8 +13,6 @@ export const examplePipelines = [
     Javascript, Lua,
   R, Awk, Lisp.
 
-
-
  What we do here is compose 'pipelines' of programs. Each program
  can operate on the output of the previous one. Each program can be
  written in the language best suited to the job. Everything is run and stored 
