@@ -61,6 +61,7 @@ SELECT ROUTINE, COUNT(*) CNT
 FROM "input.txt" A 
 GROUP BY 1
 ORDER BY CNT DESC
+LIMIT 10
 `,
     input: ``,
     output: '',
