@@ -37,9 +37,6 @@
      inkscape:current-layer="svg1" />
   <style>
     @media (prefers-color-scheme: light) {
-      #rect2 {
-        fill: #000;
-      }
       #text1 {
         fill: #fff;
       }
