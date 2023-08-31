@@ -47,7 +47,7 @@ body {
   justify-content: space-between;
   background-color: #242424;
   cursor: pointer;
-  bottom-border-color: white;
+  margin-right: 10px;	
 }
 kbd {
   background: var(--help-bg-color);
