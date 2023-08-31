@@ -6,22 +6,22 @@ export const examplePipelines = [
   {
     key: "Example Pipeline-0a",
     program: `"""
-  ┏┓┏━━┓┏ ┓┏━━┓
-  ┏┓┃┏┓┃ ┃┃┃┏┓┃ Hi. You can run pretty much anything in here:
-  ┃┃┃┃┃┃ ┃┃┃┃┃┃ Python, SQL
-  ┃┃┃┃┃┃ ┃┃┃┃┃┃ Javascript, Lua
-  ┃┃┃┗┛┃ ┃┃┃┗┛┃ R, Awk, Lisp.
-  ┗┛┗━━┛ ┗┛┗━━┛
+ Welcome to
+      
+  You can run pretty much anything in here:
+   Python, SQL,
+   Javascript, Lua,
+  R, Awk, Lisp.
 
-   What we do here is compose 'pipelines' of programs. Each program
-   can operate on the output of the previous one. Each program can be
-   written in the language best suited to the job. Everything is run and stored 
-   locally in your browser. No data leaves your computer, but you can save your
-   work locally (Ctrl-S) and load it again on another computer (Ctrl-O) if you want.
+ What we do here is compose 'pipelines' of programs. Each program
+ can operate on the output of the previous one. Each program can be
+ written in the language best suited to the job. Everything is run and stored 
+ locally in your browser. No data leaves your computer, but you can save your
+ work locally (Ctrl-S) and load it again on another computer (Ctrl-O) if you want.
 
-   This is a short demonstration. Let's run the script below.
-    - Press Ctrl-Enter to run the program. 
-    - Then press Alt-Right to navigate to the next step in the pipeline.
+ This is a short demonstration. Let's run the script below.
+  - Press Ctrl-Enter to run the program. 
+  - Then press Alt-Right to navigate to the next step in the pipeline.
   
 This first step reads in the file EXECUTIVE.agc, which is a file 
 of source code from the Apollo 11's Lunar Guidance Module.

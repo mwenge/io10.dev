@@ -26,8 +26,14 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'io10';
+  src: url('assets/io10.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 .CodeMirror {
-  font-family: "Inconsolata", monospace;
+  font-family: "Inconsolata", "io10", monospace;
   font-size: 15px;
 }
 .help {
