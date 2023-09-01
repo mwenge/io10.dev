@@ -64,7 +64,7 @@ kbd {
 .lozenge {
   color: var(--help-bg-color);
   display: inline-block;
-  font-style: bold;
+  font-weight: bold;
 }
 html, body {
   height: 100%;

@@ -26,6 +26,7 @@ export const examplePipelines = [
 This first step reads in the file EXECUTIVE.agc, which is a file 
 of source code from the Apollo 11's Lunar Guidance Module.
 """
+
 # Read in all the lines containing instructions
 import sys
 lines = [l for l in open('EXECUTIVE.agc', 'r').read().split('\\n') 
