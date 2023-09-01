@@ -75,8 +75,8 @@ LIMIT 10
 // Hopefully by now it will be clear that Alt in combination with Left and Right allows
 // you to navigate between the steps in a pipeline.
 // 
-// To navigate between pipelines we use Alt-Up and Alt-Down. Alt-Up will create a new pipeline
-// if one doesn't already exist there. 
+// To navigate between pipelines we use Alt-Up and Alt-Down. Alt-Up will create a new
+// pipeline if one doesn't already exist there. 
 //
 // So in summary for pipeline navigation.:
 //   - Use Alt-Left and Alt-Right to navigate between the steps on the current pipeline.

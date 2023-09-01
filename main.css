@@ -160,6 +160,11 @@ body{
   border-right:none;
   background-color: var(--main-bg-color);
 }
+.title {
+  width: 4.8vw;
+  white-space: nowrap;
+  padding-left: 10px;
+}
 .pipeline-name {
   color: white;
 }
@@ -196,7 +201,7 @@ body{
   border-width: 10px;
 }
 
-/* this border color controlls the outside, thin border */
+/* this border color controls the outside, thin border */
 .pipe:before {
   top:-2px;
   border-color: transparent transparent transparent white;
