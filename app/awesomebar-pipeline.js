@@ -38,6 +38,30 @@ function quickPipeDisplayUpdate(cur, inc) {
   x.className = "pipe activepipe";
 }
 
+function updatePipelineMap(mw,cur) {
+  const c = document.getElementById("pipeline-map");
+  c.innerHTML = "";
+
+  const ps = JSON.parse(localStorage.getItem("pipelines"));
+
+	let d;
+  let z = 1000;
+  // Draw the pipeline
+  console.log({ps});
+  ps.forEach((p,i) => {
+    d = document.createElement("div"); 
+    d.className = "pipel";
+    if (i == cur) {
+      d.className += " activepipe";
+    } else {
+      d.style.background = cv[i];
+      d.style.opacity = "0.30";
+    }
+    c.appendChild(d);
+    d.style.zIndex = z--;
+  });
+}
+
 let cv = createColorValueArray();
 function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
   const pln = document.getElementById("pipeline-name");
@@ -70,10 +94,12 @@ function updatePipelineOnAwesomeBar(pl, cur, name, files, pli) {
     c.appendChild(d);
     d.style.zIndex = z--;
   });
+  updatePipelineMap(mw, pli);
 }
 
 function addFiles(files, mw, cur) {
-  filesbar.style.display = "none";
+  const c = document.getElementById("files-container");
+  c.innerHTML = "";
   // Add input.txt if we're not at the first step.
   if (cur) {
     files.unshift('input.txt');
@@ -85,8 +111,6 @@ function addFiles(files, mw, cur) {
   filesbar.style.display = "block";
 
   let z = 1000;
-  const c = document.getElementById("files-container");
-  c.innerHTML = "";
   files.forEach((f,i) => {
     let d = document.createElement("div"); 
     d.className = "pipe file";

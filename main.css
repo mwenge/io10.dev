@@ -151,7 +151,7 @@ body{
   width: 100%;
   font-family: "Inconsolata";
 }
-.pipe,.pipeline-name,.title {
+.pipe,.pipeline-name,.title,.pipel {
   padding: 3px 10px 2px 15px;
   color: lightgray;
   position: relative;
@@ -159,6 +159,12 @@ body{
   border: 1px solid white;
   border-right:none;
   background-color: var(--main-bg-color);
+}
+.files-title {
+  border: 1px solid white;
+}
+.pipel {
+  padding: 10px 3px 10px 3px;
 }
 .title {
   width: 4.8vw;
@@ -171,8 +177,16 @@ body{
 .pipeline-container {
   display: inline-block;
 }
+.pipeline-map-container {
+  display: flex;
+  flex-direction: column-reverse;
+  position: absolute;
+  bottom: 6.9vh;
+  left: 0px;
+  z-index: 5000;
+}
 
-.pipe {
+.pipe,.pipel {
   border: 1px solid white;
   text-transform: lowercase;
 }
@@ -181,6 +195,7 @@ body{
   border: 1px solid white;
   text-transform: none;
 }
+
 
 /* this CS forms the triangles */
 .pipe:after,
