@@ -18,8 +18,6 @@
 .col-container {
   columns: 3;
 }
-.shortcut-row {
-}
 .shortcut-cell {
   display: inline-block;  
   margin: 5px;

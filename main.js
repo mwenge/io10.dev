@@ -61,7 +61,16 @@ const keyMap = {
     "F1": function() {
       helppanel.style.display = (helppanel.style.display == 'block') ? "none" : "block";
     },
+    "F2": function() {
+      const pn = document.getElementById("pipeline-name");
+      pn.focus();
+      window.getSelection().selectAllChildren(pn);
+    },
     "Escape" : function() {
+      if (helppanel.style.display != "none") {
+        helppanel.style.display = "none";
+        return;
+      }
       editor.getWrapperElement().focus();
     },
 };
@@ -72,6 +81,10 @@ ps.setPanes(editor, inputWrapper, outputWrapper, cmLangs);
     ...extraKeys,
     ...keyMap,
     "Esc" : function() {
+      if (helppanel.style.display != "none") {
+        helppanel.style.display = "none";
+        return;
+      }
       x.getWrapperElement().focus();
     },
   });
