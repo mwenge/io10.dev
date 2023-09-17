@@ -47,7 +47,6 @@ function updatePipelineMap(mw,cur) {
 	let d;
   let z = 1000;
   // Draw the pipeline
-  console.log({ps});
   ps.forEach((p,i) => {
     d = document.createElement("div"); 
     d.className = "pipel";

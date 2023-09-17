@@ -7,7 +7,6 @@ import { asyncRunLua } from "./app/lua.js";
 import { asyncRunAwk } from "./app/awk.js";
 import { asyncRunLisp } from "./app/lisp.js";
 import "./app/help.js";
-import * as gdrive from "./app/gdrive.js";
 
 const cmLangs = {
   "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
@@ -54,10 +53,6 @@ const keyMap = {
     "Ctrl-d": interruptExecution,
     "Ctrl-S": download,
     "Ctrl-s": download,
-    "Alt-G": uploadToGoogleDrive,
-    "Alt-g": uploadToGoogleDrive,
-    "Alt-L": loadFromGoogleDrive,
-    "Alt-l": loadFromGoogleDrive,
     "F1": function() {
       helppanel.style.display = (helppanel.style.display == 'block') ? "none" : "block";
     },
@@ -656,38 +651,4 @@ window.onresize = function(e) {
     return window.onzoom.call(window, event);
   }
 };
-
-async function uploadToGoogleDrive() {
-  if (runningPipe) {
-    return;
-  }
-
-  running.style.display = "block";
-  running.textContent = "Creating Zip File";
-  let zipFile = await createZipFile();
-  let zipFileName = "io10.dev - " + ps.pipelinePrettyName() + ".zip";
-
-  console.log("Saving to google", zipFileName);
-  try {
-    let result = await gdrive.savePipelineToGoogleDrive(zipFile, zipFileName, running);
-    console.log("signin", result);
-  } catch(e) {
-    running.textContent = "try that again";
-    console.log("signin error", e);
-  }
-}
-
-async function loadFromGoogleDrive() {
-  if (runningPipe) {
-    return;
-  }
-  running.style.display = "block";
-  try {
-    let result = await gdrive.loadPipelinesFromGoogleDrive(loadZipFile);
-    console.log("signin", result);
-  } catch(e) {
-    running.textContent = "try that again";
-    console.log("signin error", e);
-  }
-}
 

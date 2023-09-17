@@ -32,15 +32,6 @@
 #
 `,
 `# Here's a tip:
-#  Synchronizing with Google Drive
-#    - Alt-G:     Save/Update the current pipeline on Google Drive.
-#    - Alt-L:     Load all saved pipelines from Google Drive. This won't
-#                 overwrite any open pipelines with the same name.
-#    NOTE: The first attempt to connect to Google Drive may fail. If that
-#    happens just try again, it usually works on the second attempt.
-#
-`,
-`# Here's a tip:
 #  When Cursor in Input/Output panes
 #    - PageUp/
 #      PageDown:  Page up and down through input/output.
