@@ -28,6 +28,8 @@ export async function updateDisplayedPipe(pipe) {
     currentPipelineIndex: currentPipelineIndex,
     initialIndex: pipeline.currentPipeIndex()
   }));
+  pipelineSavedPositions[currentPipelineIndex] = pipeline.currentPipeIndex();
+  localStorage.setItem("pipelineSavedPositions", JSON.stringify(pipelineSavedPositions));
 }
 
 export async function insertBefore() {
@@ -114,7 +116,7 @@ export async function nextPipeline() {
   // The pipeline already exist, so display it.
   if (currentPipelineIndex < pipelines.length - 1) {
     currentPipelineIndex++;
-    pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+    pipeline = await getPipeline(pipelines[currentPipelineIndex], pipelineSavedPositions[currentPipelineIndex]);
     updateDisplayedPipe(pipeline.currentPipe());
     return;
   }
@@ -128,9 +130,11 @@ export async function nextPipeline() {
 export async function addPipeline(newPipelineName) {
   pipelines.push(newPipelineName);
   pipelinePrettyNames.push(newPipelineName);
+  pipelineSavedPositions.push(0);
   currentPipelineIndex = pipelines.length - 1;
   localStorage.setItem("pipelines", JSON.stringify(pipelines));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
+  localStorage.setItem("pipelineSavedPositions", JSON.stringify(pipelineSavedPositions));
   pipeline = await getPipeline(pipelines[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
@@ -143,7 +147,7 @@ export async function prevPipeline() {
     return;
   }
   currentPipelineIndex--;
-  pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+  pipeline = await getPipeline(pipelines[currentPipelineIndex], pipelineSavedPositions[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
 
@@ -162,12 +166,14 @@ export async function deletePipeline() {
   localStorage.removeItem(pipelines[currentPipelineIndex]);
   pipelines.splice(currentPipelineIndex, 1);
   pipelinePrettyNames.splice(currentPipelineIndex, 1);
+  pipelineSavedPositions.splice(currentPipelineIndex, 1);
   localStorage.setItem("pipelines", JSON.stringify(pipelines));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(pipelinePrettyNames));
+  localStorage.setItem("pipelineSavedPositions", JSON.stringify(pipelineSavedPositions));
 
   // Move to the previous pipe.
   if (currentPipelineIndex) currentPipelineIndex--;
-  pipeline = await getPipeline(pipelines[currentPipelineIndex]);
+  pipeline = await getPipeline(pipelines[currentPipelineIndex], pipelineSavedPositions[currentPipelineIndex]);
   updateDisplayedPipe(pipeline.currentPipe());
 }
 
@@ -181,8 +187,10 @@ var enc = new TextEncoder(); // always utf-8
 let savedPipelines = localStorage.getItem("pipelines");
 if (!savedPipelines) {
   let names = examplePipelines.map(x => x.name);
+  let initialPositions = examplePipelines.map(x => 0);
   localStorage.setItem("pipelines", JSON.stringify(names));
   localStorage.setItem("pipelinePrettyNames", JSON.stringify(names));
+  localStorage.setItem("pipelineSavedPositions", JSON.stringify(initialPositions));
   for (var examplePipeline of examplePipelines) {
     await Promise.all(examplePipeline.pipeline.map(async (p) => {
       await localforage.setItem(p.key+"-input", p.input);
@@ -207,6 +215,7 @@ if (!savedPipelines) {
 export let { currentPipelineIndex, initialIndex } = JSON.parse(localStorage.getItem("checkpoint"));
 export let pipelines = JSON.parse(localStorage.pipelines);
 let pipelinePrettyNames = JSON.parse(localStorage.pipelinePrettyNames);
+let pipelineSavedPositions = JSON.parse(localStorage.pipelineSavedPositions);
 export let pipeline = await getPipeline(pipelines[currentPipelineIndex], initialIndex);
 
 // Update the awesome bar.
