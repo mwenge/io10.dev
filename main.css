@@ -87,6 +87,7 @@ body{
   width:49.9%;
   height: 99.5%;
   top: 0;
+  border-right: 1px solid var(--alt-file-color);
 }
 .output {
   margin: 1px;
