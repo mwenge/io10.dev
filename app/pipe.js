@@ -26,6 +26,7 @@ async function getPipe(prevID, id) {
     data.output = defaultData.output;
     data.lang = defaultData.lang;
     data.files = [];
+    data.generatedFiles = [];
     storage.setData(id, data);
   }
   const rangeIterator = {
@@ -51,6 +52,9 @@ async function getPipe(prevID, id) {
     files: function() {
       return data.files ? data.files : [];
     },
+    generatedFiles: function() {
+      return data.generatedFiles ? data.generatedFiles : [];
+    },
     data: function() {
       return data;
     },
@@ -63,7 +67,11 @@ async function getPipe(prevID, id) {
       } else {
         data.files.push(f);
       }
-      storage.setMetadata(id, { files: data.files, lang: data.lang });
+      storage.setMetadata(id, { files: data.files, lang: data.lang, generatedFiles: data.generatedFiles });
+    },
+    addGeneratedFiles: async function(fs) {
+      data.generatedFiles = fs;
+      storage.setMetadata(id, { files: data.files, lang: data.lang, generatedFiles: data.generatedFiles });
     },
     delete: async function(p) {
       storage.deleteData(id, data.files);

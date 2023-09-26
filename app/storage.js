@@ -7,7 +7,7 @@ export async function getData(id) {
     let i = cachedData.get(id+"-input");
     let o = cachedData.get(id+"-output");
     let m = cachedData.get(id+"-metadata");
-    return {files: m.files, lang:m.lang, program:p, input: i, output: o};
+    return {files: m.files, lang:m.lang, program:p, input: i, output: o, generatedFiles: m.generatedFiles};
   }
   let metadata = await localforage.getItem(id+"-metadata");
   if (!metadata) {
@@ -31,7 +31,7 @@ export function getDoc(id) {
 
 // Intentionally fire and forget.
 export async function setData(id, data) {
-  setMetadata(id, { files: data.files, lang: data.lang });
+  setMetadata(id, { files: data.files, lang: data.lang, generatedFiles: data.generatedFiles });
   setProgram(id, data.program);
   setOutput(id, data.output);
 }
@@ -59,5 +59,6 @@ export async function deleteData(id, files) {
   slots.forEach(id => cachedData.delete(id.join('')));
   slots.forEach(id => localforage.removeItem(id.join('')));
   if (files) files.forEach(id => localforage.removeItem(id));
+  if (generatedFiles) generatedFiles.forEach(id => localforage.removeItem(id));
 }
 

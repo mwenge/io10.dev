@@ -376,10 +376,13 @@ async function evaluatePython() {
     let program = preprocessedProgram(runningPipe);
 
     // Get any files and add the input to 'input.txt'.
-    let files = runningPipe.files();
+    let files = await ps.pipeline.getFilesForCurrentPipe();
     await localforage.setItem("input.txt", enc.encode(input).buffer);
 
-    const { results, error, output } = await py.asyncRun(program, input, files.concat(["input.txt"]));
+    const { results, error, new_files, output } = await py.asyncRun(program, input, files.concat(["input.txt"]));
+
+    runningPipe.addGeneratedFiles(new_files);
+
     let stdout = '';
     if (error) {
       stdout += error;

@@ -127,13 +127,17 @@ async function getPipeline(id, initialIndex = 0) {
       return (current == pipeline.length - 1);
     },
     getFilesForCurrentPipe: async function() {
-      let pipes = [...Array(current+1).keys()];
+      let pipes = [...Array(current).keys()];
       let files = [];
       for (const c of pipes) {
         let pid = pipeline[c].pid;
         const p = await getPipe(0, pid);
         files = files.concat(p.files());
+        files = files.concat(p.generatedFiles());
       }
+      let pid = pipeline[current].pid;
+      const p = await getPipe(0, pid);
+      files = files.concat(p.files());
       return files;
     },
   };
