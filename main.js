@@ -279,32 +279,36 @@ async function evaluateSQL() {
     let input = await runningPipe.input();
     let buffInput = enc.encode(input);
 
-    // Drop the table if it already exists.
-    let tableName = "input.txt";
-    await sql.asyncRunSQL("DROP TABLE \"" + tableName + "\";");
+    let program = preprocessedProgram(runningPipe);
+    if (program.includes("input.txt")) {
+      // Drop the table if it already exists.
+      let tableName = "input.txt";
+      await sql.asyncRunSQL("DROP TABLE \"" + tableName + "\";");
 
-    // Write the standard input to a TSV table first.
-    updateProgress("Loading input as a table..");
-    await localforage.setItem(tableName, enc.encode(buffInput).buffer);
-    let res = await sql.asyncCreateTable(buffInput, tableName);
-    if (res.error) {
-      await runningPipe.updateOutput("Error creating input.txt table: " + res.error);
-      throw new Error("=> Error occurred while running SQL.");
+      // Write the standard input to a TSV table first.
+      updateProgress("Loading input as a table..");
+      await localforage.setItem(tableName, enc.encode(buffInput).buffer);
+      let res = await sql.asyncCreateTable(buffInput, tableName);
+      if (res.error) {
+        await runningPipe.updateOutput("Error creating input.txt table: " + res.error);
+        throw new Error("=> Error occurred while running SQL.");
+      }
     }
 
     // Load the files associated with the pipe to tables.
-    let files = runningPipe.files();
+    let files = await ps.pipeline.getFilesForCurrentPipe();
+    console.log("files",files);
     await Promise.all(files.map(async (f) => {
       await sql.asyncRunSQL("DROP TABLE \"" + f + "\";");
     }));
     await Promise.all(files.map(async (f) => {
       updateProgress("Loading " + f + " as a table..");
+      console.log("Loading " + f + " as a table..");
       let data = await localforage.getItem(f);
       await sql.asyncCreateTable(new Uint8Array(data), f);
     }));
 
     // Now run the query against it.
-    let program = preprocessedProgram(runningPipe);
     updateProgress("Running Query..");
     const { results, error } = await sql.asyncRunSQL(program);
 
@@ -340,7 +344,7 @@ async function evaluateR() {
     let program = preprocessedProgram(runningPipe);
 
     // Get any files and add the input to 'input.txt'.
-    let files = runningPipe.files();
+    let files = await ps.pipeline.getFilesForCurrentPipe();
     await localforage.setItem("input.txt", enc.encode(input).buffer);
 
     const { results, error, output } = await R.asyncRunR(program, input, files);
@@ -407,7 +411,7 @@ async function evaluatePython() {
 async function evaluateJS() {
   let input = await runningPipe.input();
   let program = preprocessedProgram(runningPipe);
-  let files = runningPipe.files();
+  let files = await ps.pipeline.getFilesForCurrentPipe();
   const { results, error, output } = await asyncRunJS(input, program);
   let stdout = '';
   if (error) {
@@ -430,7 +434,7 @@ async function evaluateJS() {
 async function evaluateLua() {
   let input = await runningPipe.input();
   let program = preprocessedProgram(runningPipe);
-  let files = runningPipe.files();
+  let files = await ps.pipeline.getFilesForCurrentPipe();
   const { results, error, output } = await asyncRunLua(input, program);
   let stdout = '';
   if (error) {
@@ -453,7 +457,7 @@ async function evaluateLua() {
 async function evaluateAwk() {
   let input = await runningPipe.input();
   let program = preprocessedProgram(runningPipe);
-  let files = runningPipe.files();
+  let files = await ps.pipeline.getFilesForCurrentPipe();
   const { results, error, output } = await asyncRunAwk(input, program);
   let stdout = '';
   if (error) {
@@ -476,7 +480,7 @@ async function evaluateAwk() {
 async function evaluateLisp() {
   let input = await runningPipe.input();
   let program = preprocessedProgram(runningPipe);
-  let files = runningPipe.files();
+  let files = await ps.pipeline.getFilesForCurrentPipe();
   const { results, error, output } = await asyncRunLisp(input, program);
   let stdout = '';
   if (error) {
