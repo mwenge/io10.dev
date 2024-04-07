@@ -1,5 +1,5 @@
 const numTokens = (t,s) => t.map(x=>s.includes(x) ? 1 : 0).reduce((a, b) => a + b, 0)
-const sql_tokens_single = ["select ","from ","where ","group by ","sum(","count("];
+const sql_tokens_single = ["select ","from ","where ","group by ",", sum(",",sum(","count("];
 const py_tokens_single = ["import sys","import os","print(","enumerate(","numpy", "def ", "None"];
 const js_tokens_single = ["const ","let ", "var ",");","function ",".slice"];
 
