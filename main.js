@@ -7,6 +7,7 @@ import { asyncRunLua } from "./app/lua.js";
 import { asyncRunAwk } from "./app/awk.js";
 import { asyncRunLisp } from "./app/lisp.js";
 import "./app/help.js";
+import { languageTieBreak } from "./app/guesslang-tiebreak.js";
 
 const cmLangs = {
   "*.py" : { lang: "*.py",  syntax: "text/x-python", run: evaluatePython, interrupt: interruptPythonExecution},
@@ -163,8 +164,10 @@ async function determineLanguage(force = true) {
       .filter(x => !x.startsWith('--') && !x.startsWith('#') && !x.startsWith('//'))
       .join('\n');
     const result = await guessLang.runModel(program);
-    const fileType = (result.length) ? "*." + result[0].languageId : "";
-    if (!(fileType in cmLangs)) { return null; }
+    let fileType = (result.length) ? "*." + result[0].languageId : "";
+    if (!(fileType in cmLangs)) {
+      fileType = languageTieBreak(program); 
+    }
     lang = cmLangs[fileType];
   }
   editor.setOption("mode", lang.syntax);
